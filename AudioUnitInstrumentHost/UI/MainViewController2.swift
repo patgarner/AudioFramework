@@ -67,11 +67,12 @@ public class MainViewController2: NSViewController {
         }
     }
     
-    func loadVC(){
+    func loadVCBak(){
         guard let interfaceInstance = SamplerModel.shared.instrumentInterfaceInstance  else { return }
-        switch(interfaceInstance) {
+        switch(interfaceInstance) {            
         case .view(let view):
-            let vc = InstrumentViewController()
+            let bundle = Bundle.init(for: InstrumentViewController.self)
+            let vc = InstrumentViewController(nibName: .init(stringLiteral: "InstrumentViewController"), bundle: bundle)
             self.presentAsModalWindow(vc)
             vc.view = view
         case .viewController(let vc):
@@ -79,9 +80,28 @@ public class MainViewController2: NSViewController {
         }
     }
 
+    func loadVC(){
+        let contentRect = NSMakeRect(100, 100, 1000, 1000)
+        let window = NSWindow(contentRect: contentRect, styleMask: NSWindow.StyleMask.resizable, backing: NSWindow.BackingStoreType.buffered, defer: false)
+        window.styleMask.insert(.titled)
+        window.styleMask.insert(.closable)
+
+        instrumentWindowController = NSWindowController(window: window)
+        guard let interfaceInstance = SamplerModel.shared.instrumentInterfaceInstance  else { return }
+        switch(interfaceInstance) {            
+        case .view(let view):
+            guard let window = instrumentWindowController!.window else { break }
+            let frame = window.frameRect(forContentRect: view.bounds)
+            print("Frame: \(frame)")
+            window.setFrame(frame, display: true)
+            window.contentView = view
+        case .viewController(let vc):
+            instrumentWindowController!.contentViewController = vc
+        }
+        instrumentWindowController!.showWindow(self)
+    }
     
-    
-    
+
     // Keyboard handling
     
     enum KeyAction {

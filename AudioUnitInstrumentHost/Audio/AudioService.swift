@@ -18,10 +18,11 @@ public class AudioService: NSObject {
     var recordingUrl : URL?
     public let audioEngine = AVAudioEngine()
     public var delegate : AudioServiceDelegate?
+
     private override init (){
         super.init()
     }
-    var host: InstrumentHost = AUv3InstrumentHost()
+    var host: InstrumentHost = AUv2InstrumentHost()
     func getListOfEffects() -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect
@@ -74,22 +75,7 @@ public class AudioService: NSObject {
             print("Couldn't record. Error: \(error)")
         }
     }
-    func recordTo2(url: URL) { //TODO: Move somewhere else
-//        let assetOutputFormat = AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: 44100, channels: 2, interleaved: true)!
-//        let tapFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 44100, channels: 2, interleaved: false)!
-//        do{
-//            let assetWriter = try AVAssetWriter(outputURL: url, fileType: .wav) //No worries here..
-//            let assetInput = AVAssetWriterInput(mediaType: .audio, outputSettings: assetOutputFormat.settings)
-//            assetWriter.add(assetInput)
-//            engine.mainMixerNode.installTap(onBus: 0, bufferSize: 1024, format: tapFormat) { (buffer, when) in // <========SETTINGS!
-//                let cmBuffer = buffer as! CMSampleBuffer //CRASHES HERE
-//                
-//                assetInput.append(cmBuffer)
-//            }
-//        } catch {
-//            print("Error: Problem writing audio file. \(error)")
-//        }
-    }
+
     func stopRecording() { //TODO: Move somewhere else
         audioEngine.mainMixerNode.volume = 0
         audioEngine.mainMixerNode.removeTap(onBus: 0)

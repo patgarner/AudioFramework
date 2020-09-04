@@ -14,6 +14,6 @@
 #import <CoreAudio/CoreAudio.h>
 #import <Cocoa/Cocoa.h>
 
-NSView * __nullable loadViewForAudioUnit(AudioUnit au, struct CGSize size);
+NSView * __nullable loadViewForAudioUnit(_Nonnull AudioUnit au, struct CGSize size); //Added _Nonnull
 
 #endif /* AudioToolboxHelpers_h */

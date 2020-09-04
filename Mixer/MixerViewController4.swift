@@ -11,7 +11,8 @@ import AVFoundation
 
 public class MixerViewController4: NSViewController, ChannelViewDelegate, NSCollectionViewDataSource {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
-    
+    private var instrumentWindowController: NSWindowController?    
+
     public var delegate : ChannelViewDelegate?
     override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -65,16 +66,26 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
             }
         }
     }
+
     func loadVC(){
+        let contentRect = NSMakeRect(100, 100, 1000, 1000)
+        let window = NSWindow(contentRect: contentRect, styleMask: NSWindow.StyleMask.resizable, backing: NSWindow.BackingStoreType.buffered, defer: false)
+        window.styleMask.insert(.titled)
+        window.styleMask.insert(.closable)
+
+        instrumentWindowController = NSWindowController(window: window)
         guard let interfaceInstance = SamplerModel.shared.instrumentInterfaceInstance  else { return }
-        switch(interfaceInstance) {
+        switch(interfaceInstance) {            
         case .view(let view):
-            let vc = InstrumentViewController()
-            self.presentAsModalWindow(vc)
-            vc.view = view
+            guard let window = instrumentWindowController!.window else { break }
+            let frame = window.frameRect(forContentRect: view.bounds)
+            print("Frame: \(frame)")
+            window.setFrame(frame, display: true)
+            window.contentView = view
         case .viewController(let vc):
-            self.presentAsModalWindow(vc)
+            instrumentWindowController!.contentViewController = vc
         }
+        instrumentWindowController!.showWindow(self)
     }
     ///////////////////////////////////////////////////
     // CollectionViewDataSource

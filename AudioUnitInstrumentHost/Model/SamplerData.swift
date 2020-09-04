@@ -11,8 +11,8 @@ import AVFoundation
 
 public class SamplerData : Codable {
     //for now one instrument and one user data object are ok
-    var audioComponentDescription : AudioComponentDescription?
-    var state : [String : Any]?
+    public var audioComponentDescription : AudioComponentDescription?
+    public var state : [String : Any]?
     public init(){
         
     }

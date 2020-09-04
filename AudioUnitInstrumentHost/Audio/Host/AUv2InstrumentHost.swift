@@ -89,8 +89,8 @@ extension AUv2InstrumentHost: InstrumentHost {
     func setController(number: UInt8, value: UInt8, channel: UInt8){
     }
     func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()) {
-//        let view = loadViewForAudioUnit(self.synthUnit!.auRef, CGSize(width: 0, height: 0))
-//        completion(view.map(InterfaceInstance.view))
+        let view = loadViewForAudioUnit(self.synthUnit!.auRef, CGSize(width: 0, height: 0))
+        completion(view.map(InterfaceInstance.view))
     }
     
     var fullState: [String : Any]?{

@@ -56,8 +56,7 @@
 		842369FE24FEC44C001266BE /* NSError+OSStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369D924FEC44C001266BE /* NSError+OSStatus.swift */; };
 		842369FF24FEC44C001266BE /* AudioUnitGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369DA24FEC44C001266BE /* AudioUnitGraph.swift */; };
 		84236A0024FEC44C001266BE /* AudioUnitGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369DA24FEC44C001266BE /* AudioUnitGraph.swift */; };
-		84236A0124FEC44C001266BE /* AudioUnitInstrumentHost-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369DB24FEC44C001266BE /* AudioUnitInstrumentHost-Bridging-Header.h */; };
-		84236A0224FEC44C001266BE /* AudioToolboxHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369DC24FEC44C001266BE /* AudioToolboxHelpers.h */; };
+		84236A0224FEC44C001266BE /* AudioToolboxHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369DC24FEC44C001266BE /* AudioToolboxHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 		8479715724FFE66600AAC4A3 /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 /* End PBXBuildFile section */
@@ -281,7 +280,6 @@
 			files = (
 				84236A0224FEC44C001266BE /* AudioToolboxHelpers.h in Headers */,
 				842369B924FEC2BC001266BE /* AudioFramework.h in Headers */,
-				84236A0124FEC44C001266BE /* AudioUnitInstrumentHost-Bridging-Header.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +573,7 @@
 		842369BD24FEC2BC001266BE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -592,6 +591,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = UltraMusician.AudioFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -599,6 +599,7 @@
 		842369BE24FEC2BC001266BE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -616,6 +617,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = UltraMusician.AudioFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
