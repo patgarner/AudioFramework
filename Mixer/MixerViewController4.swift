@@ -5,6 +5,8 @@
 //  Created by Admin on 6/19/19.
 //  Copyright © 2019 UltraMusician. All rights reserved.
 //
+// The MixerViewController is primarily a view controller -- it should not do a lot of heavy lifting, but rather should be relaying messages from the sliders up the chain,
+// or, from the mainViewController down the chain, such as setting the state.
 
 import Cocoa
 import AVFoundation
@@ -12,8 +14,8 @@ import AVFoundation
 public class MixerViewController4: NSViewController, ChannelViewDelegate, NSCollectionViewDataSource {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
-
     public var delegate : ChannelViewDelegate?
+    
     override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -39,11 +41,11 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
     }
     
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0) { //TODO: This absolutely should NOT be here.
-        AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription) { [weak self] (successful) in
+        AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
             DispatchQueue.main.async {
-                AudioService.shared.requestInstrumentInterface{ (maybeInterface) in
+                AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
                     guard let interface = maybeInterface else { return }
-                    SamplerModel.shared.instrumentInterfaceInstance = interface
+                    SamplerInterfaceModel.shared.instrumentInterfaceInstance = interface
                     DispatchQueue.main.async {                        
                         [weak self] in guard let this = self else { return }
                         self?.loadVC()
@@ -53,33 +55,31 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
         }
     }
     func select(effect: AVAudioUnitComponent, channel: Int = 0) {  //TODO: This absolutely should NOT be here.
-        AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription) { [weak self] (successful) in
+        AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel) { [weak self] (successful) in
             DispatchQueue.main.async {
-                AudioService.shared.requestInstrumentInterface{ (maybeInterface) in
-                    guard let interface = maybeInterface else { return }
-                    SamplerModel.shared.instrumentInterfaceInstance = interface
-                    DispatchQueue.main.async {                        
-                        [weak self] in guard let this = self else { return }
-                        self?.loadVC()
-                    }
-                }
+                guard let audioEffect = AudioService.shared.audioUnitEffect else { return }
+                let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
+                let interfaceInstance = view.map(InterfaceInstance.view)
+                SamplerInterfaceModel.shared.instrumentInterfaceInstance = interfaceInstance
+                DispatchQueue.main.async {                        
+                    [weak self] in guard let this = self else { return }
+                    self?.loadVC()
+                }           
             }
         }
     }
 
     func loadVC(){
         let contentRect = NSMakeRect(100, 100, 1000, 1000)
-        let window = NSWindow(contentRect: contentRect, styleMask: NSWindow.StyleMask.resizable, backing: NSWindow.BackingStoreType.buffered, defer: false)
-        window.styleMask.insert(.titled)
-        window.styleMask.insert(.closable)
-
+        let styles = NSWindow.StyleMask.resizable.rawValue | NSWindow.StyleMask.titled.rawValue | NSWindow.StyleMask.closable.rawValue
+        let styleMask = NSWindow.StyleMask.init(rawValue: styles)
+        let window = NSWindow(contentRect: contentRect, styleMask: styleMask, backing: NSWindow.BackingStoreType.buffered, defer: false)
         instrumentWindowController = NSWindowController(window: window)
-        guard let interfaceInstance = SamplerModel.shared.instrumentInterfaceInstance  else { return }
+        guard let interfaceInstance = SamplerInterfaceModel.shared.instrumentInterfaceInstance  else { return }
         switch(interfaceInstance) {            
         case .view(let view):
             guard let window = instrumentWindowController!.window else { break }
             let frame = window.frameRect(forContentRect: view.bounds)
-            print("Frame: \(frame)")
             window.setFrame(frame, display: true)
             window.contentView = view
         case .viewController(let vc):

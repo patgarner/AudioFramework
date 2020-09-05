@@ -81,7 +81,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc func volumeSliderMoved(){
         let sliderValue = volumeSlider.integerValue
-        print("slider moved. value = \(sliderValue)")
         volumeValueTextField.integerValue = sliderValue
         volumeValueTextField.needsDisplay = true
         if type == .master{ //TODO: Move to another location.
@@ -107,7 +106,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             volumeSliderMoved()
             return
         }
-      //  let volume = volumeValueTextField.integerValue
         if let existingState = delegate?.getChannelState(trackNumber){
             existingState.volume = volume
             volumeSlider.integerValue = volume
@@ -127,7 +125,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc func panChanged(){
         let pan = (panKnob.integerValue + 64) % 127
-        print("pan \(pan)")
         if let existingState = delegate?.getChannelState(trackNumber){
             existingState.pan = pan
         }

@@ -36,7 +36,6 @@ public class SamplerData : Codable {
         }
         audioComponentDescription = try container.decode(AudioComponentDescription.self, forKey: .audioComponentDescription)
     }
-    
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         let rawState = NSKeyedArchiver.archivedData(withRootObject: state)

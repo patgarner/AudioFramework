@@ -55,7 +55,6 @@ class AUv3InstrumentHost : InstrumentHost{
             } else if let unit = avAudioUnit as? AVAudioUnitMIDIInstrument {
                 DispatchQueue.main.async {
                     self?.instrumentAU = unit
-                    //self?.set(instrument: unit)
                     print("Loaded")
                     completion(true)
                 }

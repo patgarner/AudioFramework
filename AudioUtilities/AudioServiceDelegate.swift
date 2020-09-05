@@ -11,4 +11,5 @@ import Cocoa
 
 public protocol AudioServiceDelegate{
     func load(viewController: NSViewController)
+    func log(_ message : String)
 }

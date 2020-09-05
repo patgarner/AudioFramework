@@ -168,14 +168,6 @@
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="OyJ-24-vSa" userLabel="AudioFX 2">
-                            <rect key="frame" x="16" y="278" width="55" height="16"/>
-                            <textFieldCell key="cell" lineBreakMode="clipping" title="AudioFX" id="iye-m4-3M2">
-                                <font key="font" usesAppearanceFont="YES"/>
-                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                            </textFieldCell>
-                        </textField>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Mba-kA-n4n">
                             <rect key="frame" x="29" y="252" width="42" height="16"/>
                             <textFieldCell key="cell" lineBreakMode="clipping" title="Sends" id="qa9-lB-SuB">
@@ -212,7 +204,6 @@
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="6DN-kt-158" secondAttribute="trailing" constant="3" id="6xs-34-RFK"/>
                         <constraint firstAttribute="trailing" secondItem="CX9-pE-PRJ" secondAttribute="trailing" constant="3" id="GdN-wc-b8J"/>
-                        <constraint firstAttribute="trailing" secondItem="OyJ-24-vSa" secondAttribute="trailing" constant="3" id="IV3-Rc-Ei1"/>
                         <constraint firstAttribute="trailing" secondItem="3wF-D3-fGf" secondAttribute="trailing" constant="3" id="SFv-6C-C4G"/>
                         <constraint firstAttribute="trailing" secondItem="Mba-kA-n4n" secondAttribute="trailing" constant="3" id="kKn-yS-M0I"/>
                         <constraint firstAttribute="trailing" secondItem="qwR-9j-czc" secondAttribute="trailing" constant="3" id="v45-VX-wDZ"/>
@@ -251,7 +242,6 @@
                 <constraint firstItem="bJK-rI-XVz" firstAttribute="centerY" secondItem="CY1-Lc-T62" secondAttribute="centerY" priority="750" id="eS6-AY-H0r"/>
                 <constraint firstAttribute="bottom" secondItem="Rru-5d-WrS" secondAttribute="bottom" id="exx-4P-kBM"/>
                 <constraint firstAttribute="trailing" secondItem="5mR-Mn-l4r" secondAttribute="trailing" id="g4o-5r-RSz"/>
-                <constraint firstItem="OyJ-24-vSa" firstAttribute="centerY" secondItem="5mR-Mn-l4r" secondAttribute="centerY" id="git-t3-ill"/>
                 <constraint firstItem="TKq-fY-h6f" firstAttribute="top" secondItem="rTB-d8-KWM" secondAttribute="bottom" constant="12" id="i81-Ch-ZQp"/>
                 <constraint firstItem="4Q9-gA-9iY" firstAttribute="leading" secondItem="Hz6-mo-xeY" secondAttribute="leading" constant="-3" id="mHm-wy-Wd9"/>
                 <constraint firstItem="Ar8-yd-M5r" firstAttribute="top" secondItem="RXO-TX-0OP" secondAttribute="bottom" constant="5" id="mMO-Qe-414"/>

@@ -18,11 +18,24 @@ public class AudioService: NSObject {
     var recordingUrl : URL?
     public let audioEngine = AVAudioEngine()
     public var delegate : AudioServiceDelegate?
+    public var audioUnitEffect : AVAudioUnit? //TODO: Hack. This doesn't belong here but works for now.
 
     private override init (){
         super.init()
+        for _ in 0..<16{
+            channels.append(AUv2InstrumentHost())
+        }
     }
-    var host: InstrumentHost = AUv2InstrumentHost()
+    //var host: InstrumentHost = AUv2InstrumentHost()
+    var channels : [InstrumentHost] = []
+//    var host : InstrumentHost {
+//        get {
+//            return channels[0]
+//        } 
+//        set {
+//            channels[0] = newValue
+//        }
+//    }
     func getListOfEffects() -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect
@@ -42,21 +55,18 @@ public class AudioService: NSObject {
         return AVAudioUnitComponentManager.shared().components(matching: desc)
     }
     
-    public func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()) {
+    public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
+        if channel >= channels.count { return }
+        let host = channels[channel]
         host.loadInstrument(fromDescription: desc, completion: completion)
+        print("")
     }
     
-    public func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()) {
-        self.host.requestInstrumentInterface(completion)
+    public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
+        if channel >= channels.count { completion(nil) }
+        let host = channels[channel]
+        host.requestInstrumentInterface(completion)
     }
-    
-    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        host.noteOn(note, withVelocity: velocity, channel: channel)
-    }
-    
-    public func noteOff(_ note: UInt8, channel: UInt8) {
-        host.noteOff(note, channel: channel)
-    }   
     public func recordTo(url: URL) { //TODO: Move somewhere else
         self.recordingUrl = url
         let format = self.audioEngine.mainMixerNode.outputFormat(forBus: 0)
@@ -88,30 +98,51 @@ public class AudioService: NSObject {
     public func stop(){
         stopRecording()
     }
+    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
+        if channel >= channels.count { return }
+        let host = channels[Int(channel)]
+        host.noteOn(note, withVelocity: velocity, channel: channel)
+    }
+    
+    public func noteOff(_ note: UInt8, channel: UInt8) {
+        if channel >= channels.count { return }
+        let host = channels[Int(channel)]
+        host.noteOff(note, channel: channel)
+    } 
     public func set(volume: UInt8, channel: UInt8){
+        if channel >= channels.count { return }
+        let host = channels[Int(channel)]
         host.set(volume: volume, channel: channel)
     }
     public func set(pan: UInt8, channel: UInt8){
+        if channel >= channels.count { return }
+        let host = channels[Int(channel)]
         host.set(pan: pan, channel: channel)
     }
     public func set(tempo: UInt8){
-        host.set(tempo: tempo)
+        for channel in 0..<channels.count{
+            let host = channels[channel]
+        }
     }
     public func setController(number: UInt8, value: UInt8, channel: UInt8){
+        if channel >= channels.count { return }
+        let host = channels[Int(channel)]
         host.setController(number: number, value: value, channel: channel)
     }
-    public var samplerData : SamplerData {
+    public var samplerData : SamplerData { //Need to make this multitrack
         get {
+            let host = channels[0] //TODO
             let s = host.samplerData
             return s
         } 
         set {
             guard let audioComponentDescription = newValue.audioComponentDescription else { return }
-            self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
-                self.requestInstrumentInterface{ (maybeInterface) in
+            self.loadInstrument(fromDescription: audioComponentDescription, channel: 0) { (success) in
+                self.requestInstrumentInterface(channel: 0){ (maybeInterface) in
                     guard let interface = maybeInterface else { return }
-                    SamplerModel.shared.instrumentInterfaceInstance = interface
-                    self.host.fullState = newValue.state //You are putting the state in but no vc yet...
+                    SamplerInterfaceModel.shared.instrumentInterfaceInstance = interface
+                    var host = self.channels[0]
+                    host.fullState = newValue.state //You are putting the state in but no vc yet...
                 }
             }
         }
@@ -119,37 +150,55 @@ public class AudioService: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-    public func loadEffect(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
         let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
         AVAudioUnitEffect.instantiate(with: desc, options: loadOptions) { (avAudioUnit, error) in
             if let e = error {
-                print("Failed to load instrument: \(e)")
+                self.delegate?.log("Failed to load effect. Error: \(e)")
                 completion(false)
             }
-            if avAudioUnit == nil { return }
-            //DispatchQueue.main.async {
-            self.requestInstrumentInterface2(audioUnit: avAudioUnit!) { (interfaceInstance) in
-                    completion(true)
-            }
-            //}
+            guard let audioUnitEffect = avAudioUnit else { return }
+            self.audioUnitEffect = audioUnitEffect
+            completion(true)
+        }
+    }
+    func requestEffectInterface(_ completion: @escaping (InterfaceInstance?)->()) {
+        guard let au = audioUnitEffect else { 
+            completion(nil)
+            return
+        } 
+        au.auAudioUnit.requestViewController { (vc) in
+//              guard let vc = vc else { return }
+//              completion(vc)
         }
     }
     @available(OSX 10.12, *)
     func requestInstrumentInterface2(audioUnit: AVAudioUnit, _ completion: @escaping (InterfaceInstance?)->()) {
         let au = audioUnit.auAudioUnit
         au.requestViewController { (vc) in
-            if let vc = vc {
-                self.delegate?.load(viewController: vc)
-            }
+            guard let vc = vc else { return }
+            self.delegate?.load(viewController: vc)
         }
     }
     
     func load(viewController: NSViewController){
         delegate?.load(viewController: viewController)
     }
-
+    
+    //Apple
+//    func loadAudioUnitViewController(completion: @escaping (NSViewController?) -> Void) {
+//        if let audioUnit = audioUnit {
+//            audioUnit.requestViewController { viewController in
+//                DispatchQueue.main.async {
+//                    completion(viewController)
+//                }
+//            }
+//        } else {
+//            completion(nil)
+//        }
+//    }
 }
 
 

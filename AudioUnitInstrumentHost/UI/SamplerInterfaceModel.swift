@@ -8,8 +8,8 @@
 
 import Foundation
 
-public class SamplerModel{
-    public static let shared = SamplerModel()
+public class SamplerInterfaceModel{
+    public static let shared = SamplerInterfaceModel()
     public var instrumentInterfaceInstance: InterfaceInstance?
 
     private init(){
