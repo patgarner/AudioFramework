@@ -70,7 +70,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         volumeSlider.integerValue = state.volume
         volumeValueTextField.integerValue = state.volume
         panKnob.integerValue = (state.pan + 64) % 128
-        fillEffectsPopup()
         labelView.isHidden = true
         if type == .master {
             self.trackNameField.stringValue = "Master"
@@ -87,6 +86,22 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
                 name == state.virtualInstrumentName{
                 instrumentPopup.selectItem(at: i)
                 break
+            }
+        }
+        
+        fillEffectsPopup()
+        let effectsList = getListOfEffects()
+        if state.effectSelections.count > 0 {
+            let effectSelection = state.effectSelections[0]
+            for i in 0..<effectsList.count{
+                let effect = effectsList[i]
+                let manufacturer = effect.manufacturerName
+                let name = effect.name
+                if manufacturer == effectSelection.manufacturer,
+                    name == effectSelection.name{
+                    audioFXPopup.selectItem(at: i)
+                    break
+                }
             }
         }
     }
@@ -144,6 +159,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let effectIndex = audioFXPopup.indexOfSelectedItem
         let effects = getListOfEffects()
         let effect = effects[effectIndex]
+        if let channelState = delegate?.getChannelState(trackNumber){
+            let effectSelection = EffectSelection(manufacturer: effect.manufacturerName, name: effect.name)
+            channelState.effectSelections = [effectSelection]
+        }
         instrumentSelectionDelegate?.select(effect: effect, channel: self.trackNumber)
     }
     ////////////////////////////////////////////////////////
@@ -174,6 +193,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @objc func instrumentChanged(){
         let index = instrumentPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
+        if let channelState = delegate?.getChannelState(trackNumber){
+            channelState.virtualInstrumentManufacturerName = component.manufacturerName
+            channelState.virtualInstrumentName = component.name
+        }
         instrumentSelectionDelegate?.selectInstrument(component, channel: trackNumber)
     }
     /////////////////////////////////////////////////////////////////
@@ -197,7 +220,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }
         audioFXPopup.addItem(withTitle: "")
         audioFXPopup.selectItem(at: audioFXPopup.numberOfItems - 1)
-
     }
 }
 

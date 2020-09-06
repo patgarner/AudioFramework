@@ -18,6 +18,7 @@ public class ChannelState : Codable, Equatable{
     public var number = 0
     public var virtualInstrumentManufacturerName = ""
     public var virtualInstrumentName = ""
+    public var effectSelections : [EffectSelection] = []
     public static func == (lhs: ChannelState, rhs: ChannelState) -> Bool {
         if lhs.mute != rhs.mute { return false }
         if lhs.volume != rhs.volume { return false }
@@ -28,4 +29,9 @@ public class ChannelState : Codable, Equatable{
         if lhs.virtualInstrumentName != rhs.virtualInstrumentName { return false }
         return true
     }
+}
+
+public struct EffectSelection : Codable{
+    public var manufacturer = ""
+    public var name = ""
 }

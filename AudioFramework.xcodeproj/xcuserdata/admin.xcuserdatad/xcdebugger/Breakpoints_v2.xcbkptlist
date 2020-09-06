@@ -46,8 +46,8 @@
             filePath = "Mixer/MixerViewController4.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
             landmarkName = "select(effect:channel:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -119,7 +119,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "90B952A4-1A75-4DEE-ACE9-F9B27B5ECD36"
+            uuid = "72BC8EB1-5250-4A76-B68D-2157AE28E306"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -128,23 +128,23 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "159"
             endingLineNumber = "159"
-            landmarkName = "fillInstrumentPopup()"
+            landmarkName = "audioFXChanged()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CCC2443A-E627-4751-809E-B20A1CFE609E"
+            uuid = "63DDF6C5-F0C5-4E55-818C-4286C832A3B4"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mixer/ChannelCollectionViewItem.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
-            landmarkName = "fillInstrumentPopup()"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
+            landmarkName = "refresh()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
