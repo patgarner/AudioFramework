@@ -71,13 +71,24 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         volumeValueTextField.integerValue = state.volume
         panKnob.integerValue = (state.pan + 64) % 128
         fillEffectsPopup()
-        reloadInstruments()
         labelView.isHidden = true
         if type == .master {
             self.trackNameField.stringValue = "Master"
             self.trackNameField.isEditable = false
             instrumentPopup.isHidden = true
         }  
+        
+        reloadInstruments()
+        for i in 0..<instrumentsFlat.count{
+            let instrument = instrumentsFlat[i]
+            let manufacturer = instrument.manufacturerName
+            let name = instrument.name
+            if manufacturer == state.virtualInstrumentManufacturerName,
+                name == state.virtualInstrumentName{
+                instrumentPopup.selectItem(at: i)
+                break
+            }
+        }
     }
     @objc func volumeSliderMoved(){
         let sliderValue = volumeSlider.integerValue
@@ -139,37 +150,36 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     // Instruments
     /////////////////////////////////////////////////////////
     private func reloadInstruments() {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
-            guard let s = self else { return }
-            if let instruments = s.instrumentSelectionDelegate?.getListOfInstruments(){
-                s.instrumentsFlat = instruments
-                  DispatchQueue.main.async {
-                      s.fillInstrumentPopup()
-                  }
-            }
+        if let instruments = instrumentSelectionDelegate?.getListOfInstruments(){
+            instrumentsFlat = instruments
+            fillInstrumentPopup()
         }
     }
     private func fillInstrumentPopup(){
         instrumentPopup.removeAllItems()
         for instrument in instrumentsFlat{
-            let string = instrument.manufacturerName + "-" + instrument.name
+            let string = getMenuTitleFrom(instrument: instrument)
             instrumentPopup.addItem(withTitle: string)
         }
         instrumentPopup.addItem(withTitle: "")
         instrumentPopup.selectItem(at: instrumentPopup.numberOfItems - 1)
     }
+    private func getMenuTitleFrom(instrument: AVAudioUnitComponent) -> String{
+        let string = instrument.manufacturerName + "-" + instrument.name
+        return string
+    }
     var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
     var instrumentsFlat : [AVAudioUnitComponent] = []
     var instrumentSelectionDelegate : InstrumentSelectionDelegate?
     @objc func instrumentChanged(){
-        let selection = instrumentPopup.indexOfSelectedItem
-        let component = instrumentsFlat[selection]
+        let index = instrumentPopup.indexOfSelectedItem
+        let component = instrumentsFlat[index]
         instrumentSelectionDelegate?.selectInstrument(component, channel: trackNumber)
     }
     /////////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////////
-    func getListOfEffects() -> [AVAudioUnitComponent]{
+    func getListOfEffects() -> [AVAudioUnitComponent]{ //TODO: It shouldn't have this much information in here
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect
         desc.componentSubType = 0

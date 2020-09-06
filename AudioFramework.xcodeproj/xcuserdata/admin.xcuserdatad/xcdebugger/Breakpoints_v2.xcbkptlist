@@ -23,69 +23,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "DCC07B06-2635-475D-8D23-AB6C8A2555C6"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mixer/MixerViewController4.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
-            landmarkName = "selectInstrument(_:channel:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "DCC07B06-2635-475D-8D23-AB6C8A2555C6 - 8f6e12a74508d7af"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42"
-                  offsetFromSymbolStart = "60">
-               </Location>
-               <Location
-                  uuid = "DCC07B06-2635-475D-8D23-AB6C8A2555C6 - 8bd5c3ba4fb0095b"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Bool) -&gt; () in AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42"
-                  offsetFromSymbolStart = "145">
-               </Location>
-               <Location
-                  uuid = "DCC07B06-2635-475D-8D23-AB6C8A2555C6 - d09701f441cd00a7"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #1 (Swift.Bool) -&gt; () in AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "42"
-                  endingLineNumber = "42"
-                  offsetFromSymbolStart = "18">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "CEBA1DE0-39CA-4309-935F-857695EBC71D"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -109,8 +46,8 @@
             filePath = "Mixer/MixerViewController4.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
             landmarkName = "select(effect:channel:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -125,8 +62,8 @@
             filePath = "AudioUnitInstrumentHost/Audio/AudioService.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "101"
-            endingLineNumber = "101"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
             landmarkName = "noteOn(_:withVelocity:channel:)"
             landmarkType = "7">
             <Locations>
@@ -141,8 +78,8 @@
                   urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/AudioUnitInstrumentHost/Audio/AudioService.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "101"
-                  endingLineNumber = "101"
+                  startingLineNumber = "93"
+                  endingLineNumber = "93"
                   offsetFromSymbolStart = "168">
                </Location>
                <Location
@@ -156,8 +93,8 @@
                   urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/AudioUnitInstrumentHost/Audio/AudioService.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "101"
-                  endingLineNumber = "101"
+                  startingLineNumber = "93"
+                  endingLineNumber = "93"
                   offsetFromSymbolStart = "394">
                </Location>
             </Locations>
@@ -182,97 +119,33 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F347DD76-1A1E-4B2C-9183-6944923F5EF3"
+            uuid = "90B952A4-1A75-4DEE-ACE9-F9B27B5ECD36"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Mixer/MixerViewController4.swift"
+            filePath = "Mixer/ChannelCollectionViewItem.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "45"
-            endingLineNumber = "45"
-            landmarkName = "selectInstrument(_:channel:)"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "fillInstrumentPopup()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "F347DD76-1A1E-4B2C-9183-6944923F5EF3 - 8bd5c3ba4fb0095b"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Bool) -&gt; () in AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "190">
-               </Location>
-               <Location
-                  uuid = "F347DD76-1A1E-4B2C-9183-6944923F5EF3 - d09701f441cd00a7"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #1 (Swift.Bool) -&gt; () in AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44"
-                  offsetFromSymbolStart = "33">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "2C0928CA-DAFA-4F3E-AC2E-4E46CAE1CF7B"
+            uuid = "CCC2443A-E627-4751-809E-B20A1CFE609E"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Mixer/MixerViewController4.swift"
+            filePath = "Mixer/ChannelCollectionViewItem.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
-            landmarkName = "selectInstrument(_:channel:)"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
+            landmarkName = "fillInstrumentPopup()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "2C0928CA-DAFA-4F3E-AC2E-4E46CAE1CF7B - d09701f441cd00a7"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #1 (Swift.Bool) -&gt; () in AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46"
-                  offsetFromSymbolStart = "52">
-               </Location>
-               <Location
-                  uuid = "2C0928CA-DAFA-4F3E-AC2E-4E46CAE1CF7B - d15e80daf307162e"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (Swift.Optional&lt;AudioFramework.InterfaceInstance&gt;) -&gt; () in closure #1 () -&gt; () in closure #1 (Swift.Bool) -&gt; () in AudioFramework.MixerViewController4.selectInstrument(_: __C.AVAudioUnitComponent, channel: Swift.Int) -&gt; ()"
-                  moduleName = "AudioFramework"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/MixerViewController4.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44"
-                  offsetFromSymbolStart = "206">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

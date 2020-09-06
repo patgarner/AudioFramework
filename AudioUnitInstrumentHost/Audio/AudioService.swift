@@ -26,16 +26,7 @@ public class AudioService: NSObject {
             channels.append(AUv2InstrumentHost())
         }
     }
-    //var host: InstrumentHost = AUv2InstrumentHost()
     var channels : [InstrumentHost] = []
-//    var host : InstrumentHost {
-//        get {
-//            return channels[0]
-//        } 
-//        set {
-//            channels[0] = newValue
-//        }
-//    }
     func getListOfEffects() -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect

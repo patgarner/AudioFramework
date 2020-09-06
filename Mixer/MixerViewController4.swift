@@ -41,6 +41,10 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
     }
     
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0) { //TODO: This absolutely should NOT be here.
+        if let channelState = getChannelState(channel){
+            channelState.virtualInstrumentManufacturerName = inst.manufacturerName
+            channelState.virtualInstrumentName = inst.name
+        }
         AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
             DispatchQueue.main.async {
                 AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in

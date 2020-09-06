@@ -21,8 +21,6 @@ extension AudioComponentDescription : Codable{
         componentType = try container.decode(OSType.self, forKey: .componentType)  
         componentSubType = try container.decode(OSType.self, forKey: .componentSubType) 
         componentManufacturer = try container.decode(OSType.self, forKey: .componentManufacturer)  
-
-
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
