@@ -72,7 +72,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "FC0415A9-4B50-45F1-8EDA-E14A2727E5E8"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AudioUnitInstrumentHost/Audio/AudioService.swift"
@@ -81,22 +81,6 @@
             startingLineNumber = "144"
             endingLineNumber = "144"
             landmarkName = "allPluginData"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FC074C12-1C1B-492A-9496-2DBF70D1B882"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mixer/ChannelController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "pluginData"
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>

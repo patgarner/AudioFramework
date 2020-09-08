@@ -47,9 +47,33 @@ class ChannelController {
             return s
         } 
         set {
-            instrumentHost.samplerData = newValue
+            guard let audioComponentDescription = newValue.audioComponentDescription else { return }
+            self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
+                self.requestInstrumentInterface{ (maybeInterface) in
+                    guard let interface = maybeInterface else { return }
+                    PluginInterfaceModel.shared.pluginInterfaceInstance = interface
+                    self.instrumentHost.fullState = newValue.state
+                }
+            }
         }
     }
+    
+//    public var samplerData : SamplerData {
+//        get {
+//            let s = host.samplerData
+//            return s
+//        } 
+//        set {
+//            guard let audioComponentDescription = newValue.audioComponentDescription else { return }
+//            self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
+//                self.requestInstrumentInterface{ (maybeInterface) in
+//                    guard let interface = maybeInterface else { return }
+//                    SamplerModel.shared.instrumentInterfaceInstance = interface
+//                    self.host.fullState = newValue.state //You are putting the state in but no vc yet...
+//                }
+//            }
+//        }
+//    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
