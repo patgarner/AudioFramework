@@ -32,7 +32,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         instrumentPopup.target = self
         instrumentPopup.action = #selector(instrumentChanged)
         audioFXPopup.target = self
-        audioFXPopup.action = #selector(audioFXChanged)
+        audioFXPopup.action = #selector(audioEffectChanged)
         volumeValueTextField.target = self
         volumeValueTextField.action = #selector(volumeTextChanged)
         panKnob.target = self
@@ -157,15 +157,19 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             existingState.pan = pan
         }
     }
-    @objc func audioFXChanged(){
-        let effectIndex = audioFXPopup.indexOfSelectedItem
+    @objc func audioEffectChanged(){
+        guard let channelState = delegate?.getChannelState(trackNumber) else { return }
+        let number = 0 //The index of which plugin slot was changed. TODO: change
+        let index = audioFXPopup.indexOfSelectedItem
         let effects = getListOfEffects()
-        let effect = effects[effectIndex]
-        if let channelState = delegate?.getChannelState(trackNumber){
-            let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
-            channelState.effects = [effectSelection]
+        let effect = effects[index]
+        let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
+        if channelState.effects.count > number, channelState.effects[number].manufacturer == effect.manufacturerName, channelState.effects[number].name == effect.name{ //If its already there, and it matches current selection...
+            instrumentSelectionDelegate?.displayEffectInterface(channel: trackNumber)
+        } else {
+            channelState.set(effect: effectSelection, number: number)
+            instrumentSelectionDelegate?.select(effect: effect, channel: trackNumber)
         }
-        instrumentSelectionDelegate?.select(effect: effect, channel: self.trackNumber)
     }
     ////////////////////////////////////////////////////////
     // Instruments

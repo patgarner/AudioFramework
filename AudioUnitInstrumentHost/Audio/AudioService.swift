@@ -120,17 +120,6 @@ public class AudioService: NSObject {
         let channelController = channelControllers[Int(channel)]
         channelController.setController(number: number, value: value, channel: channel)
     }
-//    public var samplerData : AudioUnitData { //Need to make this multitrack
-//        get {
-//            let instrumentHost = channelControllers[0] //TODO
-//            let s = instrumentHost.samplerData
-//            return s
-//        } 
-//        set {
-//            let instrumentHost = channelControllers[0] //TODO
-//            instrumentHost.samplerData = newValue
-//        }
-//    }
     public var allPluginData : AllPluginData{
         get {
             let allData = AllPluginData()

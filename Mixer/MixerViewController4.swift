@@ -51,19 +51,34 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
     }
     func select(effect: AVAudioUnitComponent, channel: Int = 0) {  //TODO: This absolutely should NOT be here.
         AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel) { [weak self] (successful) in
-            DispatchQueue.main.async {
-                guard let audioEffect = AudioService.shared.getAudioEffect(channel: channel, number: 0) else { return }
-                let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
-                let interfaceInstance = view.map(InterfaceInstance.view)
-                PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
+            guard let self = self else { return }
+            self.displayEffectInterface(channel: channel)
+        }
+    }
+    func displayEffectInterface(channel: Int){
+        DispatchQueue.main.async {
+            guard let audioEffect = AudioService.shared.getAudioEffect(channel: channel, number: 0) else { return }
+            let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
+            let interfaceInstance = view.map(InterfaceInstance.view)
+            PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
+            DispatchQueue.main.async {                        
+                [weak self] in guard let this = self else { return }
+                self?.loadVC()
+            }           
+        }
+    }
+    func displayInstrumentInterface(channel: Int) {
+        DispatchQueue.main.async {
+            AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
+                guard let interface = maybeInterface else { return }
+                PluginInterfaceModel.shared.pluginInterfaceInstance = interface
                 DispatchQueue.main.async {                        
-                    [weak self] in guard let this = self else { return }
+                    [weak self] in guard let _ = self else { return }
                     self?.loadVC()
-                }           
+                }
             }
         }
     }
-
     func loadVC(){
         let contentRect = NSMakeRect(100, 100, 1000, 1000)
         let styles = NSWindow.StyleMask.resizable.rawValue | NSWindow.StyleMask.titled.rawValue | NSWindow.StyleMask.closable.rawValue
@@ -127,18 +142,7 @@ extension MixerViewController4 : InstrumentSelectionDelegate{
     public func setMasterVolume(_ volume: Float) {
         AudioService.shared.audioEngine.mainMixerNode.outputVolume = volume
     }
-    func displayInstrumentInterface(channel: Int) {
-        DispatchQueue.main.async {
-            AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
-                guard let interface = maybeInterface else { return }
-                PluginInterfaceModel.shared.pluginInterfaceInstance = interface
-                DispatchQueue.main.async {                        
-                    [weak self] in guard let _ = self else { return }
-                    self?.loadVC()
-                }
-            }
-        }
-    }
+
     
 }
 

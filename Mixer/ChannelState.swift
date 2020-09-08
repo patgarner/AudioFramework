@@ -28,6 +28,12 @@ public class ChannelState : Codable, Equatable{
         if lhs.effects != rhs.effects { return false }
         return true
     }
+    func set(effect: PluginSelection, number: Int){
+        while effects.count <= number {
+            effects.append(PluginSelection())
+        }
+        effects[number] = effect
+    }
 }
 
 public struct PluginSelection : Codable, Equatable{
