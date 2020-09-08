@@ -66,5 +66,6 @@ public class ChannelStates : Codable, Equatable, ChannelViewDelegate{
         }
     }
     public func setMasterVolume(_ volume: Float) {}
+    public func set(volume: Int, channel: Int) {}
     
 }

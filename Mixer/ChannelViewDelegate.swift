@@ -12,4 +12,5 @@ public protocol ChannelViewDelegate {
     func getChannelState(_ index: Int) -> ChannelState?
     func set(channelState: ChannelState, index: Int)
     func setMasterVolume(_ volume: Float)
+    func set(volume: Int, channel: Int)
 }

@@ -8,9 +8,9 @@
 
 import Foundation
 
-public class SamplerInterfaceModel{
-    public static let shared = SamplerInterfaceModel()
-    public var instrumentInterfaceInstance: InterfaceInstance?
+public class PluginInterfaceModel{
+    public static let shared = PluginInterfaceModel()
+    public var pluginInterfaceInstance: InterfaceInstance?
 
     private init(){
         

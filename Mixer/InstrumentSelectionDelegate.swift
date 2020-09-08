@@ -14,4 +14,5 @@ protocol InstrumentSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int)
     func select(effect: AVAudioUnitComponent, channel: Int)
     func getListOfInstruments() -> [AVAudioUnitComponent]
+    func displayInstrumentInterface(channel: Int)
 }

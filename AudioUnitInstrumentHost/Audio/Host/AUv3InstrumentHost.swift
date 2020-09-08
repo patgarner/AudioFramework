@@ -46,7 +46,6 @@ class AUv3InstrumentHost : InstrumentHost{
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
-        print("Can load in process = \(canLoadInProcess)")
         let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
         AVAudioUnitMIDIInstrument.instantiate(with: desc, options: loadOptions) { [weak self] avAudioUnit, error in
             if let e = error {
@@ -55,7 +54,6 @@ class AUv3InstrumentHost : InstrumentHost{
             } else if let unit = avAudioUnit as? AVAudioUnitMIDIInstrument {
                 DispatchQueue.main.async {
                     self?.instrumentAU = unit
-                    print("Loaded")
                     completion(true)
                 }
             } else {
@@ -77,7 +75,7 @@ class AUv3InstrumentHost : InstrumentHost{
     func set(volume: UInt8, channel: UInt8){
         guard let inst = self.instrumentAU else { return }
         let controller = UInt8(7)
-        inst.sendController(controller, withValue: volume, onChannel: channel)
+        inst.sendController(controller, withValue: volume, onChannel: 0)
     }
     func set(pan: UInt8, channel: UInt8){
         guard let inst = self.instrumentAU else { return }
@@ -146,11 +144,11 @@ class AUv3InstrumentHost : InstrumentHost{
         }
     }
     
-    var samplerData : SamplerData {
+    var samplerData : PluginData {
         get {
             let state = fullState
             let desc = audioComponentDescription
-            let samplerData = SamplerData(state: state, audioComponentDescription: desc)
+            let samplerData = PluginData(state: state, audioComponentDescription: desc)
             return samplerData
         } set {
             

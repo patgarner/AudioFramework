@@ -82,8 +82,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             let instrument = instrumentsFlat[i]
             let manufacturer = instrument.manufacturerName
             let name = instrument.name
-            if manufacturer == state.virtualInstrumentManufacturerName,
-                name == state.virtualInstrumentName{
+            if manufacturer == state.virtualInstrument.manufacturer,
+            name == state.virtualInstrument.name{
                 instrumentPopup.selectItem(at: i)
                 break
             }
@@ -91,8 +91,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         
         fillEffectsPopup()
         let effectsList = getListOfEffects()
-        if state.effectSelections.count > 0 {
-            let effectSelection = state.effectSelections[0]
+        if state.effects.count > 0 {
+            let effectSelection = state.effects[0]
             for i in 0..<effectsList.count{
                 let effect = effectsList[i]
                 let manufacturer = effect.manufacturerName
@@ -109,10 +109,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let sliderValue = volumeSlider.integerValue
         volumeValueTextField.integerValue = sliderValue
         volumeValueTextField.needsDisplay = true
-        if type == .master{ //TODO: Move to another location.
+        if type == .master{
             let volumeFloat = Float(sliderValue) / 128.0
             delegate?.setMasterVolume(volumeFloat)
             return 
+        } else if type == .midiInstrument{
+            delegate?.set(volume: sliderValue, channel: trackNumber)
         }
         if let existingState = delegate?.getChannelState(trackNumber){
             volumeValueTextField.integerValue = sliderValue
@@ -160,8 +162,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let effects = getListOfEffects()
         let effect = effects[effectIndex]
         if let channelState = delegate?.getChannelState(trackNumber){
-            let effectSelection = EffectSelection(manufacturer: effect.manufacturerName, name: effect.name)
-            channelState.effectSelections = [effectSelection]
+            let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
+            channelState.effects = [effectSelection]
         }
         instrumentSelectionDelegate?.select(effect: effect, channel: self.trackNumber)
     }
@@ -191,13 +193,19 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var instrumentsFlat : [AVAudioUnitComponent] = []
     var instrumentSelectionDelegate : InstrumentSelectionDelegate?
     @objc func instrumentChanged(){
+        guard let channelState = delegate?.getChannelState(trackNumber) else { return }
         let index = instrumentPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
-        if let channelState = delegate?.getChannelState(trackNumber){
-            channelState.virtualInstrumentManufacturerName = component.manufacturerName
-            channelState.virtualInstrumentName = component.name
+        if component.manufacturerName == channelState.virtualInstrument.manufacturer,
+            component.name == channelState.virtualInstrument.name {
+            instrumentSelectionDelegate?.displayInstrumentInterface(channel: trackNumber)
+            return
+        } else {
+            channelState.virtualInstrument.manufacturer = component.manufacturerName
+            channelState.virtualInstrument.name = component.name
+            instrumentSelectionDelegate?.selectInstrument(component, channel: trackNumber)
+            return
         }
-        instrumentSelectionDelegate?.selectInstrument(component, channel: trackNumber)
     }
     /////////////////////////////////////////////////////////////////
     // Effects

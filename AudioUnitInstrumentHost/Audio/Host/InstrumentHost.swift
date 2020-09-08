@@ -31,6 +31,6 @@ protocol InstrumentHost {
     func setController(number: UInt8, value: UInt8, channel: UInt8)
     func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->())
     var fullState : [String : Any]? { get set }
-    var samplerData : SamplerData { get set }
+    var samplerData : PluginData { get set }
     func set(tempo: UInt8)
 }

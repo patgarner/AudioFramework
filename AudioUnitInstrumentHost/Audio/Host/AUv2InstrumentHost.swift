@@ -81,6 +81,7 @@ extension AUv2InstrumentHost: InstrumentHost {
         }
     }
     func set(volume: UInt8, channel: UInt8){
+        
     }
     func set(pan: UInt8, channel: UInt8){
     }
@@ -106,9 +107,9 @@ extension AUv2InstrumentHost: InstrumentHost {
         }
     }
     
-    var samplerData: SamplerData {
+    var samplerData: PluginData {
         get {
-            return SamplerData()
+            return PluginData()
         }
         set {
             

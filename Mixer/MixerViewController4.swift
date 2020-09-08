@@ -39,28 +39,23 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
     public func set(channelState: ChannelState, index: Int){
         delegate?.set(channelState: channelState, index: index)
     }
+    public func set(volume: Int, channel: Int) {
+        AudioService.shared.set(volume: UInt8(volume), channel: UInt8(channel))
+    }
     
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0) { //TODO: This absolutely should NOT be here.
         AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
-            DispatchQueue.main.async {
-                AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
-                    guard let interface = maybeInterface else { return }
-                    SamplerInterfaceModel.shared.instrumentInterfaceInstance = interface
-                    DispatchQueue.main.async {                        
-                        [weak self] in guard let this = self else { return }
-                        self?.loadVC()
-                    }
-                }
-            }
+            guard let self = self else { return }
+            self.displayInstrumentInterface(channel: channel)
         }
     }
     func select(effect: AVAudioUnitComponent, channel: Int = 0) {  //TODO: This absolutely should NOT be here.
         AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel) { [weak self] (successful) in
             DispatchQueue.main.async {
-                guard let audioEffect = AudioService.shared.audioUnitEffect else { return }
+                guard let audioEffect = AudioService.shared.getAudioEffect(channel: channel, number: 0) else { return }
                 let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
                 let interfaceInstance = view.map(InterfaceInstance.view)
-                SamplerInterfaceModel.shared.instrumentInterfaceInstance = interfaceInstance
+                PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
                 DispatchQueue.main.async {                        
                     [weak self] in guard let this = self else { return }
                     self?.loadVC()
@@ -75,7 +70,7 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
         let styleMask = NSWindow.StyleMask.init(rawValue: styles)
         let window = NSWindow(contentRect: contentRect, styleMask: styleMask, backing: NSWindow.BackingStoreType.buffered, defer: false)
         instrumentWindowController = NSWindowController(window: window)
-        guard let interfaceInstance = SamplerInterfaceModel.shared.instrumentInterfaceInstance  else { return }
+        guard let interfaceInstance = PluginInterfaceModel.shared.pluginInterfaceInstance  else { return }
         switch(interfaceInstance) {            
         case .view(let view):
             guard let window = instrumentWindowController!.window else { break }
@@ -132,6 +127,19 @@ extension MixerViewController4 : InstrumentSelectionDelegate{
     public func setMasterVolume(_ volume: Float) {
         AudioService.shared.audioEngine.mainMixerNode.outputVolume = volume
     }
+    func displayInstrumentInterface(channel: Int) {
+        DispatchQueue.main.async {
+            AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
+                guard let interface = maybeInterface else { return }
+                PluginInterfaceModel.shared.pluginInterfaceInstance = interface
+                DispatchQueue.main.async {                        
+                    [weak self] in guard let _ = self else { return }
+                    self?.loadVC()
+                }
+            }
+        }
+    }
+    
 }
 
 

@@ -18,15 +18,14 @@ public class AudioService: NSObject {
     var recordingUrl : URL?
     public let audioEngine = AVAudioEngine()
     public var delegate : AudioServiceDelegate?
-    public var audioUnitEffect : AVAudioUnit? //TODO: Hack. This doesn't belong here but works for now.
-
+    var channelControllers : [ChannelController] = []
     private override init (){
         super.init()
         for _ in 0..<16{
-            channels.append(AUv2InstrumentHost())
+            channelControllers.append(ChannelController())
         }
     }
-    var channels : [InstrumentHost] = []
+
     func getListOfEffects() -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect
@@ -47,15 +46,15 @@ public class AudioService: NSObject {
     }
     
     public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
-        if channel >= channels.count { return }
-        let host = channels[channel]
-        host.loadInstrument(fromDescription: desc, completion: completion)
+        if channel >= channelControllers.count { return }
+        let channelController = channelControllers[channel]
+        channelController.loadInstrument(fromDescription: desc, completion: completion)
         print("")
     }
     
     public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
-        if channel >= channels.count { completion(nil) }
-        let host = channels[channel]
+        if channel >= channelControllers.count { completion(nil) }
+        let host = channelControllers[channel]
         host.requestInstrumentInterface(completion)
     }
     public func recordTo(url: URL) { //TODO: Move somewhere else
@@ -90,51 +89,66 @@ public class AudioService: NSObject {
         stopRecording()
     }
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        if channel >= channels.count { return }
-        let host = channels[Int(channel)]
-        host.noteOn(note, withVelocity: velocity, channel: channel)
+        if channel >= channelControllers.count { return }
+        let channelController = channelControllers[Int(channel)]
+        channelController.noteOn(note, withVelocity: velocity, channel: channel)
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
-        if channel >= channels.count { return }
-        let host = channels[Int(channel)]
-        host.noteOff(note, channel: channel)
+        if channel >= channelControllers.count { return }
+        let channelController = channelControllers[Int(channel)]
+        channelController.noteOff(note, channel: channel)
     } 
     public func set(volume: UInt8, channel: UInt8){
-        if channel >= channels.count { return }
-        let host = channels[Int(channel)]
-        host.set(volume: volume, channel: channel)
+        if channel >= channelControllers.count { return }
+        let channelController = channelControllers[Int(channel)]
+        channelController.set(volume: volume, channel: channel)
     }
     public func set(pan: UInt8, channel: UInt8){
-        if channel >= channels.count { return }
-        let host = channels[Int(channel)]
-        host.set(pan: pan, channel: channel)
+        if channel >= channelControllers.count { return }
+        let channelController = channelControllers[Int(channel)]
+        channelController.set(pan: pan, channel: channel)
     }
     public func set(tempo: UInt8){
-        for channel in 0..<channels.count{
-            let host = channels[channel]
+        for channel in 0..<channelControllers.count{
+            let host = channelControllers[channel]
+            host.set(tempo: tempo)
         }
     }
     public func setController(number: UInt8, value: UInt8, channel: UInt8){
-        if channel >= channels.count { return }
-        let host = channels[Int(channel)]
-        host.setController(number: number, value: value, channel: channel)
+        if channel >= channelControllers.count { return }
+        let channelController = channelControllers[Int(channel)]
+        channelController.setController(number: number, value: value, channel: channel)
     }
-    public var samplerData : SamplerData { //Need to make this multitrack
+//    public var samplerData : AudioUnitData { //Need to make this multitrack
+//        get {
+//            let instrumentHost = channelControllers[0] //TODO
+//            let s = instrumentHost.samplerData
+//            return s
+//        } 
+//        set {
+//            let instrumentHost = channelControllers[0] //TODO
+//            instrumentHost.samplerData = newValue
+//        }
+//    }
+    public var allPluginData : AllPluginData{
         get {
-            let host = channels[0] //TODO
-            let s = host.samplerData
-            return s
-        } 
+            let allData = AllPluginData()
+            for channelController in channelControllers{
+                let audioUnitData = channelController.pluginData
+                allData.plugins.append(audioUnitData)
+            }
+            return allData
+        }
         set {
-            guard let audioComponentDescription = newValue.audioComponentDescription else { return }
-            self.loadInstrument(fromDescription: audioComponentDescription, channel: 0) { (success) in
-                self.requestInstrumentInterface(channel: 0){ (maybeInterface) in
-                    guard let interface = maybeInterface else { return }
-                    SamplerInterfaceModel.shared.instrumentInterfaceInstance = interface
-                    var host = self.channels[0]
-                    host.fullState = newValue.state //You are putting the state in but no vc yet...
+            let allData = newValue
+            for i in 0..<allData.plugins.count{
+                let audioPluginData = allData.plugins[i]
+                if i >= channelControllers.count {
+                    channelControllers.append(ChannelController())
                 }
+                let channelController = channelControllers[i]
+                channelController.pluginData = audioPluginData
             }
         }
     }
@@ -142,29 +156,16 @@ public class AudioService: NSObject {
     // Effects
     /////////////////////////////////////////////////////////////
     public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
-        let flags = AudioComponentFlags(rawValue: desc.componentFlags)
-        let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
-        let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
-        AVAudioUnitEffect.instantiate(with: desc, options: loadOptions) { (avAudioUnit, error) in
-            if let e = error {
-                self.delegate?.log("Failed to load effect. Error: \(e)")
-                completion(false)
-            }
-            guard let audioUnitEffect = avAudioUnit else { return }
-            self.audioUnitEffect = audioUnitEffect
-            completion(true)
-        }
+        let channelController = channelControllers[channel]
+        channelController.loadEffect(fromDescription: desc, number: 0, completion: completion)
     }
-    func requestEffectInterface(_ completion: @escaping (InterfaceInstance?)->()) {
-        guard let au = audioUnitEffect else { 
-            completion(nil)
-            return
-        } 
-        au.auAudioUnit.requestViewController { (vc) in
-//              guard let vc = vc else { return }
-//              completion(vc)
-        }
+
+    func getAudioEffect(channel:Int, number: Int) -> AVAudioUnit?{
+        let channelController = channelControllers[channel]
+        let effect = channelController.getEffect(number: number)
+        return effect
     }
+
     @available(OSX 10.12, *)
     func requestInstrumentInterface2(audioUnit: AVAudioUnit, _ completion: @escaping (InterfaceInstance?)->()) {
         let au = audioUnit.auAudioUnit
@@ -177,19 +178,6 @@ public class AudioService: NSObject {
     func load(viewController: NSViewController){
         delegate?.load(viewController: viewController)
     }
-    
-    //Apple
-//    func loadAudioUnitViewController(completion: @escaping (NSViewController?) -> Void) {
-//        if let audioUnit = audioUnit {
-//            audioUnit.requestViewController { viewController in
-//                DispatchQueue.main.async {
-//                    completion(viewController)
-//                }
-//            }
-//        } else {
-//            completion(nil)
-//        }
-//    }
 }
 
 

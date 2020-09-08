@@ -9,13 +9,10 @@
 import Foundation
 import AVFoundation
 
-public class SamplerData : Codable {
-    //for now one instrument and one user data object are ok
+public class PluginData : Codable {
     public var audioComponentDescription : AudioComponentDescription?
     public var state : [String : Any]?
-    public init(){
-        
-    }
+    public init(){}
     public init(state: [String: Any]?, audioComponentDescription: AudioComponentDescription?){
         self.state = state
         self.audioComponentDescription = audioComponentDescription
@@ -34,7 +31,9 @@ public class SamplerData : Codable {
         } catch {
             print("SamplerData.init(fromDecoder) failed to load State.")
         }
-        audioComponentDescription = try container.decode(AudioComponentDescription.self, forKey: .audioComponentDescription)
+        do {
+            audioComponentDescription = try container.decode(AudioComponentDescription.self, forKey: .audioComponentDescription)
+        } catch {}
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
