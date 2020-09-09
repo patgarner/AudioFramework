@@ -15,7 +15,7 @@ class ChannelController {
     //Busses
     var delegate : ChannelControllerDelegate?
     var instrumentHost : InstrumentHost = AUv3InstrumentHost()
-    public var audioUnitEffects : [AVAudioUnit] = []
+    public var effects : [AVAudioUnit] = []
 
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()){
         instrumentHost.loadInstrument(fromDescription: desc, completion: completion)
@@ -41,39 +41,42 @@ class ChannelController {
     public func setController(number: UInt8, value: UInt8, channel: UInt8){
         instrumentHost.setController(number: number, value: value, channel: channel)
     }
-    public var pluginData : PluginData { //Need to make this multitrack
+    public var channelPluginData : ChannelPluginData { //Need to make this multitrack
         get {
-            let s = instrumentHost.samplerData
-            return s
+            let channelPluginData = ChannelPluginData()
+            let instrumentPluginData = instrumentHost.samplerData
+            channelPluginData.instrumentPlugin = instrumentPluginData
+            for effect in effects{
+                let effectPluginData = PluginData()
+                effectPluginData.audioComponentDescription = effect.audioComponentDescription
+                effectPluginData.state = effect.auAudioUnit.fullState
+                channelPluginData.effectPlugins.append(effectPluginData)
+            }
+            return channelPluginData
         } 
         set {
-            guard let audioComponentDescription = newValue.audioComponentDescription else { return }
-            self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
-                self.requestInstrumentInterface{ (maybeInterface) in
-                    guard let interface = maybeInterface else { return }
-                    PluginInterfaceModel.shared.pluginInterfaceInstance = interface
-                    self.instrumentHost.fullState = newValue.state
-                }
+            load(pluginType: .instrument, pluginData: newValue.instrumentPlugin)
+            for effectNumber in 0..<newValue.effectPlugins.count{
+                let pluginData = newValue.effectPlugins[effectNumber]
+                loadEffect(pluginData: pluginData, number: effectNumber)
             }
         }
     }
-    
-//    public var samplerData : SamplerData {
-//        get {
-//            let s = host.samplerData
-//            return s
-//        } 
-//        set {
-//            guard let audioComponentDescription = newValue.audioComponentDescription else { return }
-//            self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
-//                self.requestInstrumentInterface{ (maybeInterface) in
-//                    guard let interface = maybeInterface else { return }
-//                    SamplerModel.shared.instrumentInterfaceInstance = interface
-//                    self.host.fullState = newValue.state //You are putting the state in but no vc yet...
-//                }
-//            }
-//        }
-//    }
+    func load(pluginType: PluginType, pluginData: PluginData){
+        guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
+        self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
+            self.instrumentHost.fullState = pluginData.state
+        }
+    }
+    func loadEffect(pluginData: PluginData, number: Int){
+        guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
+        loadEffect(fromDescription: audioComponentDescription, number: number) { (success) in
+            if !success { return }
+            let effect = self.effects[number]
+            let au = effect.auAudioUnit
+            au.fullState = pluginData.state
+        }
+    }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,20 +89,25 @@ class ChannelController {
                 self.delegate?.log("Failed to load effect. Error: \(e)")
                 completion(false)
             }
-            self.audioUnitEffects.removeAll() //TODO: Remove
+            self.effects.removeAll() //TODO: This only allows for one effect.
             guard let audioUnitEffect = avAudioUnit else { return }
-            self.audioUnitEffects.append(audioUnitEffect)
+            self.effects.append(audioUnitEffect)
             completion(true)
         }
     }
     func getEffect(number: Int) -> AVAudioUnit?{
-        if number >= audioUnitEffects.count {
+        if number >= effects.count {
             return nil
         }
-        return audioUnitEffects[number]
+        return effects[number]
     }
 }
 
 protocol ChannelControllerDelegate{
     func log(_ message: String)
+}
+
+enum PluginType{
+    case instrument
+    case effect
 }

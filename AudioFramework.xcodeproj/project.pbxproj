@@ -83,9 +83,7 @@
 		842369B124FEC2BC001266BE /* AudioFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		842369B624FEC2BC001266BE /* AudioFrameworkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFrameworkTests.swift; sourceTree = "<group>"; };
 		842369B824FEC2BC001266BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		842369C524FEC44C001266BE /* InstrumentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentViewController.swift; sourceTree = "<group>"; };
 		842369C624FEC44C001266BE /* PluginInterfaceModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PluginInterfaceModel.swift; path = ../UI/PluginInterfaceModel.swift; sourceTree = "<group>"; };
-		842369C824FEC44C001266BE /* InstrumentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InstrumentViewController.xib; sourceTree = "<group>"; };
 		842369CA24FEC44C001266BE /* AudioComponentDescriptionExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioComponentDescriptionExtension.swift; sourceTree = "<group>"; };
 		842369CE24FEC44C001266BE /* InstrumentHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentHost.swift; sourceTree = "<group>"; };
 		842369CF24FEC44C001266BE /* AUv3InstrumentHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AUv3InstrumentHost.swift; sourceTree = "<group>"; };
@@ -131,6 +129,7 @@
 				84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */,
 				84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */,
 				843FD47425068E9200189936 /* ChannelController.swift */,
+				8460307A250803FA00CB9844 /* ChannelPluginData.swift */,
 				84070C5224FF5D5900E572E7 /* ChannelRouter.swift */,
 				84070C5024FF5D5900E572E7 /* ChannelState.swift */,
 				84070C5324FF5D5900E572E7 /* ChannelStates.swift */,
@@ -138,7 +137,6 @@
 				84070C5524FF5D5900E572E7 /* InstrumentSelectionDelegate.swift */,
 				8479715524FFE66600AAC4A3 /* MixerFillView.swift */,
 				84070C5624FF5D5900E572E7 /* MixerViewController4.swift */,
-				8460307A250803FA00CB9844 /* ChannelPluginData.swift */,
 			);
 			path = Mixer;
 			sourceTree = SOURCE_ROOT;
@@ -196,22 +194,12 @@
 		842369C224FEC44C001266BE /* AudioUnitInstrumentHost */ = {
 			isa = PBXGroup;
 			children = (
-				842369C324FEC44C001266BE /* UI */,
 				842369CA24FEC44C001266BE /* AudioComponentDescriptionExtension.swift */,
 				842369CC24FEC44C001266BE /* Audio */,
 				842369D324FEC44C001266BE /* Model */,
 				842369D524FEC44C001266BE /* Utility */,
 			);
 			path = AudioUnitInstrumentHost;
-			sourceTree = "<group>";
-		};
-		842369C324FEC44C001266BE /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				842369C524FEC44C001266BE /* InstrumentViewController.swift */,
-				842369C824FEC44C001266BE /* InstrumentViewController.xib */,
-			);
-			path = UI;
 			sourceTree = "<group>";
 		};
 		842369CC24FEC44C001266BE /* Audio */ = {

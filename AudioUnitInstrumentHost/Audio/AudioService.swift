@@ -124,20 +124,20 @@ public class AudioService: NSObject {
         get {
             let allData = AllPluginData()
             for channelController in channelControllers{
-                let audioUnitData = channelController.pluginData
-                allData.plugins.append(audioUnitData)
+                let audioUnitData = channelController.channelPluginData
+                allData.channels.append(audioUnitData)
             }
             return allData
         }
         set {
             let allData = newValue
-            for i in 0..<allData.plugins.count{
-                let audioPluginData = allData.plugins[i]
+            for i in 0..<allData.channels.count{
+                let channelPluginData = allData.channels[i]
                 if i >= channelControllers.count {
                     channelControllers.append(ChannelController())
                 }
                 let channelController = channelControllers[i]
-                channelController.pluginData = audioPluginData
+                channelController.channelPluginData = channelPluginData
             }
         }
     }

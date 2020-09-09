@@ -9,9 +9,9 @@
 import Foundation
 
 public class AllPluginData : Codable{
-    public var plugins : [PluginData] = []
+    public var channels : [ChannelPluginData] = []
     enum CodingKeys : CodingKey{
-        case plugins
+        case channels
     }
     public init(){
         
@@ -19,13 +19,13 @@ public class AllPluginData : Codable{
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         do {
-            plugins = try container.decode([PluginData].self, forKey: .plugins)
+            channels = try container.decode([ChannelPluginData].self, forKey: .channels)
         } catch {
-            print("AllPluginData: failed to load plugins: Error: \(error)")
+            print("AllPluginData: failed to load channel plugins: Error: \(error)")
         }
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(plugins, forKey: .plugins)
+        try container.encode(channels, forKey: .channels)
     }
 }
