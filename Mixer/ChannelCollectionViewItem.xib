@@ -8,6 +8,7 @@
         <customObject id="-2" userLabel="File's Owner" customClass="ChannelCollectionViewItem" customModule="AudioFramework" customModuleProvider="target">
             <connections>
                 <outlet property="audioFXPopup" destination="4Q9-gA-9iY" id="qS8-kx-Dra"/>
+                <outlet property="audioFXPopup2" destination="5mR-Mn-l4r" id="hgM-OJ-Sck"/>
                 <outlet property="instrumentPopup" destination="CY1-Lc-T62" id="PGY-Pu-SaA"/>
                 <outlet property="labelView" destination="hRq-QI-WuQ" id="G6O-K7-vte"/>
                 <outlet property="labelViewTrailingConstraint" destination="7oZ-fm-66n" id="e90-5d-kb5"/>
@@ -55,7 +56,7 @@
                         </menu>
                     </popUpButtonCell>
                 </popUpButton>
-                <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="5mR-Mn-l4r" userLabel="AudioFX Popup 2">
+                <popUpButton verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="5mR-Mn-l4r" userLabel="AudioFX Popup 2">
                     <rect key="frame" x="-5" y="272" width="80" height="25"/>
                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" arrowPosition="noArrow" selectedItem="APC-86-vVH" id="o9c-0s-D7E">
                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>

@@ -47,8 +47,8 @@
 		84236A0224FEC44C001266BE /* AudioToolboxHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369DC24FEC44C001266BE /* AudioToolboxHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		843FD47525068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
 		843FD47625068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
-		843FD4822506A3B500189936 /* AllAudioUnitData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AllAudioUnitData.swift */; };
-		843FD4832506A3B500189936 /* AllAudioUnitData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AllAudioUnitData.swift */; };
+		843FD4822506A3B500189936 /* AllPluginData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AllPluginData.swift */; };
+		843FD4832506A3B500189936 /* AllPluginData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AllPluginData.swift */; };
 		8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8460307A250803FA00CB9844 /* ChannelPluginData.swift */; };
 		8472093B2502DD8600B8760B /* ComponentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8472093A2502DD8600B8760B /* ComponentViewController.swift */; };
 		8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
@@ -98,7 +98,7 @@
 		842369DB24FEC44C001266BE /* AudioUnitInstrumentHost-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AudioUnitInstrumentHost-Bridging-Header.h"; sourceTree = "<group>"; };
 		842369DC24FEC44C001266BE /* AudioToolboxHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioToolboxHelpers.h; sourceTree = "<group>"; };
 		843FD47425068E9200189936 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
-		843FD4812506A3B500189936 /* AllAudioUnitData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllAudioUnitData.swift; sourceTree = "<group>"; };
+		843FD4812506A3B500189936 /* AllPluginData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllPluginData.swift; sourceTree = "<group>"; };
 		8460307A250803FA00CB9844 /* ChannelPluginData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPluginData.swift; sourceTree = "<group>"; };
 		8472093A2502DD8600B8760B /* ComponentViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentViewController.swift; sourceTree = "<group>"; };
 		8479715524FFE66600AAC4A3 /* MixerFillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerFillView.swift; sourceTree = "<group>"; };
@@ -227,7 +227,7 @@
 			children = (
 				842369C624FEC44C001266BE /* PluginInterfaceModel.swift */,
 				842369D424FEC44C001266BE /* PluginData.swift */,
-				843FD4812506A3B500189936 /* AllAudioUnitData.swift */,
+				843FD4812506A3B500189936 /* AllPluginData.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -395,7 +395,7 @@
 				84070C5A24FF5D5900E572E7 /* ChannelRouter.swift in Sources */,
 				8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */,
 				842369F324FEC44C001266BE /* FileConverter.swift in Sources */,
-				843FD4822506A3B500189936 /* AllAudioUnitData.swift in Sources */,
+				843FD4822506A3B500189936 /* AllPluginData.swift in Sources */,
 				842369FF24FEC44C001266BE /* AudioUnitGraph.swift in Sources */,
 				843FD47525068E9200189936 /* ChannelController.swift in Sources */,
 			);
@@ -411,7 +411,7 @@
 				842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */,
 				841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */,
 				842369F424FEC44C001266BE /* FileConverter.swift in Sources */,
-				843FD4832506A3B500189936 /* AllAudioUnitData.swift in Sources */,
+				843FD4832506A3B500189936 /* AllPluginData.swift in Sources */,
 				842369E224FEC44C001266BE /* PluginInterfaceModel.swift in Sources */,
 				842369F824FEC44C001266BE /* PluginData.swift in Sources */,
 				843FD47625068E9200189936 /* ChannelController.swift in Sources */,

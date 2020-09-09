@@ -12,6 +12,7 @@ import AVFoundation
 public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var instrumentPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup: NSPopUpButton!
+    @IBOutlet weak var audioFXPopup2: NSPopUpButton!
     @IBOutlet weak var sendPopup: NSPopUpButton!
     @IBOutlet weak var sendLevelKnob: NSSlider!
     @IBOutlet weak var panKnob: NSSlider!
@@ -20,7 +21,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var soloButton: NSButton!
     @IBOutlet weak var muteButton: NSButton!
     @IBOutlet weak var trackNameField: NSTextField!
-    
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
     var delegate : ChannelViewDelegate? 
@@ -33,6 +33,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         instrumentPopup.action = #selector(instrumentChanged)
         audioFXPopup.target = self
         audioFXPopup.action = #selector(audioEffectChanged)
+        audioFXPopup2.target = self
+        audioFXPopup2.action = #selector(audioEffectChanged)
         volumeValueTextField.target = self
         volumeValueTextField.action = #selector(volumeTextChanged)
         panKnob.target = self
@@ -78,30 +80,26 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }  
         
         reloadInstruments()
-        for i in 0..<instrumentsFlat.count{
-            let instrument = instrumentsFlat[i]
-            let manufacturer = instrument.manufacturerName
-            let name = instrument.name
-            if manufacturer == state.virtualInstrument.manufacturer,
-            name == state.virtualInstrument.name{
-                instrumentPopup.selectItem(at: i)
-                break
-            }
-        }
+        select(popup: instrumentPopup, list: instrumentsFlat, pluginSelection: state.virtualInstrument)
         
         fillEffectsPopup()
-        let effectsList = getListOfEffects()
-        if state.effects.count > 0 {
-            let effectSelection = state.effects[0]
-            for i in 0..<effectsList.count{
-                let effect = effectsList[i]
-                let manufacturer = effect.manufacturerName
-                let name = effect.name
-                if manufacturer == effectSelection.manufacturer,
-                    name == effectSelection.name{
-                    audioFXPopup.selectItem(at: i)
-                    break
-                }
+        let effectsPopups = [audioFXPopup!, audioFXPopup2!]
+        for i in 0..<effectsPopups.count{
+            let pluginSelection = state.getEffect(number: i)
+            let popup = effectsPopups[i]
+            select(popup: popup, list: getListOfEffects(), pluginSelection: pluginSelection)
+        }
+    }
+    private func select(popup: NSPopUpButton, list: [AVAudioUnitComponent], pluginSelection: PluginSelection?){
+        guard let pluginSelection = pluginSelection else { return }
+        for i in 0..<list.count{
+            let item = list[i]
+            let manufacturer = item.manufacturerName
+            let name = item.name
+            if manufacturer == pluginSelection.manufacturer,
+            name == pluginSelection.name{
+                popup.selectItem(at: i)
+                break
             }
         }
     }
@@ -157,14 +155,16 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             existingState.pan = pan
         }
     }
-    @objc func audioEffectChanged(){
+    @objc func audioEffectChanged(sender: Any){
+        guard let popupButton = sender as? NSPopUpButton else { return }
         guard let channelState = delegate?.getChannelState(trackNumber) else { return }
-        let number = 0 //The index of which plugin slot was changed. TODO: change
-        let index = audioFXPopup.indexOfSelectedItem
+        let number = popupButton.tag
+        let index = popupButton.indexOfSelectedItem
         let effects = getListOfEffects()
         let effect = effects[index]
         let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
-        if channelState.effects.count > number, channelState.effects[number].manufacturer == effect.manufacturerName, channelState.effects[number].name == effect.name{ //If its already there, and it matches current selection...
+        if let channelEffect = channelState.getEffect(number: number), channelEffect.manufacturer == effect.manufacturerName, channelEffect.name == effect.name {
+            //If its already there, and it matches current selection...
             instrumentSelectionDelegate?.displayEffectInterface(channel: trackNumber)
         } else {
             channelState.set(effect: effectSelection, number: number)
@@ -225,19 +225,22 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     func fillEffectsPopup(){
         let effects = getListOfEffects()
-        audioFXPopup.removeAllItems()
-        for effect in effects {
-            let longName = effect.manufacturerName + "-" + effect.name
-            audioFXPopup.addItem(withTitle: longName)
+        let popups = [audioFXPopup!, audioFXPopup2!]
+        for popup in popups{
+            popup.removeAllItems()
+            for effect in effects {
+                let longName = effect.manufacturerName + "-" + effect.name
+                popup.addItem(withTitle: longName)
+            }
+            popup.addItem(withTitle: "")
+            popup.selectItem(at: audioFXPopup.numberOfItems - 1)
         }
-        audioFXPopup.addItem(withTitle: "")
-        audioFXPopup.selectItem(at: audioFXPopup.numberOfItems - 1)
     }
 }
 
 enum ChannelViewType {
     case master
     case midiInstrument
-    case bus
+    case aux
     case labels
 }

@@ -41,7 +41,7 @@ class ChannelController {
     public func setController(number: UInt8, value: UInt8, channel: UInt8){
         instrumentHost.setController(number: number, value: value, channel: channel)
     }
-    public var channelPluginData : ChannelPluginData { //Need to make this multitrack
+    public var channelPluginData : ChannelPluginData {
         get {
             let channelPluginData = ChannelPluginData()
             let instrumentPluginData = instrumentHost.samplerData

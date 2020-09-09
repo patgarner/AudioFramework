@@ -17,7 +17,7 @@ public class ChannelState : Codable, Equatable{
     public var pan = 64
     public var number = 0
     public var virtualInstrument = PluginSelection()
-    public var effects : [PluginSelection] = []
+    private var effects : [PluginSelection] = []
     public static func == (lhs: ChannelState, rhs: ChannelState) -> Bool {
         if lhs.mute != rhs.mute { return false }
         if lhs.volume != rhs.volume { return false }
@@ -33,6 +33,11 @@ public class ChannelState : Codable, Equatable{
             effects.append(PluginSelection())
         }
         effects[number] = effect
+    }
+    func getEffect(number: Int) -> PluginSelection?{
+        if number >= effects.count { return nil }
+        if number < 0 { return nil }
+        return effects[number]
     }
 }
 
