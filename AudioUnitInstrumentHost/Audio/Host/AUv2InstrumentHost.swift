@@ -9,6 +9,7 @@
 import Foundation
 import AudioToolbox
 import CoreAudio
+import AVFoundation
 
 class AUv2InstrumentHost {
     let graph: AudioUnitGraph
@@ -28,11 +29,10 @@ class AUv2InstrumentHost {
 }
 
 extension AUv2InstrumentHost: InstrumentHost {
-    func requestInstrumentInterfaceSimple() {
-        
-    }
     var auAudioUnit: AUAudioUnit? { return nil }
-    
+    var audioUnit: AVAudioUnit? {
+        return nil
+    }
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool) -> ()) {
         do {
             if let oldNode = self.synthNode {

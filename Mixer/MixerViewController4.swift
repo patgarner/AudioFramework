@@ -42,17 +42,14 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
     public func set(volume: Int, channel: Int) {
         AudioService.shared.set(volume: UInt8(volume), channel: UInt8(channel))
     }
-    
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0) { //TODO: This absolutely should NOT be here.
         AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
-            guard let self = self else { return }
-            self.displayInstrumentInterface(channel: channel)
+            self?.displayInstrumentInterface(channel: channel)
         }
     }
     func select(effect: AVAudioUnitComponent, channel: Int = 0) {  //TODO: This absolutely should NOT be here.
         AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel) { [weak self] (successful) in
-            guard let self = self else { return }
-            self.displayEffectInterface(channel: channel)
+            self?.displayEffectInterface(channel: channel)
         }
     }
     func displayEffectInterface(channel: Int){
@@ -62,7 +59,7 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
             let interfaceInstance = view.map(InterfaceInstance.view)
             PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
             DispatchQueue.main.async {                        
-                [weak self] in guard let this = self else { return }
+                [weak self] in guard let _ = self else { return }
                 self?.loadVC()
             }           
         }
@@ -140,7 +137,7 @@ extension MixerViewController4 : InstrumentSelectionDelegate{
         return instruments
     }
     public func setMasterVolume(_ volume: Float) {
-        AudioService.shared.audioEngine.mainMixerNode.outputVolume = volume
+        AudioService.shared.engine.mainMixerNode.outputVolume = volume
     }
 
     

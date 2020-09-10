@@ -16,7 +16,7 @@ import Cocoa
 public class AudioService: NSObject {
     public static var shared = AudioService()
     var recordingUrl : URL?
-    public let audioEngine = AVAudioEngine()
+    public let engine = AVAudioEngine()
     public var delegate : AudioServiceDelegate?
     var channelControllers : [ChannelController] = []
     private override init (){
@@ -59,12 +59,12 @@ public class AudioService: NSObject {
     }
     public func recordTo(url: URL) { //TODO: Move somewhere else
         self.recordingUrl = url
-        let format = self.audioEngine.mainMixerNode.outputFormat(forBus: 0)
+        let format = self.engine.mainMixerNode.outputFormat(forBus: 0)
         let settings = format.settings
         do {
             let audioFile = try AVAudioFile(forWriting: url, settings: settings, commonFormat: .pcmFormatFloat32, interleaved: false)
-            audioEngine.mainMixerNode.removeTap(onBus: 0)
-            audioEngine.mainMixerNode.installTap(onBus: 0, bufferSize: 1024, format: format) { (buffer, when) in
+            engine.mainMixerNode.removeTap(onBus: 0)
+            engine.mainMixerNode.installTap(onBus: 0, bufferSize: 1024, format: format) { (buffer, when) in
                 do {
                     try audioFile.write(from: buffer)
                 } catch {
@@ -77,9 +77,9 @@ public class AudioService: NSObject {
     }
 
     func stopRecording() { //TODO: Move somewhere else
-        audioEngine.mainMixerNode.volume = 0
-        audioEngine.mainMixerNode.removeTap(onBus: 0)
-        audioEngine.mainMixerNode.volume = 1
+        engine.mainMixerNode.volume = 0
+        engine.mainMixerNode.removeTap(onBus: 0)
+        engine.mainMixerNode.volume = 1
         guard let url = self.recordingUrl else { return }
         let destinationUrl = url.deletingPathExtension().appendingPathExtension("wav")
         AudioFileConverter.convert(sourceURL: url, destinationURL: destinationUrl)
@@ -90,12 +90,14 @@ public class AudioService: NSObject {
     }
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
         if channel >= channelControllers.count { return }
+        startEngineIfNeeded()
         let channelController = channelControllers[Int(channel)]
         channelController.noteOn(note, withVelocity: velocity, channel: channel)
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
         if channel >= channelControllers.count { return }
+        startEngineIfNeeded()
         let channelController = channelControllers[Int(channel)]
         channelController.noteOff(note, channel: channel)
     } 
@@ -124,7 +126,7 @@ public class AudioService: NSObject {
         get {
             let allData = AllPluginData()
             for channelController in channelControllers{
-                let audioUnitData = channelController.channelPluginData
+                let audioUnitData = channelController.getChannelPluginData()
                 allData.channels.append(audioUnitData)
             }
             return allData
@@ -137,7 +139,7 @@ public class AudioService: NSObject {
                     channelControllers.append(ChannelController())
                 }
                 let channelController = channelControllers[i]
-                channelController.channelPluginData = channelPluginData
+                channelController.set(channelPluginData:channelPluginData)
             }
         }
     }
@@ -155,17 +157,41 @@ public class AudioService: NSObject {
         return effect
     }
 
-    @available(OSX 10.12, *)
-    func requestInstrumentInterface2(audioUnit: AVAudioUnit, _ completion: @escaping (InterfaceInstance?)->()) {
-        let au = audioUnit.auAudioUnit
-        au.requestViewController { (vc) in
-            guard let vc = vc else { return }
-            self.delegate?.load(viewController: vc)
-        }
-    }
+//    @available(OSX 10.12, *)
+//    func requestInstrumentInterface2(audioUnit: AVAudioUnit, _ completion: @escaping (InterfaceInstance?)->()) {
+//        let au = audioUnit.auAudioUnit
+//        au.requestViewController { (vc) in
+//            guard let vc = vc else { return }
+//            self.delegate?.load(viewController: vc)
+//        }
+//    }
     
     func load(viewController: NSViewController){
         delegate?.load(viewController: viewController)
+    }
+    /////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////
+    fileprivate func startEngineIfNeeded() { //TODO: Move somewhere else
+        if !engine.isRunning {
+            do {
+                if engine.attachedNodes.count > 0 {
+                    try engine.start()
+                    print("audio engine started")
+                }
+                
+            } catch {
+                print("oops \(error)")
+                print("could not start audio engine")
+            }
+        }
+    }
+    func connect(audioUnit : AVAudioUnit){
+        engine.disconnectNodeOutput(audioUnit) //TODO: This isn't going to work. You don't have a reference to the old node
+        engine.detach(audioUnit)
+        engine.attach(audioUnit)
+        let instOutputFormat = audioUnit.outputFormat(forBus: 0)
+        engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
     }
 }
 

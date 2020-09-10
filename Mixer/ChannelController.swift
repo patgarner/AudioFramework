@@ -16,12 +16,8 @@ class ChannelController {
     var delegate : ChannelControllerDelegate?
     var instrumentHost : InstrumentHost = AUv3InstrumentHost()
     public var effects : [AVAudioUnit] = []
-
-    func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()){
-        instrumentHost.loadInstrument(fromDescription: desc, completion: completion)
-    }
-    func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
-        instrumentHost.requestInstrumentInterface(completion)
+    var engine : AVAudioEngine{
+        return AudioService.shared.engine
     }
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
         instrumentHost.noteOn(note, withVelocity: velocity, channel: channel)
@@ -41,33 +37,53 @@ class ChannelController {
     public func setController(number: UInt8, value: UInt8, channel: UInt8){
         instrumentHost.setController(number: number, value: value, channel: channel)
     }
-    public var channelPluginData : ChannelPluginData {
-        get {
-            let channelPluginData = ChannelPluginData()
-            let instrumentPluginData = instrumentHost.samplerData
-            channelPluginData.instrumentPlugin = instrumentPluginData
-            for effect in effects{
-                let effectPluginData = PluginData()
-                effectPluginData.audioComponentDescription = effect.audioComponentDescription
-                effectPluginData.state = effect.auAudioUnit.fullState
-                channelPluginData.effectPlugins.append(effectPluginData)
+    func getChannelPluginData() -> ChannelPluginData{
+        let channelPluginData = ChannelPluginData()
+             let instrumentPluginData = instrumentHost.samplerData
+             channelPluginData.instrumentPlugin = instrumentPluginData
+             for effect in effects{
+                 let effectPluginData = PluginData()
+                 effectPluginData.audioComponentDescription = effect.audioComponentDescription
+                 effectPluginData.state = effect.auAudioUnit.fullState
+                 channelPluginData.effectPlugins.append(effectPluginData)
+             }
+             return channelPluginData
+    }
+    func set(channelPluginData: ChannelPluginData){
+        loadInstrument(pluginData: channelPluginData.instrumentPlugin)
+         for effectNumber in 0..<channelPluginData.effectPlugins.count{
+             let pluginData = channelPluginData.effectPlugins[effectNumber]
+             loadEffect(pluginData: pluginData, number: effectNumber)
+         }
+    }
+    func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()){
+        //instrumentHost.loadInstrument(fromDescription: desc, completion: completion)
+        instrumentHost.loadInstrument(fromDescription: desc){(success) in
+            if success {
+                self.connect(audioUnit: self.instrumentHost.audioUnit)
             }
-            return channelPluginData
-        } 
-        set {
-            load(pluginType: .instrument, pluginData: newValue.instrumentPlugin)
-            for effectNumber in 0..<newValue.effectPlugins.count{
-                let pluginData = newValue.effectPlugins[effectNumber]
-                loadEffect(pluginData: pluginData, number: effectNumber)
-            }
+            completion(success)
         }
     }
-    func load(pluginType: PluginType, pluginData: PluginData){
+    func connect(audioUnit: AVAudioUnit?){
+        guard let audioUnit = audioUnit else { return }
+        let instOutputFormat = audioUnit.outputFormat(forBus: 0)
+        engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
+    }
+    func loadInstrument(pluginData: PluginData){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
         self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
             self.instrumentHost.fullState = pluginData.state
         }
     }
+    func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
+        instrumentHost.requestInstrumentInterface(completion)
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Effects
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     func loadEffect(pluginData: PluginData, number: Int){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
         loadEffect(fromDescription: audioComponentDescription, number: number) { (success) in
@@ -77,9 +93,6 @@ class ChannelController {
             au.fullState = pluginData.state
         }
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Effects
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
