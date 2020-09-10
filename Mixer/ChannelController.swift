@@ -60,7 +60,8 @@ class ChannelController {
         //instrumentHost.loadInstrument(fromDescription: desc, completion: completion)
         instrumentHost.loadInstrument(fromDescription: desc){(success) in
             if success {
-                self.connect(audioUnit: self.instrumentHost.audioUnit)
+                //self.connect(audioUnit: self.instrumentHost.audioUnit)
+                self.connectEverything()
             }
             completion(success)
         }
@@ -69,6 +70,37 @@ class ChannelController {
         guard let audioUnit = audioUnit else { return }
         let instOutputFormat = audioUnit.outputFormat(forBus: 0)
         engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
+    }
+    func connectEverything(){
+        disconnectOutput(audioUnit: instrumentHost.audioUnit)
+        for effect in effects{
+            disconnectOutput(audioUnit: effect)
+        }
+        var audioUnits : [AVAudioUnit] = []
+        var nodes = engine.attachedNodes
+        print("num nodes = \(nodes.count)")
+        guard let instrumentAU = instrumentHost.audioUnit else { return }
+        audioUnits.append(instrumentAU)
+        audioUnits.append(contentsOf: effects)
+        for i in 1..<audioUnits.count{
+            let previousUnit = audioUnits[i-1]
+            let thisUnit = audioUnits[i]
+            let format = previousUnit.outputFormat(forBus: 0)
+            if nodes.contains(previousUnit), nodes.contains(thisUnit){
+                engine.connect(previousUnit, to: thisUnit, format: format)
+            } else {
+                print("Sorry, engine needs to contain BOTH nodes it is connecting.")
+            }
+        }
+        let format = audioUnits.last!.outputFormat(forBus: 0)
+        engine.connect(audioUnits.last!, to: engine.mainMixerNode, format: format)
+    }
+    func disconnectOutput(audioUnit: AVAudioUnit?){
+        if let audioUnit = audioUnit{
+            if engine.attachedNodes.contains(audioUnit){
+                engine.disconnectNodeOutput(audioUnit)
+            }
+        }
     }
     func loadInstrument(pluginData: PluginData){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
@@ -102,10 +134,26 @@ class ChannelController {
                 self.delegate?.log("Failed to load effect. Error: \(e)")
                 completion(false)
             }
-            self.effects.removeAll() //TODO: This only allows for one effect.
             guard let audioUnitEffect = avAudioUnit else { return }
-            self.effects.append(audioUnitEffect)
+            //self.effects.removeAll() //TODO: This only allows for one effect, or at least destroys the references.
+            //self.effects.append(audioUnitEffect)
+            self.set(effect: audioUnitEffect, number: number)
+            self.connectEverything()
             completion(true)
+        }
+    }
+    func set(effect: AVAudioUnit, number: Int){
+        if number < effects.count { //There is already an effect there
+            let existingEffect = effects[number]
+            engine.disconnectNodeOutput(existingEffect)
+            effects[number] = effect
+            engine.detach(existingEffect)
+            engine.attach(effect)
+        } else if number == effects.count {
+            effects.append(effect)
+            engine.attach(effect)
+        } else {
+            print("Error: trying to add effect out of sequence")
         }
     }
     func getEffect(number: Int) -> AVAudioUnit?{

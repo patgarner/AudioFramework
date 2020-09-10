@@ -146,9 +146,9 @@ public class AudioService: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, completion: @escaping (Bool)->()) {
         let channelController = channelControllers[channel]
-        channelController.loadEffect(fromDescription: desc, number: 0, completion: completion)
+        channelController.loadEffect(fromDescription: desc, number: number, completion: completion)
     }
 
     func getAudioEffect(channel:Int, number: Int) -> AVAudioUnit?{
@@ -156,15 +156,6 @@ public class AudioService: NSObject {
         let effect = channelController.getEffect(number: number)
         return effect
     }
-
-//    @available(OSX 10.12, *)
-//    func requestInstrumentInterface2(audioUnit: AVAudioUnit, _ completion: @escaping (InterfaceInstance?)->()) {
-//        let au = audioUnit.auAudioUnit
-//        au.requestViewController { (vc) in
-//            guard let vc = vc else { return }
-//            self.delegate?.load(viewController: vc)
-//        }
-//    }
     
     func load(viewController: NSViewController){
         delegate?.load(viewController: viewController)

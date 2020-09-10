@@ -164,11 +164,11 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let effect = effects[index]
         let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
         if let channelEffect = channelState.getEffect(number: number), channelEffect.manufacturer == effect.manufacturerName, channelEffect.name == effect.name {
-            //If its already there, and it matches current selection...
-            instrumentSelectionDelegate?.displayEffectInterface(channel: trackNumber)
+            //If its already there, and it matches current selection, simply show interface
+            instrumentSelectionDelegate?.displayEffectInterface(channel: trackNumber, number: number)
         } else {
             channelState.set(effect: effectSelection, number: number)
-            instrumentSelectionDelegate?.select(effect: effect, channel: trackNumber)
+            instrumentSelectionDelegate?.select(effect: effect, channel: trackNumber, number: number)
         }
     }
     ////////////////////////////////////////////////////////

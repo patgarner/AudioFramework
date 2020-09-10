@@ -12,8 +12,8 @@ import CoreAudioKit
 
 protocol InstrumentSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int)
-    func select(effect: AVAudioUnitComponent, channel: Int)
+    func select(effect: AVAudioUnitComponent, channel: Int, number: Int)
     func getListOfInstruments() -> [AVAudioUnitComponent]
     func displayInstrumentInterface(channel: Int)
-    func displayEffectInterface(channel: Int)
+    func displayEffectInterface(channel: Int, number: Int)
 }
