@@ -20,7 +20,6 @@ class AUv3InstrumentHost : InstrumentHost{
     func set(instrument : AVAudioUnitMIDIInstrument?){
         detach(audioUnit: instrumentAU)
         attach(audioUnit: instrument)
-       // connect(audioUnit: instrument)
     }
     func detach(audioUnit: AVAudioUnit?){
         guard let audioUnit = audioUnit else { return }
@@ -43,7 +42,6 @@ class AUv3InstrumentHost : InstrumentHost{
     var auAudioUnit: AUAudioUnit? {
         return self.instrumentAU?.auAudioUnit
     }
-        
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
@@ -54,7 +52,6 @@ class AUv3InstrumentHost : InstrumentHost{
                 completion(false)
             } else if let unit = avAudioUnit as? AVAudioUnitMIDIInstrument {
                 DispatchQueue.main.async {
-                    //self?.instrumentAU = unit
                     self?.set(instrument: unit)
                     completion(true)
                 }
@@ -63,7 +60,6 @@ class AUv3InstrumentHost : InstrumentHost{
             }
         }
     }
-        
     func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
         guard let inst = self.instrumentAU else { return }
         inst.startNote(note, withVelocity: velocity, onChannel: channel)
@@ -88,7 +84,6 @@ class AUv3InstrumentHost : InstrumentHost{
         guard let inst = self.instrumentAU else { return }
         inst.sendController(number, withValue: value, onChannel: channel)
     }
-    
     var fullState : [String : Any]? {
         get {
             guard let au = self.auAudioUnit else { return nil }
@@ -100,7 +95,6 @@ class AUv3InstrumentHost : InstrumentHost{
             au.fullState = newValue
         }
     }
-    
     var audioComponentDescription : AudioComponentDescription? {
         get {
             guard let au = self.auAudioUnit else { return nil }
@@ -108,7 +102,6 @@ class AUv3InstrumentHost : InstrumentHost{
             return desc
         }
     }
-    
     var samplerData : PluginData {
         get {
             let state = fullState
@@ -119,7 +112,6 @@ class AUv3InstrumentHost : InstrumentHost{
             
         }
     }
-    
     @available(OSX 10.12, *)
     func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()) {
         guard let au = self.auAudioUnit else { completion(nil) ; return }

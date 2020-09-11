@@ -74,7 +74,6 @@
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
 		84070C5524FF5D5900E572E7 /* InstrumentSelectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentSelectionDelegate.swift; sourceTree = "<group>"; };
 		84070C5624FF5D5900E572E7 /* MixerViewController4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController4.swift; sourceTree = "<group>"; };
-		841D0A7724FED209008F6305 /* ChannelStripNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelStripNode.swift; sourceTree = "<group>"; };
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioServiceDelegate.swift; sourceTree = "<group>"; };
 		842369A824FEC2BC001266BE /* AudioFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,7 +143,6 @@
 		841D0A7624FED209008F6305 /* AudioUtilities */ = {
 			isa = PBXGroup;
 			children = (
-				841D0A7724FED209008F6305 /* ChannelStripNode.swift */,
 				841D0A7824FED209008F6305 /* AudioFileConverter.swift */,
 				841D0A8524FED796008F6305 /* AudioServiceDelegate.swift */,
 			);
