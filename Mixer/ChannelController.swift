@@ -15,33 +15,26 @@ import AVFoundation
 
 class ChannelController {
     var delegate : ChannelControllerDelegate?
-    var instrumentHost : InstrumentHost = AUv3InstrumentHost()
+    var type : ChannelType = .midiInstrument
     public var effects : [AVAudioUnit] = []
+    var inputNode : AVAudioNode? {
+        return nil
+    }
+    var outputNode : AVAudioNode? {
+        return nil
+    }
     var engine : AVAudioEngine{
         return AudioService.shared.engine
     }
-    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        instrumentHost.noteOn(note, withVelocity: velocity, channel: channel)
+    public init(){
+        createIONodes()
     }
-    public func noteOff(_ note: UInt8, channel: UInt8) {
-        instrumentHost.noteOff(note, channel: channel)
-    } 
-    public func set(volume: UInt8, channel: UInt8){
-        instrumentHost.set(volume: volume, channel: channel)
+    public init(type: ChannelType){
+        self.type = type
     }
-    public func set(pan: UInt8, channel: UInt8){
-        instrumentHost.set(pan: pan, channel: channel)
-    }
-    public func set(tempo: UInt8){
-        instrumentHost.set(tempo: tempo)
-    }
-    public func setController(number: UInt8, value: UInt8, channel: UInt8){
-        instrumentHost.setController(number: number, value: value, channel: channel)
-    }
+   
     func getChannelPluginData() -> ChannelPluginData{
         let channelPluginData = ChannelPluginData()
-             let instrumentPluginData = instrumentHost.samplerData
-             channelPluginData.instrumentPlugin = instrumentPluginData
              for effect in effects{
                  let effectPluginData = PluginData()
                  effectPluginData.audioComponentDescription = effect.audioComponentDescription
@@ -51,35 +44,19 @@ class ChannelController {
              return channelPluginData
     }
     func set(channelPluginData: ChannelPluginData){
-        loadInstrument(pluginData: channelPluginData.instrumentPlugin)
          for effectNumber in 0..<channelPluginData.effectPlugins.count{
              let pluginData = channelPluginData.effectPlugins[effectNumber]
              loadEffect(pluginData: pluginData, number: effectNumber)
          }
     }
-    func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()){
-        instrumentHost.loadInstrument(fromDescription: desc){(success) in
-            if success {
-                self.connectEverything()
-            }
-            completion(success)
-        }
-    }
-    func connect(audioUnit: AVAudioUnit?){
-        guard let audioUnit = audioUnit else { return }
-        let instOutputFormat = audioUnit.outputFormat(forBus: 0)
-        engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
-    }
+
     func connectEverything(){
-        disconnectOutput(audioUnit: instrumentHost.audioUnit)
-        for effect in effects{
-            disconnectOutput(audioUnit: effect)
+        let audioUnits = allAudioUnits
+        if audioUnits.count == 0 { return }
+        for audioUnit in audioUnits{
+            disconnectOutput(audioUnit: audioUnit)
         }
-        var audioUnits : [AVAudioUnit] = []
         let nodes = engine.attachedNodes
-        guard let instrumentAU = instrumentHost.audioUnit else { return }
-        audioUnits.append(instrumentAU)
-        audioUnits.append(contentsOf: effects)
         for i in 1..<audioUnits.count{
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
@@ -90,8 +67,12 @@ class ChannelController {
                 print("Sorry, engine needs to contain BOTH nodes it is connecting.")
             }
         }
-        let format = audioUnits.last!.outputFormat(forBus: 0)
-        engine.connect(audioUnits.last!, to: engine.mainMixerNode, format: format)
+        delegate?.updateChannelOutput(avAudioNode: audioUnits.last!)
+    }
+    var allAudioUnits : [AVAudioUnit] {
+        var audioUnits : [AVAudioUnit] = []
+        audioUnits.append(contentsOf: effects)
+        return audioUnits
     }
     func disconnectOutput(audioUnit: AVAudioUnit?){
         if let audioUnit = audioUnit{
@@ -100,17 +81,6 @@ class ChannelController {
             }
         }
     }
-    func loadInstrument(pluginData: PluginData){
-        guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
-        self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
-            self.instrumentHost.fullState = pluginData.state
-        }
-    }
-    func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
-        instrumentHost.requestInstrumentInterface(completion)
-    }
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,10 +128,27 @@ class ChannelController {
         }
         return effects[number]
     }
+    func createIONodes() {
+        var desc = AudioComponentDescription()
+        desc.componentType = kAudioUnitType_Mixer
+        desc.componentSubType = kAudioUnitSubType_StereoMixer
+        desc.componentManufacturer = 0
+        desc.componentFlags = 0
+        desc.componentFlagsMask = 0
+//        AVAudioUnit.instantiate(with: desc, options: []) { (avAudioUnit, error) in
+//            if let e = error {
+//                self.delegate?.log("Failed to load effect. Error: \(e)")
+//            }
+//            guard let node = avAudioUnit else { return }
+//            self.outputNode = node
+//            self.engine.attach(node)
+//        }
+    }
 }
 
 protocol ChannelControllerDelegate{
     func log(_ message: String)
+    func updateChannelOutput(avAudioNode: AVAudioNode)
 }
 
 enum PluginType{

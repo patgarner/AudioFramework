@@ -14,7 +14,7 @@ public enum InterfaceInstance {
     case viewController(NSViewController)
 }
 
-protocol InstrumentHost {
+protocol VirtualInstrumentHost {
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->())
     func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8)
     func noteOff(_ note: UInt8, channel: UInt8)

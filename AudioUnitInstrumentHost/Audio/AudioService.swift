@@ -19,14 +19,17 @@ public class AudioService: NSObject {
     var recordingUrl : URL?
     public let engine = AVAudioEngine()
     public var delegate : AudioServiceDelegate?
-    var channelControllers : [ChannelController] = []
+    var channelControllers : [InstrumentChannelController] = []
+    var auxControllers : [ChannelController] = []
+    var masterController : ChannelController = MasterChannelController()
     private override init (){
         super.init()
         for _ in 0..<16{
-            channelControllers.append(ChannelController())
+            let channelController = InstrumentChannelController()
+            channelController.delegate = self
+            channelControllers.append(channelController)
         }
     }
-
     func getListOfEffects() -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect
@@ -45,14 +48,12 @@ public class AudioService: NSObject {
         desc.componentFlagsMask = 0
         return AVAudioUnitComponentManager.shared().components(matching: desc)
     }
-    
     public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
         if channel >= channelControllers.count { return }
         let channelController = channelControllers[channel]
         channelController.loadInstrument(fromDescription: desc, completion: completion)
         print("")
     }
-    
     public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
         if channel >= channelControllers.count { completion(nil) }
         let host = channelControllers[channel]
@@ -76,7 +77,6 @@ public class AudioService: NSObject {
             print("Couldn't record. Error: \(error)")
         }
     }
-
     func stopRecording() { //TODO: Move somewhere else
         engine.mainMixerNode.volume = 0
         engine.mainMixerNode.removeTap(onBus: 0)
@@ -89,6 +89,9 @@ public class AudioService: NSObject {
     public func stop(){
         stopRecording()
     }
+    //////////////////////////////////////////////////////////////////
+    // MIDI
+    //////////////////////////////////////////////////////////////////
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
         if channel >= channelControllers.count { return }
         startEngineIfNeeded()
@@ -126,6 +129,9 @@ public class AudioService: NSObject {
     public func set(timeStamp: UInt64){ //We don't actually know yet the right way to implement this.
         
     }
+    /////////////////////////////////////////////////////////////////////
+    //
+    /////////////////////////////////////////////////////////////////////
     public var allPluginData : AllPluginData{
         get {
             let allData = AllPluginData()
@@ -140,7 +146,7 @@ public class AudioService: NSObject {
             for i in 0..<allData.channels.count{
                 let channelPluginData = allData.channels[i]
                 if i >= channelControllers.count {
-                    channelControllers.append(ChannelController())
+                    channelControllers.append(InstrumentChannelController())
                 }
                 let channelController = channelControllers[i]
                 channelController.set(channelPluginData:channelPluginData)
@@ -187,6 +193,31 @@ public class AudioService: NSObject {
         engine.attach(audioUnit)
         let instOutputFormat = audioUnit.outputFormat(forBus: 0)
         engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
+    }
+    public func render(musicSequence: MusicSequence, url: URL){
+        engine.musicSequence = musicSequence
+        var allMidiInstruments : [AVAudioUnit] = []
+        for channel in channelControllers {
+            if let audioUnit = channel.instrumentHost.audioUnit{
+                allMidiInstruments.append(audioUnit)
+            }
+        }
+
+        let sequencer = AVAudioSequencer(audioEngine: engine)
+        let track = AVMusicTrack()
+        track.destinationAudioUnit = channelControllers[0].instrumentHost.audioUnit
+    }
+}
+
+extension AudioService : ChannelControllerDelegate{
+    func log(_ message: String) {
+        
+    }
+    func updateChannelOutput(avAudioNode: AVAudioNode){
+        if let destination = masterController.inputNode {
+            let format = avAudioNode.outputFormat(forBus: 0)
+            engine.connect(avAudioNode, to: destination, format: format)
+        }
     }
 }
 

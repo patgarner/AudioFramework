@@ -9,7 +9,7 @@
 import Foundation
 import AVFoundation
 
-class AUv3InstrumentHost : InstrumentHost{
+class AudioUnit3Host : VirtualInstrumentHost{
     var engine : AVAudioEngine {
         return AudioService.shared.engine
     } 
@@ -79,7 +79,10 @@ class AUv3InstrumentHost : InstrumentHost{
         let controller = UInt8(10)
         inst.sendController(controller, withValue: pan, onChannel: channel)
     }
-    func set(tempo: UInt8) {}
+    func set(tempo: UInt8) {
+        guard let inst = self.instrumentAU else { return }
+        
+    }
     func setController(number: UInt8, value: UInt8, channel: UInt8){
         guard let inst = self.instrumentAU else { return }
         inst.sendController(number, withValue: value, onChannel: channel)

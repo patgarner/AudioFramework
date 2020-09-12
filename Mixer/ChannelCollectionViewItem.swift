@@ -29,7 +29,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
     var delegate : ChannelViewDelegate? 
     var trackNumber = -1
-    var type = ChannelViewType.midiInstrument
+    var type = ChannelType.midiInstrument
     
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -242,7 +242,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
 }
 
-enum ChannelViewType {
+enum ChannelType {
     case master
     case midiInstrument
     case aux
