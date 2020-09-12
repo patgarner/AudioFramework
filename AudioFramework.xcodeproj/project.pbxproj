@@ -14,7 +14,7 @@
 		84070C5B24FF5D5900E572E7 /* ChannelStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5324FF5D5900E572E7 /* ChannelStates.swift */; };
 		84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
 		84070C5D24FF5D5900E572E7 /* InstrumentSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5524FF5D5900E572E7 /* InstrumentSelectionDelegate.swift */; };
-		84070C5E24FF5D5900E572E7 /* MixerViewController4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController4.swift */; };
+		84070C5E24FF5D5900E572E7 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController.swift */; };
 		841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
 		841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
 		841D0A8624FED796008F6305 /* AudioServiceDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A8524FED796008F6305 /* AudioServiceDelegate.swift */; };
@@ -75,7 +75,7 @@
 		84070C5324FF5D5900E572E7 /* ChannelStates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelStates.swift; sourceTree = "<group>"; };
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
 		84070C5524FF5D5900E572E7 /* InstrumentSelectionDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InstrumentSelectionDelegate.swift; sourceTree = "<group>"; };
-		84070C5624FF5D5900E572E7 /* MixerViewController4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController4.swift; sourceTree = "<group>"; };
+		84070C5624FF5D5900E572E7 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioServiceDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioServiceDelegate.swift; sourceTree = "<group>"; };
 		842369A824FEC2BC001266BE /* AudioFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,7 +140,7 @@
 				84070C4F24FF5D5900E572E7 /* ChannelViewDelegate.swift */,
 				84070C5524FF5D5900E572E7 /* InstrumentSelectionDelegate.swift */,
 				8479715524FFE66600AAC4A3 /* MixerFillView.swift */,
-				84070C5624FF5D5900E572E7 /* MixerViewController4.swift */,
+				84070C5624FF5D5900E572E7 /* MixerViewController.swift */,
 			);
 			path = Mixer;
 			sourceTree = SOURCE_ROOT;
@@ -373,7 +373,7 @@
 				8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */,
 				842369F724FEC44C001266BE /* PluginData.swift in Sources */,
 				84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */,
-				84070C5E24FF5D5900E572E7 /* MixerViewController4.swift in Sources */,
+				84070C5E24FF5D5900E572E7 /* MixerViewController.swift in Sources */,
 				84070C5824FF5D5900E572E7 /* ChannelState.swift in Sources */,
 				84A9CF23250D35F70065A7CC /* MasterChannelController.swift in Sources */,
 				842369E924FEC44C001266BE /* AudioComponentDescriptionExtension.swift in Sources */,

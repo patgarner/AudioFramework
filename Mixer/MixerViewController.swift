@@ -13,7 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Cocoa
 import AVFoundation
 
-public class MixerViewController4: NSViewController, ChannelViewDelegate, NSCollectionViewDataSource {
+public class MixerViewController: NSViewController, ChannelViewDelegate, NSCollectionViewDataSource {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     public var delegate : ChannelViewDelegate?
@@ -99,7 +99,7 @@ public class MixerViewController4: NSViewController, ChannelViewDelegate, NSColl
 
 }
 
-extension MixerViewController4 : InstrumentSelectionDelegate{
+extension MixerViewController : InstrumentSelectionDelegate{
     func getListOfInstruments() -> [AVAudioUnitComponent] {
         let instruments = AudioService.shared.getListOfInstruments()
         return instruments
