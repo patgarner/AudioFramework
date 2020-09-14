@@ -104,34 +104,6 @@ public class AudioService: NSObject {
     // MIDI
     //////////////////////////////////////////////////////////////////
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-//        let nodes = engine.attachedNodes
-//        for node in nodes{
-//            let name = node.auAudioUnit.componentName
-//            print("----------------------------")
-//            print("node name = \(name)")
-//            let outputs = engine.outputConnectionPoints(for: node, outputBus: 0)
-//            for i in 0..<outputs.count {
-//                let output = outputs[i]
-//                print("output number: \(i) output: \(output)")
-//            }
-//            print("----------------------------")
-//        }
-        print("===================================")
-        let channelCont = channelControllers[1]
-        let outputs = engine.outputConnectionPoints(for: channelCont.outputNode!, outputBus: 0)
-        for i in 0..<outputs.count{
-            let output = outputs[i]
-            print("Channel2Output: \(i) = \(output)")
-            let node = output.node!
-            print("output node: \(node)")
-        }
-        print("Addresses:\nEngine.mainMixerNode\(engine.mainMixerNode)")
-        print("MasterIn\(masterController.inputNode)")
-        print("MasterOut\(masterController.outputNode)")
-        print("===================================")
-
-        
-        
         if channel >= channelControllers.count { return }
         startEngineIfNeeded()
         let channelController = channelControllers[Int(channel)]
@@ -200,7 +172,12 @@ public class AudioService: NSObject {
             channelController.loadEffect(fromDescription: desc, number: number, completion: completion)
         }
     }
+    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
+        if let channelController = getChannelController(type: type, channel: channel) {
+            channelController.deselectEffect(number: number)
+        }
 
+    }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
         if let channelController = getChannelController(type: type, channel: channel) {
             let effect = channelController.getEffect(number: number)

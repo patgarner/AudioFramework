@@ -42,7 +42,7 @@ class ChannelController {
              loadEffect(pluginData: pluginData, number: effectNumber)
          }
     }
-    func connectEverything(){
+    func reconnectNodes(){
         let audioUnits = allAudioUnits
         if audioUnits.count == 0 { return }
         disconnectNodes()
@@ -94,7 +94,17 @@ class ChannelController {
             au.fullState = pluginData.state
         }
     }
-    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, completion: @escaping (Bool)->()) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription?, number: Int, completion: @escaping (Bool)->()) {
+        //Case: desc is nil but effect number > num effects { do nothing }
+        //Case: desc is nil but effect number < num effects { delete item from array. Reconnect everything }
+        guard let desc = desc else {
+            if number >= effects.count { return }
+            effects.remove(at: number) //Big problem if effects out of sequence
+            reconnectNodes()
+            completion(false)
+            return
+        }
+        
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
         let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
@@ -105,9 +115,16 @@ class ChannelController {
             }
             guard let audioUnitEffect = avAudioUnit else { return }
             self.set(effect: audioUnitEffect, number: number)
-            self.connectEverything()
+            self.reconnectNodes()
             completion(true)
         }
+    }
+    func deselectEffect(number: Int){
+        if number < 0 || number >= effects.count{
+            return
+        }
+        effects.remove(at: number)
+        reconnectNodes()
     }
     func set(effect: AVAudioUnit, number: Int){
         if number < effects.count { //There is already an effect there

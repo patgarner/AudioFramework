@@ -23,7 +23,7 @@ class InstrumentChannelController : ChannelController{
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()){
         instrumentHost.loadInstrument(fromDescription: desc){(success) in
             if success {
-                self.connectEverything()
+                self.reconnectNodes()
             }
             completion(success)
         }

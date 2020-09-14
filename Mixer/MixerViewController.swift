@@ -90,7 +90,7 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
         channelView.delegate = self
         let trackNumber = indexPath[1]
         channelView.trackNumber = trackNumber
-        channelView.instrumentSelectionDelegate = self
+        channelView.pluginSelectionDelegate = self
         if indexPath[0] == 2{
             channelView.type = .master
         }
@@ -99,7 +99,7 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
 
 }
 
-extension MixerViewController : InstrumentSelectionDelegate{
+extension MixerViewController : PluginSelectionDelegate{
     func getListOfInstruments() -> [AVAudioUnitComponent] {
         let instruments = AudioService.shared.getListOfInstruments()
         return instruments
@@ -128,6 +128,9 @@ extension MixerViewController : InstrumentSelectionDelegate{
         AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) { [weak self] (successful) in
             self?.displayEffectInterface(channel: channel, number: number, type: type)
         }
+    }
+    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
+        AudioService.shared.deselectEffect(channel: channel, number: number, type: type)
     }
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
         DispatchQueue.main.async {
