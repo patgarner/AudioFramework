@@ -11,16 +11,6 @@ import AVFoundation
 
 class InstrumentChannelController : ChannelController{
     var instrumentHost : VirtualInstrumentHost = AudioUnit3Host()
-    override var inputNode : AVAudioNode? {
-        return nil
-    }
-    override var outputNode : AVAudioNode? {
-        var audioUnits : [AVAudioUnit] = []
-        guard let instrumentAU = instrumentHost.audioUnit else { return nil }
-        audioUnits.append(instrumentAU)
-        audioUnits.append(contentsOf: effects)
-        return audioUnits.last
-    }
     func loadInstrument(pluginData: PluginData){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
         self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
@@ -43,22 +33,25 @@ class InstrumentChannelController : ChannelController{
         loadInstrument(pluginData: channelPluginData.instrumentPlugin)
     }
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-           instrumentHost.noteOn(note, withVelocity: velocity, channel: channel)
-       }
-       public func noteOff(_ note: UInt8, channel: UInt8) {
-           instrumentHost.noteOff(note, channel: channel)
-       } 
-       public func set(volume: UInt8, channel: UInt8){
-           instrumentHost.set(volume: volume, channel: channel)
-       }
-       public func set(pan: UInt8, channel: UInt8){
-           instrumentHost.set(pan: pan, channel: channel)
-       }
-       public func set(tempo: UInt8){
-           instrumentHost.set(tempo: tempo)
-       }
-       public func setController(number: UInt8, value: UInt8, channel: UInt8){
-           instrumentHost.setController(number: number, value: value, channel: channel)
+        instrumentHost.noteOn(note, withVelocity: velocity, channel: channel)
+    }
+    public func noteOff(_ note: UInt8, channel: UInt8) {
+        instrumentHost.noteOff(note, channel: channel)
+    } 
+    public func set(volume: UInt8, channel: UInt8){
+        instrumentHost.set(volume: volume, channel: channel)
+    }
+    public func set(pan: UInt8, channel: UInt8){
+        instrumentHost.set(pan: pan, channel: channel)
+    }
+    public func set(tempo: UInt8){
+        instrumentHost.set(tempo: tempo)
+    }
+    public func setController(number: UInt8, value: UInt8, channel: UInt8){
+        instrumentHost.setController(number: number, value: value, channel: channel)
+    }
+    public func allNotesOff(){
+        
     }
     override func getChannelPluginData() -> ChannelPluginData{
         let channelPluginData = ChannelPluginData()
@@ -72,13 +65,21 @@ class InstrumentChannelController : ChannelController{
         }
         return channelPluginData
     }
-
-    override var allAudioUnits : [AVAudioUnit] {
-        var audioUnits : [AVAudioUnit] = []
+    
+    override var allAudioUnits : [AVAudioNode] {
+        var audioUnits : [AVAudioNode] = []
         if let instrumentAU = instrumentHost.audioUnit {
-              audioUnits.append(instrumentAU)
+            audioUnits.append(instrumentAU)
         }
         audioUnits.append(contentsOf: effects)
+        if let output = outputNode {
+            audioUnits.append(output)
+        }
         return audioUnits
+    }
+    override func createIONodes() {
+        let mixerOutput = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(mixerOutput)
+        self.outputNode = mixerOutput
     }
 }

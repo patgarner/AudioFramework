@@ -14,25 +14,18 @@ import Foundation
 import AVFoundation
 
 class ChannelController {
-    var delegate : ChannelControllerDelegate?
+    var delegate : ChannelControllerDelegate!
     var type : ChannelType = .midiInstrument
     public var effects : [AVAudioUnit] = []
-    var inputNode : AVAudioNode? {
-        return nil
-    }
-    var outputNode : AVAudioNode? {
-        return nil
-    }
-    var engine : AVAudioEngine{
-        return AudioService.shared.engine
-    }
-    public init(){
+    var inputNode : AVAudioNode? = nil
+    var outputNode : AVAudioNode? = nil
+    public init(delegate: ChannelControllerDelegate){
+        self.delegate = delegate
         createIONodes()
     }
     public init(type: ChannelType){
         self.type = type
     }
-   
     func getChannelPluginData() -> ChannelPluginData{
         let channelPluginData = ChannelPluginData()
              for effect in effects{
@@ -49,35 +42,43 @@ class ChannelController {
              loadEffect(pluginData: pluginData, number: effectNumber)
          }
     }
-
     func connectEverything(){
         let audioUnits = allAudioUnits
         if audioUnits.count == 0 { return }
-        for audioUnit in audioUnits{
-            disconnectOutput(audioUnit: audioUnit)
-        }
-        let nodes = engine.attachedNodes
+        disconnectNodes()
+        let nodes = delegate.engine.attachedNodes
         for i in 1..<audioUnits.count{
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
             let format = previousUnit.outputFormat(forBus: 0)
             if nodes.contains(previousUnit), nodes.contains(thisUnit){
-                engine.connect(previousUnit, to: thisUnit, format: format)
+                delegate.engine.connect(previousUnit, to: thisUnit, format: format)
             } else {
                 print("Sorry, engine needs to contain BOTH nodes it is connecting.")
             }
         }
-        delegate?.updateChannelOutput(avAudioNode: audioUnits.last!)
+        //delegate?.updateChannelOutput(avAudioNode: audioUnits.last!)
     }
-    var allAudioUnits : [AVAudioUnit] {
-        var audioUnits : [AVAudioUnit] = []
-        audioUnits.append(contentsOf: effects)
-        return audioUnits
+    func disconnectNodes(includeLast: Bool = false){
+        let nodes = allAudioUnits
+        if nodes.count == 0 { return }
+        var lastIndex = nodes.count
+        if !includeLast {
+            lastIndex = nodes.count - 1
+        }
+        for i in 0..<lastIndex{
+            let node = nodes[i]
+            disconnectOutput(audioUnit: node)
+        }
     }
-    func disconnectOutput(audioUnit: AVAudioUnit?){
+    var allAudioUnits : [AVAudioNode] {
+        assertionFailure("ChannelController.allAudioUnits() child class must override")
+        return []
+    }
+    func disconnectOutput(audioUnit: AVAudioNode?){
         if let audioUnit = audioUnit{
-            if engine.attachedNodes.contains(audioUnit){
-                engine.disconnectNodeOutput(audioUnit)
+            if delegate.engine.attachedNodes.contains(audioUnit){
+                delegate.engine.disconnectNodeOutput(audioUnit)
             }
         }
     }
@@ -111,13 +112,13 @@ class ChannelController {
     func set(effect: AVAudioUnit, number: Int){
         if number < effects.count { //There is already an effect there
             let existingEffect = effects[number]
-            engine.disconnectNodeOutput(existingEffect)
+            delegate.engine.disconnectNodeOutput(existingEffect)
             effects[number] = effect
-            engine.detach(existingEffect)
-            engine.attach(effect)
+            delegate.engine.detach(existingEffect)
+            delegate.engine.attach(effect)
         } else if number == effects.count {
             effects.append(effect)
-            engine.attach(effect)
+            delegate.engine.attach(effect)
         } else {
             print("Error: trying to add effect out of sequence")
         }
@@ -129,26 +130,13 @@ class ChannelController {
         return effects[number]
     }
     func createIONodes() {
-        var desc = AudioComponentDescription()
-        desc.componentType = kAudioUnitType_Mixer
-        desc.componentSubType = kAudioUnitSubType_StereoMixer
-        desc.componentManufacturer = 0
-        desc.componentFlags = 0
-        desc.componentFlagsMask = 0
-//        AVAudioUnit.instantiate(with: desc, options: []) { (avAudioUnit, error) in
-//            if let e = error {
-//                self.delegate?.log("Failed to load effect. Error: \(e)")
-//            }
-//            guard let node = avAudioUnit else { return }
-//            self.outputNode = node
-//            self.engine.attach(node)
-//        }
+        assertionFailure("ChannelController child must override createIONodes()")
     }
 }
 
 protocol ChannelControllerDelegate{
     func log(_ message: String)
-    func updateChannelOutput(avAudioNode: AVAudioNode)
+    var engine : AVAudioEngine { get }
 }
 
 enum PluginType{

@@ -55,6 +55,8 @@
 		84A9CF24250D35F70065A7CC /* MasterChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF22250D35F70065A7CC /* MasterChannelController.swift */; };
 		84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */; };
 		84A9CF34250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */; };
+		84A9CF58250D93D50065A7CC /* AudioNodeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */; };
+		84A9CF59250D93D50065A7CC /* AudioNodeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,7 @@
 		84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioUnitPassthrough.swift; path = AudioUnit/AudioUnitPassthrough.swift; sourceTree = SOURCE_ROOT; };
 		84A9CF22250D35F70065A7CC /* MasterChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterChannelController.swift; sourceTree = "<group>"; };
 		84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentChannelController.swift; sourceTree = "<group>"; };
+		84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioNodeFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,8 +134,8 @@
 				84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */,
 				84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */,
 				843FD47425068E9200189936 /* ChannelController.swift */,
-				84A9CF22250D35F70065A7CC /* MasterChannelController.swift */,
 				84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */,
+				84A9CF22250D35F70065A7CC /* MasterChannelController.swift */,
 				8460307A250803FA00CB9844 /* ChannelPluginData.swift */,
 				84070C5224FF5D5900E572E7 /* ChannelRouter.swift */,
 				84070C5024FF5D5900E572E7 /* ChannelState.swift */,
@@ -151,6 +154,7 @@
 				841D0A7824FED209008F6305 /* AudioFileConverter.swift */,
 				841D0A8524FED796008F6305 /* AudioServiceDelegate.swift */,
 				84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */,
+				84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */,
 			);
 			path = AudioUtilities;
 			sourceTree = "<group>";
@@ -367,6 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				842369F524FEC44C001266BE /* AudioService.swift in Sources */,
+				84A9CF58250D93D50065A7CC /* AudioNodeFactory.swift in Sources */,
 				84070C5724FF5D5900E572E7 /* ChannelViewDelegate.swift in Sources */,
 				84070C5D24FF5D5900E572E7 /* InstrumentSelectionDelegate.swift in Sources */,
 				842369FD24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
@@ -413,6 +418,7 @@
 				84A9CF34250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */,
 				8479715724FFE66600AAC4A3 /* MixerFillView.swift in Sources */,
 				842369FE24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
+				84A9CF59250D93D50065A7CC /* AudioNodeFactory.swift in Sources */,
 				842369F624FEC44C001266BE /* AudioService.swift in Sources */,
 				84A9CF21250C25680065A7CC /* AudioUnitPassthrough.swift in Sources */,
 				842369FA24FEC44C001266BE /* AudioUnitInstance.swift in Sources */,

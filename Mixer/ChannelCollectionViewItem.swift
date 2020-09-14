@@ -61,7 +61,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             labelView.needsLayout = true
             return
         }
-        guard let state = delegate?.getChannelState(trackNumber) else { return }
+        guard let state = delegate?.getChannelState(trackNumber, type: type) else { return }
         trackNameField.stringValue = state.trackName
         if state.mute{
             muteButton.state = .on
@@ -118,14 +118,14 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else if type == .midiInstrument{
             delegate?.set(volume: sliderValue, channel: trackNumber)
         }
-        if let existingState = delegate?.getChannelState(trackNumber){
+        if let existingState = delegate?.getChannelState(trackNumber, type: type){
             volumeValueTextField.integerValue = sliderValue
             existingState.volume = sliderValue
         }
     }
     @objc func trackNameChanged(){
         let trackName = trackNameField.stringValue
-        if let existingState = delegate?.getChannelState(trackNumber){
+        if let existingState = delegate?.getChannelState(trackNumber, type: type){
             existingState.trackName = trackName
         }
         
@@ -136,32 +136,32 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             volumeSliderMoved()
             return
         }
-        if let existingState = delegate?.getChannelState(trackNumber){
+        if let existingState = delegate?.getChannelState(trackNumber, type: type){
             existingState.volume = volume
             volumeSlider.integerValue = volume
         }
     }
     @objc func muteChanged(){
         let mute = muteButton.state
-        if let existingState = delegate?.getChannelState(trackNumber){
+        if let existingState = delegate?.getChannelState(trackNumber, type: type){
             existingState.mute = (mute == .on) 
         }
     }
     @objc func soloChanged(){
         let solo = soloButton.state
-        if let existingState = delegate?.getChannelState(trackNumber){
+        if let existingState = delegate?.getChannelState(trackNumber, type: type){
             existingState.solo = (solo == .on) 
         }
     }
     @objc func panChanged(){
         let pan = (panKnob.integerValue + 64) % 127
-        if let existingState = delegate?.getChannelState(trackNumber){
+        if let existingState = delegate?.getChannelState(trackNumber, type: type){
             existingState.pan = pan
         }
     }
     @objc func audioEffectChanged(sender: Any){
         guard let popupButton = sender as? NSPopUpButton else { return }
-        guard let channelState = delegate?.getChannelState(trackNumber) else { return }
+        guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
         let number = popupButton.tag
         let index = popupButton.indexOfSelectedItem
         let effects = getListOfEffects()
@@ -169,10 +169,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
         if let channelEffect = channelState.getEffect(number: number), channelEffect.manufacturer == effect.manufacturerName, channelEffect.name == effect.name {
             //If its already there, and it matches current selection, simply show interface
-            instrumentSelectionDelegate?.displayEffectInterface(channel: trackNumber, number: number)
+            instrumentSelectionDelegate?.displayEffectInterface(channel: trackNumber, number: number, type: type)
         } else {
             channelState.set(effect: effectSelection, number: number)
-            instrumentSelectionDelegate?.select(effect: effect, channel: trackNumber, number: number)
+            instrumentSelectionDelegate?.select(effect: effect, channel: trackNumber, number: number, type: type)
         }
     }
     ////////////////////////////////////////////////////////
@@ -201,7 +201,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var instrumentsFlat : [AVAudioUnitComponent] = []
     var instrumentSelectionDelegate : InstrumentSelectionDelegate?
     @objc func instrumentChanged(){
-        guard let channelState = delegate?.getChannelState(trackNumber) else { return }
+        guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
         let index = instrumentPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
         if component.manufacturerName == channelState.virtualInstrument.manufacturer,
@@ -211,7 +211,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else {
             channelState.virtualInstrument.manufacturer = component.manufacturerName
             channelState.virtualInstrument.name = component.name
-            instrumentSelectionDelegate?.selectInstrument(component, channel: trackNumber)
+            instrumentSelectionDelegate?.selectInstrument(component, channel: trackNumber, type: type)
             return
         }
     }
@@ -242,7 +242,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
 }
 
-enum ChannelType {
+public enum ChannelType {
     case master
     case midiInstrument
     case aux

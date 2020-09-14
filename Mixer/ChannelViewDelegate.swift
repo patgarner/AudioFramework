@@ -13,7 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Foundation
 
 public protocol ChannelViewDelegate {
-    func getChannelState(_ index: Int) -> ChannelState?
+    func getChannelState(_ index: Int, type: ChannelType) -> ChannelState?
     func set(channelState: ChannelState, index: Int)
     func setMasterVolume(_ volume: Float)
     func set(volume: Int, channel: Int)

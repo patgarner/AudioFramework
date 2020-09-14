@@ -14,6 +14,9 @@ import Foundation
 
 public class ChannelStates : Codable, Equatable, ChannelViewDelegate{
     var channels : [ChannelState] = []
+    var aux : [ChannelState] = []
+    var master : ChannelState = ChannelState()
+    
     public init(){
         initialize()
     }
@@ -52,11 +55,21 @@ public class ChannelStates : Codable, Equatable, ChannelViewDelegate{
     public var count : Int {
         return channels.count
     }
-    public func getChannelState(_ index: Int) -> ChannelState? {
-        if index < 0 || index >= channels.count {
-            return nil
+    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelState? {
+        var state : ChannelState? = nil
+        if type == .midiInstrument{
+            if index < 0 || index >= channels.count {
+                return nil
+            }
+            state = channels[index]
+        } else if type == .master{
+            state = master
+        } else if type == .aux{
+            if index < 0 || index >= aux.count {
+                 return nil
+             }
+            state = aux[index]
         }
-        let state = channels[index]
         return state
     }
     public func set(channelState: ChannelState, index: Int){

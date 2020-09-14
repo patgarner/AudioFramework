@@ -31,11 +31,6 @@ class AudioUnit3Host : VirtualInstrumentHost{
         self.instrumentAU = newInst
         engine.attach(newInst)
     }
-    func connect(audioUnit: AVAudioUnit?){
-        guard let audioUnit = audioUnit else { return }
-        let instOutputFormat = audioUnit.outputFormat(forBus: 0)
-        engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
-    }
     /////////////////////////////////////////////////////////////////////////
     // Instrument Host Protocol
     /////////////////////////////////////////////////////////////////////////
@@ -79,14 +74,15 @@ class AudioUnit3Host : VirtualInstrumentHost{
         let controller = UInt8(10)
         inst.sendController(controller, withValue: pan, onChannel: channel)
     }
-    func set(tempo: UInt8) {
-        guard let inst = self.instrumentAU else { return }
-        
-    }
+    func set(tempo: UInt8) {}
     func setController(number: UInt8, value: UInt8, channel: UInt8){
         guard let inst = self.instrumentAU else { return }
         inst.sendController(number, withValue: value, onChannel: channel)
     }
+    func allNotesOff(){}
+    ///////////////////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////////////////
     var fullState : [String : Any]? {
         get {
             guard let au = self.auAudioUnit else { return nil }

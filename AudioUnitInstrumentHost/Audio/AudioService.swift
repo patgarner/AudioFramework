@@ -21,13 +21,24 @@ public class AudioService: NSObject {
     public var delegate : AudioServiceDelegate?
     var channelControllers : [InstrumentChannelController] = []
     var auxControllers : [ChannelController] = []
-    var masterController : ChannelController = MasterChannelController()
+    var masterController : ChannelController!
     private override init (){
         super.init()
+    }
+    public func initialize(){
+        masterController = MasterChannelController(delegate: self)
+        if let masterOutput = masterController.outputNode{
+            let format = masterOutput.outputFormat(forBus: 0)
+            engine.connect(masterOutput, to: engine.mainMixerNode, format: format)
+        }
         for _ in 0..<16{
-            let channelController = InstrumentChannelController()
+            let channelController = InstrumentChannelController(delegate: self)
             channelController.delegate = self
             channelControllers.append(channelController)
+            if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
+                let format = channelOutput.outputFormat(forBus: 0)
+                engine.connect(channelOutput, to: masterInput, format: format)
+            }
         }
     }
     func getListOfEffects() -> [AVAudioUnitComponent]{
@@ -93,6 +104,34 @@ public class AudioService: NSObject {
     // MIDI
     //////////////////////////////////////////////////////////////////
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
+//        let nodes = engine.attachedNodes
+//        for node in nodes{
+//            let name = node.auAudioUnit.componentName
+//            print("----------------------------")
+//            print("node name = \(name)")
+//            let outputs = engine.outputConnectionPoints(for: node, outputBus: 0)
+//            for i in 0..<outputs.count {
+//                let output = outputs[i]
+//                print("output number: \(i) output: \(output)")
+//            }
+//            print("----------------------------")
+//        }
+        print("===================================")
+        let channelCont = channelControllers[1]
+        let outputs = engine.outputConnectionPoints(for: channelCont.outputNode!, outputBus: 0)
+        for i in 0..<outputs.count{
+            let output = outputs[i]
+            print("Channel2Output: \(i) = \(output)")
+            let node = output.node!
+            print("output node: \(node)")
+        }
+        print("Addresses:\nEngine.mainMixerNode\(engine.mainMixerNode)")
+        print("MasterIn\(masterController.inputNode)")
+        print("MasterOut\(masterController.outputNode)")
+        print("===================================")
+
+        
+        
         if channel >= channelControllers.count { return }
         startEngineIfNeeded()
         let channelController = channelControllers[Int(channel)]
@@ -101,7 +140,6 @@ public class AudioService: NSObject {
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
         if channel >= channelControllers.count { return }
-        startEngineIfNeeded()
         let channelController = channelControllers[Int(channel)]
         channelController.noteOff(note, channel: channel)
     } 
@@ -146,7 +184,8 @@ public class AudioService: NSObject {
             for i in 0..<allData.channels.count{
                 let channelPluginData = allData.channels[i]
                 if i >= channelControllers.count {
-                    channelControllers.append(InstrumentChannelController())
+                    let instrumentChannelController = InstrumentChannelController(delegate: self)
+                    channelControllers.append(instrumentChannelController)
                 }
                 let channelController = channelControllers[i]
                 channelController.set(channelPluginData:channelPluginData)
@@ -156,17 +195,35 @@ public class AudioService: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, completion: @escaping (Bool)->()) {
-        let channelController = channelControllers[channel]
-        channelController.loadEffect(fromDescription: desc, number: number, completion: completion)
+    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType, completion: @escaping (Bool)->()) {
+        if let channelController = getChannelController(type: type, channel: channel) {
+            channelController.loadEffect(fromDescription: desc, number: number, completion: completion)
+        }
     }
 
-    func getAudioEffect(channel:Int, number: Int) -> AVAudioUnit?{
-        let channelController = channelControllers[channel]
-        let effect = channelController.getEffect(number: number)
-        return effect
+    func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
+        if let channelController = getChannelController(type: type, channel: channel) {
+            let effect = channelController.getEffect(number: number)
+            return effect
+        } else {
+            return nil
+        }
     }
-    
+    func getChannelController(type: ChannelType, channel: Int) -> ChannelController? {
+        if channel < 0 { return nil }
+        if type == .master {
+            return masterController
+        } else if type == .midiInstrument{
+            if channel >= channelControllers.count { return nil }
+            let channelController = channelControllers[channel]
+            return channelController
+        } else if type == .aux {
+            if channel >= auxControllers.count { return nil }
+            let auxController = auxControllers[channel]
+            return auxController
+        }
+        return nil
+    }
     func load(viewController: NSViewController){
         delegate?.load(viewController: viewController)
     }
@@ -176,6 +233,7 @@ public class AudioService: NSObject {
     fileprivate func startEngineIfNeeded() { //TODO: Move somewhere else
         if !engine.isRunning {
             do {
+                print("Num inputs = \(engine.mainMixerNode.numberOfInputs)")
                 if engine.attachedNodes.count > 0 {
                     try engine.start()
                     print("audio engine started")
@@ -186,13 +244,6 @@ public class AudioService: NSObject {
                 print("could not start audio engine")
             }
         }
-    }
-    func connect(audioUnit : AVAudioUnit){
-        engine.disconnectNodeOutput(audioUnit) //TODO: This isn't going to work. You don't have a reference to the old node
-        engine.detach(audioUnit)
-        engine.attach(audioUnit)
-        let instOutputFormat = audioUnit.outputFormat(forBus: 0)
-        engine.connect(audioUnit, to: self.engine.mainMixerNode, format: instOutputFormat)
     }
     public func render(musicSequence: MusicSequence, url: URL){
         engine.musicSequence = musicSequence
@@ -212,12 +263,6 @@ public class AudioService: NSObject {
 extension AudioService : ChannelControllerDelegate{
     func log(_ message: String) {
         
-    }
-    func updateChannelOutput(avAudioNode: AVAudioNode){
-        if let destination = masterController.inputNode {
-            let format = avAudioNode.outputFormat(forBus: 0)
-            engine.connect(avAudioNode, to: destination, format: format)
-        }
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  MixerViewController4.swift
+//  MixerViewController.swift
 //
 /*
  Copyright 2020 David Mann Music LLC
@@ -35,8 +35,8 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
     public func refresh(){
         channelCollectionView.reloadData()
     }
-    public func getChannelState(_ index: Int) -> ChannelState? {
-        delegate?.getChannelState(index)
+    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelState? {
+        delegate?.getChannelState(index, type: type)
     }
     public func set(channelState: ChannelState, index: Int){
         delegate?.set(channelState: channelState, index: index)
@@ -107,7 +107,7 @@ extension MixerViewController : InstrumentSelectionDelegate{
     public func setMasterVolume(_ volume: Float) {
         AudioService.shared.engine.mainMixerNode.outputVolume = volume
     }
-    func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0) { //TODO: This absolutely should NOT be here.
+    func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0, type: ChannelType) { //TODO: This absolutely should NOT be here.
         AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
             self?.displayInstrumentInterface(channel: channel)
         }
@@ -124,14 +124,14 @@ extension MixerViewController : InstrumentSelectionDelegate{
             }
         }
     }
-    func select(effect: AVAudioUnitComponent, channel: Int, number: Int) {  //TODO: This absolutely should NOT be here.
-        AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number) { [weak self] (successful) in
-            self?.displayEffectInterface(channel: channel, number: number)
+    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType) { 
+        AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) { [weak self] (successful) in
+            self?.displayEffectInterface(channel: channel, number: number, type: type)
         }
     }
-    func displayEffectInterface(channel: Int, number: Int){
+    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
         DispatchQueue.main.async {
-            guard let audioEffect = AudioService.shared.getAudioEffect(channel: channel, number: number) else { return }
+            guard let audioEffect = AudioService.shared.getAudioEffect(channel: channel, number: number, type: type) else { return }
             let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
             let interfaceInstance = view.map(InterfaceInstance.view)
             PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
