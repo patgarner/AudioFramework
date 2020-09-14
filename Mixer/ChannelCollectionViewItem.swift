@@ -30,7 +30,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var delegate : ChannelViewDelegate? 
     var trackNumber = -1
     var type = ChannelType.midiInstrument
-    
+    var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
+    var instrumentsFlat : [AVAudioUnitComponent] = []
+    var pluginSelectionDelegate : PluginSelectionDelegate!
     override public func viewDidLoad() {
         super.viewDidLoad()
         instrumentPopup.target = self
@@ -86,10 +88,13 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         reloadInstruments()
         select(popup: instrumentPopup, list: instrumentsFlat, pluginSelection: state.virtualInstrument)
         
+
         fillEffectsPopup()
         let effectsPopups = [audioFXPopup!, audioFXPopup2!]
         for i in 0..<effectsPopups.count{
-            let pluginSelection = state.getEffect(number: i)
+            let pluginSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .effect, pluginNumber: i)
+
+            //let pluginSelection = state.getEffect(number: i)
             let popup = effectsPopups[i]
             select(popup: popup, list: getListOfEffects(), pluginSelection: pluginSelection)
         }
@@ -161,32 +166,28 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc func audioEffectChanged(sender: Any){
         guard let popupButton = sender as? NSPopUpButton else { return }
-        guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
         let number = popupButton.tag
         let index = popupButton.indexOfSelectedItem
         let effects = getListOfEffects()
         if index >= effects.count {
-            pluginSelectionDelegate?.deselectEffect(channel: trackNumber, number: number, type: type)
+            pluginSelectionDelegate.deselectEffect(channel: trackNumber, number: number, type: type)
             return
         }
         let effect = effects[index]
-        let effectSelection = PluginSelection(manufacturer: effect.manufacturerName, name: effect.name)
-        if let channelEffect = channelState.getEffect(number: number), channelEffect.manufacturer == effect.manufacturerName, channelEffect.name == effect.name {
-            //If its already there, and it matches current selection, simply show interface
-            pluginSelectionDelegate?.displayEffectInterface(channel: trackNumber, number: number, type: type)
+        if let previousEffect = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .effect, pluginNumber: number), previousEffect.manufacturer == effect.manufacturerName, previousEffect.name == effect.name {
+            pluginSelectionDelegate.displayEffectInterface(channel: trackNumber, number: number, type: type)
         } else {
-            channelState.set(effect: effectSelection, number: number)
-            pluginSelectionDelegate?.select(effect: effect, channel: trackNumber, number: number, type: type)
+            pluginSelectionDelegate.select(effect: effect, channel: trackNumber, number: number, type: type)
         }
     }
     ////////////////////////////////////////////////////////
     // Instruments
     /////////////////////////////////////////////////////////
     private func reloadInstruments() {
-        if let instruments = pluginSelectionDelegate?.getListOfInstruments(){
-            instrumentsFlat = instruments
-            fillInstrumentPopup()
-        }
+        let instruments = pluginSelectionDelegate.getListOfInstruments()
+        instrumentsFlat = instruments
+        fillInstrumentPopup()
+              
     }
     private func fillInstrumentPopup(){
         instrumentPopup.removeAllItems()
@@ -201,21 +202,18 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let string = instrument.manufacturerName + "-" + instrument.name
         return string
     }
-    var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
-    var instrumentsFlat : [AVAudioUnitComponent] = []
-    var pluginSelectionDelegate : PluginSelectionDelegate?
     @objc func instrumentChanged(){
         guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
         let index = instrumentPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
         if component.manufacturerName == channelState.virtualInstrument.manufacturer,
             component.name == channelState.virtualInstrument.name {
-            pluginSelectionDelegate?.displayInstrumentInterface(channel: trackNumber)
+            pluginSelectionDelegate.displayInstrumentInterface(channel: trackNumber)
             return
         } else {
             channelState.virtualInstrument.manufacturer = component.manufacturerName
             channelState.virtualInstrument.name = component.name
-            pluginSelectionDelegate?.selectInstrument(component, channel: trackNumber, type: type)
+            pluginSelectionDelegate.selectInstrument(component, channel: trackNumber, type: type)
             return
         }
     }

@@ -72,13 +72,12 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
         if section == 0{
             return 1
         } else if section == 1{
-            return 16
+            return 1
         } else if section == 2{
             return 1
         }
         return 0
     }
-    
     public func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         let bundle = Bundle(for: ChannelCollectionViewItem.self)
         if indexPath[0] == 0{
@@ -96,10 +95,9 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
         }
         return channelView
     }
-
 }
 
-extension MixerViewController : PluginSelectionDelegate{
+extension MixerViewController : PluginSelectionDelegate{ 
     func getListOfInstruments() -> [AVAudioUnitComponent] {
         let instruments = AudioService.shared.getListOfInstruments()
         return instruments
@@ -128,6 +126,10 @@ extension MixerViewController : PluginSelectionDelegate{
         AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) { [weak self] (successful) in
             self?.displayEffectInterface(channel: channel, number: number, type: type)
         }
+    }
+    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+        let pluginSelection = AudioService.shared.getPluginSelection(channel: channel, channelType: channelType, pluginType: pluginType, pluginNumber: pluginNumber)
+        return pluginSelection
     }
     func deselectEffect(channel: Int, number: Int, type: ChannelType) {
         AudioService.shared.deselectEffect(channel: channel, number: number, type: type)

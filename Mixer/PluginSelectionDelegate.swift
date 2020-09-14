@@ -18,6 +18,7 @@ protocol PluginSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType)
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType)
     func deselectEffect(channel: Int, number: Int, type: ChannelType)
+    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection?
     func getListOfInstruments() -> [AVAudioUnitComponent]
     func displayInstrumentInterface(channel: Int)
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
