@@ -86,9 +86,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }  
         
         reloadInstruments()
-        select(popup: instrumentPopup, list: instrumentsFlat, pluginSelection: state.virtualInstrument)
+        let instrumentSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: 0)
+        select(popup: instrumentPopup, list: instrumentsFlat, pluginSelection: instrumentSelection)
         
-
         fillEffectsPopup()
         let effectsPopups = [audioFXPopup!, audioFXPopup2!]
         for i in 0..<effectsPopups.count{
@@ -203,16 +203,16 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         return string
     }
     @objc func instrumentChanged(){
-        guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
+//        guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
         let index = instrumentPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
-        if component.manufacturerName == channelState.virtualInstrument.manufacturer,
-            component.name == channelState.virtualInstrument.name {
+        if let virtualInstrument = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
+            component.name == virtualInstrument.name {
             pluginSelectionDelegate.displayInstrumentInterface(channel: trackNumber)
             return
         } else {
-            channelState.virtualInstrument.manufacturer = component.manufacturerName
-            channelState.virtualInstrument.name = component.name
+//            channelState.virtualInstrument.manufacturer = component.manufacturerName
+//            channelState.virtualInstrument.name = component.name
             pluginSelectionDelegate.selectInstrument(component, channel: trackNumber, type: type)
             return
         }

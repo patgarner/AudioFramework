@@ -20,14 +20,14 @@ public class ChannelState : Codable, Equatable{
     public var solo = false
     public var pan = 64
     public var number = 0
-    public var virtualInstrument = PluginSelection()
+//    public var virtualInstrument = PluginSelection()
     public static func == (lhs: ChannelState, rhs: ChannelState) -> Bool {
         if lhs.mute != rhs.mute { return false }
         if lhs.volume != rhs.volume { return false }
         if lhs.trackName != rhs.trackName { return false }
         if lhs.solo != rhs.solo { return false }
         if lhs.pan != rhs.pan { return false }
-        if lhs.virtualInstrument != rhs.virtualInstrument { return false }
+//        if lhs.virtualInstrument != rhs.virtualInstrument { return false }
         return true
     }
 }

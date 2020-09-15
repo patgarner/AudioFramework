@@ -72,7 +72,7 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
         if section == 0{
             return 1
         } else if section == 1{
-            return 1
+            return 2
         } else if section == 2{
             return 1
         }
