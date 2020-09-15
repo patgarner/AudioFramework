@@ -141,13 +141,24 @@ class ChannelController {
         }
     }
     func getEffect(number: Int) -> AVAudioUnit?{
-        if number >= effects.count {
+        if number >= effects.count || number < 0 {
             return nil
         }
         return effects[number]
     }
     func createIONodes() {
         assertionFailure("ChannelController child must override createIONodes()")
+    }
+    func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+        if pluginType == .effect{
+            guard let effect = getEffect(number: pluginNumber) else { return nil }
+            let manufacturer = effect.manufacturerName
+            let name = effect.name
+            let pluginSelection = PluginSelection(manufacturer: manufacturer, name: name)
+            return pluginSelection
+        } else {
+            return nil
+        }
     }
 }
 

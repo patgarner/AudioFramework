@@ -82,7 +82,11 @@ class InstrumentChannelController : ChannelController{
         self.delegate.engine.attach(mixerOutput)
         self.outputNode = mixerOutput
     }
-    func getInstrumentPluginSelection() -> PluginSelection? {
+    override func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+        if pluginType == .effect {
+            let pluginSelection = super.getPluginSelection(pluginType: pluginType, pluginNumber: pluginNumber)
+            return pluginSelection
+        }
         guard let audioUnit = instrumentHost.audioUnit else { return nil }
         let manufacturer = audioUnit.manufacturerName
         let name = audioUnit.name

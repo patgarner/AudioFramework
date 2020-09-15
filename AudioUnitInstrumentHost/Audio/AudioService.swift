@@ -187,19 +187,9 @@ public class AudioService: NSObject {
         }
     }
     func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
-        if pluginType == .effect{
-            guard let effect = getAudioEffect(channel: channel, number: pluginNumber, type: channelType) else { return nil }
-            let manufacturer = effect.manufacturerName
-            let name = effect.name
-            let pluginSelection = PluginSelection(manufacturer: manufacturer, name: name)
-            return pluginSelection
-        } else if pluginType == .instrument {
-            guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
-            guard let instrumentController = channelController as? InstrumentChannelController else { return nil }
-            let pluginSelection = instrumentController.getInstrumentPluginSelection()
-            return pluginSelection
-        }
-        return nil
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
+        let pluginSelection = channelController.getPluginSelection(pluginType: pluginType, pluginNumber: pluginNumber)
+        return pluginSelection
     }
     func getChannelController(type: ChannelType, channel: Int) -> ChannelController? {
         if channel < 0 { return nil }
