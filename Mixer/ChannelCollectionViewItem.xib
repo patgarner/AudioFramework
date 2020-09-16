@@ -70,7 +70,7 @@
                 </popUpButton>
                 <slider horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="RXO-TX-0OP" userLabel="Send Level">
                     <rect key="frame" x="46" y="246" width="28" height="30"/>
-                    <sliderCell key="cell" alignment="left" maxValue="100" allowsTickMarkValuesOnly="YES" sliderType="circular" id="BGQ-dS-zcF"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="1" sliderType="circular" id="BGQ-dS-zcF"/>
                 </slider>
                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Joq-kQ-cdh" userLabel="Send Destination">
                     <rect key="frame" x="-5" y="246" width="47" height="25"/>
@@ -97,7 +97,7 @@
                         <constraint firstAttribute="width" constant="30" id="6SH-zX-HIs"/>
                         <constraint firstAttribute="height" constant="30" id="s6j-8B-Hqj"/>
                     </constraints>
-                    <sliderCell key="cell" alignment="left" maxValue="127" allowsTickMarkValuesOnly="YES" sliderType="circular" id="ahU-1G-g8a"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="127" allowsTickMarkValuesOnly="YES" sliderType="circular" id="ahU-1G-g8a"/>
                 </slider>
                 <textField verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bWK-6R-yM3">
                     <rect key="frame" x="0.0" y="188" width="72" height="21"/>
@@ -112,7 +112,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="128" id="YPs-dA-agU"/>
                     </constraints>
-                    <sliderCell key="cell" alignment="left" maxValue="127" doubleValue="50" tickMarkPosition="right" numberOfTickMarks="5" sliderType="linear" id="HLk-Fp-38z"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="127" doubleValue="50" tickMarkPosition="right" numberOfTickMarks="5" sliderType="linear" id="HLk-Fp-38z"/>
                 </slider>
                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TKq-fY-h6f" userLabel="Mute">
                     <rect key="frame" x="-6" y="15" width="42" height="32"/>

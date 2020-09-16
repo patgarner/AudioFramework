@@ -20,20 +20,19 @@ class MasterChannelController : ChannelController{
             audioUnits.append(inputNode!)
         }
         audioUnits.append(contentsOf: effects)
+        if preOutputNode != nil {
+            audioUnits.append(preOutputNode!)
+        }
         if outputNode != nil {
             audioUnits.append(outputNode!)
         }
         return audioUnits
     }
     override func createIONodes() {
-        let mixerInput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(mixerInput)
-        self.inputNode = mixerInput
-        
-        let mixerOutput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(mixerOutput)
-        self.outputNode = mixerOutput
-        let format = mixerInput.outputFormat(forBus: 0)
-        delegate.engine.connect(mixerInput, to: mixerOutput, format: format)
+        super.createIONodes()
+        self.inputNode = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(inputNode!)
+        let format = inputNode!.outputFormat(forBus: 0)
+        self.delegate.engine.connect(inputNode!, to: outputNode!, format: format)
     }
 }

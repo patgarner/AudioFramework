@@ -20,7 +20,7 @@ public class ChannelModels : Codable, Equatable, ChannelViewDelegate{
         initialize()
     }
     private func initialize(){
-        for _ in 0..<16 {
+        for _ in 0..<1 {
             let channel = ChannelModel()
             channels.append(channel)
         }

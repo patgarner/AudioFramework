@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 
 class AudioNodeFactory{
-    class func mixerNode() -> AVAudioNode{
+    class func mixerNode() -> AVAudioMixerNode{
         let mixerNode = AVAudioMixerNode()
         return mixerNode
     }

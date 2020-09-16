@@ -18,8 +18,9 @@ class ChannelController {
     var type : ChannelType = .midiInstrument
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
+    var preOutputNode : AVAudioNode? = nil
     var outputNode : AVAudioNode? = nil
-    var sendOutputs : [AVAudioNode] = []
+    var sendOutputs : [AVAudioMixerNode] = []
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -58,7 +59,16 @@ class ChannelController {
                 print("Sorry, engine needs to contain BOTH nodes it is connecting.")
             }
         }
-        //delegate?.updateChannelOutput(avAudioNode: audioUnits.last!)
+        guard let preOutputNode = preOutputNode else { return }
+        let format = preOutputNode.outputFormat(forBus: 0)
+        for sendNode in sendOutputs{
+            delegate.engine.connect(preOutputNode, to: sendNode, format: format)
+        }
+        for i in 0..<audioUnits.count{
+            let node = audioUnits[i]
+            let connections = delegate.engine.outputConnectionPoints(for: node, outputBus: 0)
+            print("node: \(i), numConnections:\(connections.count)")
+        }
     }
     func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits
@@ -138,7 +148,17 @@ class ChannelController {
         return effects[number]
     }
     func createIONodes() {
-        assertionFailure("ChannelController child must override createIONodes()")
+        let mixerOutput = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(mixerOutput)
+        self.outputNode = mixerOutput
+        
+        let sendOutput = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(sendOutput)
+        sendOutputs.append(sendOutput)
+        
+        let preOutput = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(preOutput)
+        preOutputNode = preOutput
     }
     func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect{
@@ -150,6 +170,11 @@ class ChannelController {
         } else {
             return nil
         }
+    }
+    func setSend(volume: Double, number: Int){
+        if number < 0 || number >= sendOutputs.count { return }
+        let sendOutput = sendOutputs[number]
+        sendOutput.volume = Float(volume)
     }
 }
 

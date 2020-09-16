@@ -13,7 +13,7 @@
 import Cocoa
 import AVFoundation
 
-public class MixerViewController: NSViewController, NSCollectionViewDataSource {
+public class MixerViewController: NSViewController {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     public var delegate : ChannelViewDelegate?
@@ -53,9 +53,9 @@ public class MixerViewController: NSViewController, NSCollectionViewDataSource {
         }
         instrumentWindowController!.showWindow(self)
     }
-    ///////////////////////////////////////////////////
-    // CollectionViewDataSource
-    ///////////////////////////////////////////////////
+}
+
+extension MixerViewController : NSCollectionViewDataSource{
     public func numberOfSections(in collectionView: NSCollectionView) -> Int {
         return 4
     }
@@ -166,9 +166,12 @@ extension MixerViewController : PluginSelectionDelegate{
         let busses = AudioService.shared.numBusses()
         return busses
     }
-     func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
+    func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
         AudioService.shared.selectInputBus(number: number, channel: channel, channelType: channelType)
-     }
+    }
+    func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
+        AudioService.shared.setSend(volume: volume, sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
+    }
     
 }
 

@@ -72,18 +72,16 @@ class InstrumentChannelController : ChannelController{
             audioUnits.append(instrumentAU)
         }
         audioUnits.append(contentsOf: effects)
+        if let preOutput = preOutputNode{
+            audioUnits.append(preOutput)
+        }
         if let output = outputNode {
             audioUnits.append(output)
         }
         return audioUnits
     }
     override func createIONodes() {
-        let mixerOutput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(mixerOutput)
-        self.outputNode = mixerOutput
-        let sendOutput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(sendOutput)
-        sendOutputs.append(sendOutput)
+        super.createIONodes()
     }
     override func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect {

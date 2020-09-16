@@ -25,4 +25,5 @@ protocol PluginSelectionDelegate{
     func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType)
     func numBusses() -> Int
     func selectInputBus(number: Int, channel: Int, channelType: ChannelType)
+    func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType)
 }

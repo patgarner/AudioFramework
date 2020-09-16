@@ -55,6 +55,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         trackNameField.action = #selector(trackNameChanged)
         sendPopup.target = self
         sendPopup.action = #selector(sendChanged)
+        sendLevelKnob.target = self
+        sendLevelKnob.action = #selector(sendLevelChanged)
         refresh()
     }
     public func refresh(){
@@ -288,6 +290,24 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             busList.append(title)
         }
         return busList
+    }
+    @objc func sendLevelChanged(){
+        let blackoutRegion = 0.2
+        let upperLim = 0.5 + (blackoutRegion * 0.5)
+        let lowerLim = 0.5 - (blackoutRegion * 0.5)
+        var rawValue = sendLevelKnob.doubleValue
+        if rawValue >= 0.5, rawValue < upperLim{
+            rawValue = upperLim
+            sendLevelKnob.doubleValue = rawValue
+        } else if rawValue < 0.5, rawValue > lowerLim{
+            rawValue = lowerLim
+            sendLevelKnob.doubleValue = rawValue
+        } 
+        let rotatedValue = (rawValue + 0.5).truncatingRemainder(dividingBy: 1.0)
+        let nonBlackoutRegion = 1.0 - blackoutRegion
+        var calibratedValue = (rotatedValue - blackoutRegion * 0.5) / nonBlackoutRegion
+        if calibratedValue < 0.000001 { calibratedValue = 0 }
+        pluginSelectionDelegate.setSend(volume: calibratedValue, sendNumber: 0, channelNumber: trackNumber, channelType: type)
     }
 }
 

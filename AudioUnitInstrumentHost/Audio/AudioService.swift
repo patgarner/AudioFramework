@@ -34,17 +34,18 @@ public class AudioService: NSObject {
         }
         if delegate == nil { return }
         //Instrument Channels
-        for _ in 0..<16{ //TODO: Get num channels from delegate
+        for _ in 0..<1{ //TODO: Get num channels from delegate
             let channelController = InstrumentChannelController(delegate: self)
             channelController.delegate = self
             instrumentControllers.append(channelController)
             if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
                 let format = channelOutput.outputFormat(forBus: 0)
                 engine.connect(channelOutput, to: masterInput, format: format)
+//                engine.connect(channelOutput, to: engine.mainMixerNode, format: format)
             }
         }
         //Aux Channels
-        for _ in 0..<2{
+        for _ in 0..<0{
             let auxController = AuxChannelController(delegate: self)
             auxController.delegate = self
             auxController.type = .aux
@@ -55,7 +56,7 @@ public class AudioService: NSObject {
             }
         }
         //Busses
-        for _ in 0..<4{
+        for _ in 0..<0{
             let bus = AudioNodeFactory.mixerNode()
             engine.attach(bus)
             busses.append(bus)
@@ -128,6 +129,15 @@ public class AudioService: NSObject {
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
         channelController.noteOn(note, withVelocity: velocity, channel: channel)
+        
+        let allNodes = engine.attachedNodes
+        for node in allNodes{
+            print("node = \(node)")
+            let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
+            for connection in connections{
+                print("connection: \(connection) node: \(connection.node)")
+            }
+        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -245,17 +255,17 @@ public class AudioService: NSObject {
         }
     }
     public func render(musicSequence: MusicSequence, url: URL){
-        engine.musicSequence = musicSequence
-        var allMidiInstruments : [AVAudioUnit] = []
-        for channel in instrumentControllers {
-            if let audioUnit = channel.instrumentHost.audioUnit{
-                allMidiInstruments.append(audioUnit)
-            }
-        }
-
-        let sequencer = AVAudioSequencer(audioEngine: engine)
-        let track = AVMusicTrack()
-        track.destinationAudioUnit = instrumentControllers[0].instrumentHost.audioUnit
+//        engine.musicSequence = musicSequence
+//        var allMidiInstruments : [AVAudioUnit] = []
+//        for channel in instrumentControllers {
+//            if let audioUnit = channel.instrumentHost.audioUnit{
+//                allMidiInstruments.append(audioUnit)
+//            }
+//        }
+//
+//        let sequencer = AVAudioSequencer(audioEngine: engine)
+//        let track = AVMusicTrack()
+//        track.destinationAudioUnit = instrumentControllers[0].instrumentHost.audioUnit
     }
     func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
@@ -281,6 +291,10 @@ public class AudioService: NSObject {
         let bus = busses[number]
         let format = bus.outputFormat(forBus: 0)
         engine.connect(bus, to: channelInput, format: format)
+    }
+    func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
+        guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return }
+        channelController.setSend(volume: volume, number: sendNumber)
     }
 }
 
