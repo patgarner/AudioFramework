@@ -13,7 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Foundation
 import AVFoundation
 
-public class ChannelState : Codable, Equatable{
+public class ChannelModel : Codable, Equatable{
     public var mute = false
     public var volume = 127
     public var trackName = ""
@@ -21,7 +21,7 @@ public class ChannelState : Codable, Equatable{
     public var pan = 64
     public var number = 0
 //    public var virtualInstrument = PluginSelection()
-    public static func == (lhs: ChannelState, rhs: ChannelState) -> Bool {
+    public static func == (lhs: ChannelModel, rhs: ChannelModel) -> Bool {
         if lhs.mute != rhs.mute { return false }
         if lhs.volume != rhs.volume { return false }
         if lhs.trackName != rhs.trackName { return false }

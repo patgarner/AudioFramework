@@ -19,6 +19,7 @@ class ChannelController {
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
     var outputNode : AVAudioNode? = nil
+    var sendOutputs : [AVAudioNode] = []
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -94,17 +95,7 @@ class ChannelController {
             au.fullState = pluginData.state
         }
     }
-    public func loadEffect(fromDescription desc: AudioComponentDescription?, number: Int, completion: @escaping (Bool)->()) {
-        //Case: desc is nil but effect number > num effects { do nothing }
-        //Case: desc is nil but effect number < num effects { delete item from array. Reconnect everything }
-        guard let desc = desc else {
-            if number >= effects.count { return }
-            effects.remove(at: number) //Big problem if effects out of sequence
-            reconnectNodes()
-            completion(false)
-            return
-        }
-        
+    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
         let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
@@ -167,7 +158,7 @@ protocol ChannelControllerDelegate{
     var engine : AVAudioEngine { get }
 }
 
-enum PluginType{
+public enum PluginType{
     case instrument
     case effect
 }

@@ -9,7 +9,7 @@
             <connections>
                 <outlet property="audioFXPopup" destination="4Q9-gA-9iY" id="qS8-kx-Dra"/>
                 <outlet property="audioFXPopup2" destination="5mR-Mn-l4r" id="hgM-OJ-Sck"/>
-                <outlet property="instrumentPopup" destination="CY1-Lc-T62" id="PGY-Pu-SaA"/>
+                <outlet property="inputPopup" destination="CY1-Lc-T62" id="PGY-Pu-SaA"/>
                 <outlet property="labelView" destination="hRq-QI-WuQ" id="G6O-K7-vte"/>
                 <outlet property="labelViewTrailingConstraint" destination="7oZ-fm-66n" id="e90-5d-kb5"/>
                 <outlet property="muteButton" destination="TKq-fY-h6f" id="DsD-cO-PXw"/>
@@ -154,8 +154,8 @@
                     <rect key="frame" x="-100" y="0.0" width="72" height="400"/>
                     <subviews>
                         <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="bJK-rI-XVz">
-                            <rect key="frame" x="44" y="330" width="27" height="16"/>
-                            <textFieldCell key="cell" lineBreakMode="clipping" title="Inst" id="iob-8O-uog">
+                            <rect key="frame" x="36" y="330" width="35" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="Input" id="iob-8O-uog">
                                 <font key="font" usesAppearanceFont="YES"/>
                                 <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>

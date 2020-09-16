@@ -14,7 +14,7 @@ import Cocoa
 import AVFoundation
 
 public class ChannelCollectionViewItem: NSCollectionViewItem {
-    @IBOutlet weak var instrumentPopup: NSPopUpButton!
+    @IBOutlet weak var inputPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup2: NSPopUpButton!
     @IBOutlet weak var sendPopup: NSPopUpButton!
@@ -27,7 +27,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var trackNameField: NSTextField!
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
-    var delegate : ChannelViewDelegate? 
+    var delegate : ChannelViewDelegate! 
     var trackNumber = -1
     var type = ChannelType.midiInstrument
     var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
@@ -35,8 +35,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var pluginSelectionDelegate : PluginSelectionDelegate!
     override public func viewDidLoad() {
         super.viewDidLoad()
-        instrumentPopup.target = self
-        instrumentPopup.action = #selector(instrumentChanged)
+        inputPopup.target = self
+        inputPopup.action = #selector(inputChanged)
         audioFXPopup.target = self
         audioFXPopup.action = #selector(audioEffectChanged)
         audioFXPopup2.target = self
@@ -53,6 +53,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         soloButton.action = #selector(soloChanged)
         trackNameField.target = self
         trackNameField.action = #selector(trackNameChanged)
+        sendPopup.target = self
+        sendPopup.action = #selector(sendChanged)
         refresh()
     }
     public func refresh(){
@@ -82,19 +84,24 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         if type == .master {
             self.trackNameField.stringValue = "Master"
             self.trackNameField.isEditable = false
-            instrumentPopup.isHidden = true
-        }  
-        
-        reloadInstruments()
-        let instrumentSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: 0)
-        select(popup: instrumentPopup, list: instrumentsFlat, pluginSelection: instrumentSelection)
+            inputPopup.isHidden = true
+        }  else if type == .aux {
+            labelView.color = NSColor(calibratedRed: 0.68, green: 0.75, blue: 0.85, alpha: 1.0)
+            self.trackNameField.stringValue = "Aux " + String(trackNumber + 1)
+            self.trackNameField.isEditable = false
+            reloadInstruments()
+        } else if type == .midiInstrument{
+            reloadInstruments()
+            let instrumentSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: 0)
+            select(popup: inputPopup, list: instrumentsFlat, pluginSelection: instrumentSelection)
+        }
+
+        fillSendPopup()
         
         fillEffectsPopup()
         let effectsPopups = [audioFXPopup!, audioFXPopup2!]
         for i in 0..<effectsPopups.count{
             let pluginSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .effect, pluginNumber: i)
-
-            //let pluginSelection = state.getEffect(number: i)
             let popup = effectsPopups[i]
             select(popup: popup, list: getListOfEffects(), pluginSelection: pluginSelection)
         }
@@ -111,6 +118,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
                 break
             }
         }
+    }
+    @objc private func sendChanged(){
+        let index = sendPopup.indexOfSelectedItem
+        pluginSelectionDelegate.select(sendNumber: 0, bus: index, channel: trackNumber, channelType: type)
     }
     @objc func volumeSliderMoved(){
         let sliderValue = volumeSlider.integerValue
@@ -186,36 +197,54 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     private func reloadInstruments() {
         let instruments = pluginSelectionDelegate.getListOfInstruments()
         instrumentsFlat = instruments
-        fillInstrumentPopup()
-              
+        fillInputPopup()
     }
-    private func fillInstrumentPopup(){
-        instrumentPopup.removeAllItems()
-        for instrument in instrumentsFlat{
-            let string = getMenuTitleFrom(instrument: instrument)
-            instrumentPopup.addItem(withTitle: string)
+    private func fillInputPopup(){
+        if type == .midiInstrument {
+            fillInstruments()
+        } else if type == .aux{
+            fillBusInputs()
         }
-        instrumentPopup.addItem(withTitle: "")
-        instrumentPopup.selectItem(at: instrumentPopup.numberOfItems - 1)
     }
-    private func getMenuTitleFrom(instrument: AVAudioUnitComponent) -> String{
-        let string = instrument.manufacturerName + "-" + instrument.name
-        return string
+    private func fillInstruments(){
+        inputPopup.removeAllItems()
+        for instrument in instrumentsFlat{
+            let string = instrument.manufacturerName + "-" + instrument.name
+
+            inputPopup.addItem(withTitle: string)
+        }
+        inputPopup.addItem(withTitle: "")
+        inputPopup.selectItem(at: inputPopup.numberOfItems - 1)
     }
-    @objc func instrumentChanged(){
-//        guard let channelState = delegate?.getChannelState(trackNumber, type: type) else { return }
-        let index = instrumentPopup.indexOfSelectedItem
+    private func fillBusInputs(){
+        inputPopup.removeAllItems()
+        for title in getBusList(){
+            inputPopup.addItem(withTitle: title)
+        }
+    }
+
+    @objc func inputChanged(){
+        if type == .aux {
+            audioInputChanged() 
+        } else if type == .midiInstrument{
+            inputInstrumentChanged()
+        }
+    }
+    private func inputInstrumentChanged(){
+        let index = inputPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
         if let virtualInstrument = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
             component.name == virtualInstrument.name {
             pluginSelectionDelegate.displayInstrumentInterface(channel: trackNumber)
             return
         } else {
-//            channelState.virtualInstrument.manufacturer = component.manufacturerName
-//            channelState.virtualInstrument.name = component.name
             pluginSelectionDelegate.selectInstrument(component, channel: trackNumber, type: type)
             return
         }
+    }
+    private func audioInputChanged(){
+        let index = inputPopup.indexOfSelectedItem
+        pluginSelectionDelegate.selectInputBus(number: index, channel: trackNumber, channelType: type)
     }
     /////////////////////////////////////////////////////////////////
     // Effects
@@ -241,6 +270,24 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             popup.addItem(withTitle: "")
             popup.selectItem(at: audioFXPopup.numberOfItems - 1)
         }
+    }
+    ///////////////////////////////////////////////////
+    //
+    ///////////////////////////////////////////////////
+    func fillSendPopup(){
+        sendPopup.removeAllItems()
+        for title in getBusList(){
+            sendPopup.addItem(withTitle: title)
+        }
+    }
+    func getBusList() -> [String]{
+        let numBusses = pluginSelectionDelegate.numBusses()
+        var busList : [String] = [""]
+        for i in 0..<numBusses{
+            let title = "Bus " + String(i+1)
+            busList.append(title)
+        }
+        return busList
     }
 }
 

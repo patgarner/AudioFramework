@@ -12,18 +12,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import Foundation
 
-public class ChannelStates : Codable, Equatable, ChannelViewDelegate{
-    var channels : [ChannelState] = []
-    var aux : [ChannelState] = []
-    var master : ChannelState = ChannelState()
-    
+public class ChannelModels : Codable, Equatable, ChannelViewDelegate{
+    var channels : [ChannelModel] = []
+    var aux : [ChannelModel] = []
+    var master : ChannelModel = ChannelModel()
     public init(){
         initialize()
     }
     private func initialize(){
         for _ in 0..<16 {
-            let channel = ChannelState()
+            let channel = ChannelModel()
             channels.append(channel)
+        }
+        for _ in 0..<2 {
+            let channel = ChannelModel()
+            aux.append(channel)
         }
     }
     public func setTrackName(trackNumber: Int, name: String) {
@@ -45,18 +48,25 @@ public class ChannelStates : Codable, Equatable, ChannelViewDelegate{
         return channel.mute
     }
     
-    public static func == (lhs: ChannelStates, rhs: ChannelStates) -> Bool {
+    public static func == (lhs: ChannelModels, rhs: ChannelModels) -> Bool {
         if lhs.channels.count != rhs.channels.count { return false }
         for i in 0..<lhs.channels.count{
             if lhs.channels[i] != rhs.channels[i] { return false }
         }
         return true
     }
-    public var count : Int {
-        return channels.count
+    public func numChannels(type: ChannelType) -> Int{
+        if type == .master{
+            return 1
+        } else if type == .midiInstrument{
+            return channels.count
+        } else if type == .aux {
+            return aux.count
+        }
+        return 0
     }
-    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelState? {
-        var state : ChannelState? = nil
+    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelModel? {
+        var state : ChannelModel? = nil
         if type == .midiInstrument{
             if index < 0 || index >= channels.count {
                 return nil
@@ -72,7 +82,7 @@ public class ChannelStates : Codable, Equatable, ChannelViewDelegate{
         }
         return state
     }
-    public func set(channelState: ChannelState, index: Int){
+    public func set(channelState: ChannelModel, index: Int){
         channels[index] = channelState
     }
     public func reset(){

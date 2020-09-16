@@ -22,4 +22,7 @@ protocol PluginSelectionDelegate{
     func getListOfInstruments() -> [AVAudioUnitComponent]
     func displayInstrumentInterface(channel: Int)
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
+    func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType)
+    func numBusses() -> Int
+    func selectInputBus(number: Int, channel: Int, channelType: ChannelType)
 }

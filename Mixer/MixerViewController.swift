@@ -3,17 +3,17 @@
 //
 /*
  Copyright 2020 David Mann Music LLC
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import Cocoa
 import AVFoundation
 
-public class MixerViewController: NSViewController, ChannelViewDelegate, NSCollectionViewDataSource {
+public class MixerViewController: NSViewController, NSCollectionViewDataSource {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     public var delegate : ChannelViewDelegate?
@@ -28,21 +28,12 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
     override public func viewDidLoad() {
         super.viewDidLoad()
     }
-
+    
     override public func updateViewConstraints() {
         super.updateViewConstraints()
     }
     public func refresh(){
         channelCollectionView.reloadData()
-    }
-    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelState? {
-        delegate?.getChannelState(index, type: type)
-    }
-    public func set(channelState: ChannelState, index: Int){
-        delegate?.set(channelState: channelState, index: index)
-    }
-    public func set(volume: Int, channel: Int) {
-        AudioService.shared.set(volume: UInt8(volume), channel: UInt8(channel))
     }
     func loadVC(){
         let contentRect = NSMakeRect(100, 100, 1000, 1000)
@@ -66,34 +57,59 @@ public class MixerViewController: NSViewController, ChannelViewDelegate, NSColle
     // CollectionViewDataSource
     ///////////////////////////////////////////////////
     public func numberOfSections(in collectionView: NSCollectionView) -> Int {
-        return 3
+        return 4
     }
     public func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0{
+        if section == 0{ //Label
             return 1
-        } else if section == 1{
-            return 2
-        } else if section == 2{
+        } else if section == 1{ //Instrument Channels
+            return numChannels(type: .midiInstrument)
+        } else if section == 2{ //Aux Channels
+            return numChannels(type: .aux)
+        } else if section == 3{ //Master Channel
             return 1
         }
         return 0
     }
     public func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         let bundle = Bundle(for: ChannelCollectionViewItem.self)
-        if indexPath[0] == 0{
-            let channelView = ChannelCollectionViewItem(nibName: nil, bundle: bundle)
-            channelView.type = .labels
-            return channelView
-        }
         let channelView = ChannelCollectionViewItem(nibName: nil, bundle: bundle)
         channelView.delegate = self
         let trackNumber = indexPath[1]
         channelView.trackNumber = trackNumber
         channelView.pluginSelectionDelegate = self
-        if indexPath[0] == 2{
+        if indexPath[0] == 0{
+            channelView.type = .labels
+        } else if indexPath[0] == 1{
+            channelView.type = .midiInstrument
+        } else if indexPath[0] == 2{
+            channelView.type = .aux
+        } else if indexPath[0] == 3{
             channelView.type = .master
         }
         return channelView
+    }
+}
+
+extension MixerViewController : ChannelViewDelegate{
+    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelModel? {
+        delegate?.getChannelState(index, type: type)
+    }
+    public func set(channelState: ChannelModel, index: Int){
+        delegate?.set(channelState: channelState, index: index)
+    }
+    public func setMasterVolume(_ volume: Float) {
+        AudioService.shared.engine.mainMixerNode.outputVolume = volume
+    }
+    public func set(volume: Int, channel: Int) {
+        AudioService.shared.set(volume: UInt8(volume), channel: UInt8(channel))
+    }
+    public func numChannels(type: ChannelType) -> Int{
+        if let numChannels = delegate?.numChannels(type: type){
+            return numChannels
+        } else {
+            return 0
+        }
     }
 }
 
@@ -101,9 +117,6 @@ extension MixerViewController : PluginSelectionDelegate{
     func getListOfInstruments() -> [AVAudioUnitComponent] {
         let instruments = AudioService.shared.getListOfInstruments()
         return instruments
-    }
-    public func setMasterVolume(_ volume: Float) {
-        AudioService.shared.engine.mainMixerNode.outputVolume = volume
     }
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0, type: ChannelType) { //TODO: This absolutely should NOT be here.
         AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
@@ -146,6 +159,16 @@ extension MixerViewController : PluginSelectionDelegate{
             }           
         }
     }
+    func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType){
+        AudioService.shared.select(sendNumber: sendNumber, bus: bus, channel: channel, channelType: channelType)
+    }
+    func numBusses() -> Int{
+        let busses = AudioService.shared.numBusses()
+        return busses
+    }
+     func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
+        AudioService.shared.selectInputBus(number: number, channel: channel, channelType: channelType)
+     }
     
 }
 

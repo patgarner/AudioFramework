@@ -81,6 +81,9 @@ class InstrumentChannelController : ChannelController{
         let mixerOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(mixerOutput)
         self.outputNode = mixerOutput
+        let sendOutput = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(sendOutput)
+        sendOutputs.append(sendOutput)
     }
     override func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect {
