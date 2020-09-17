@@ -167,7 +167,7 @@ extension MixerViewController : PluginSelectionDelegate{
         return busses
     }
     func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
-        AudioService.shared.selectInputBus(number: number, channel: channel, channelType: channelType)
+        AudioService.shared.selectInput(busNumber: number, channel: channel, channelType: channelType)
     }
     func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
         AudioService.shared.setSend(volume: volume, sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)

@@ -260,13 +260,19 @@ public class AudioService: NSObject {
     func numBusses() -> Int{
         return busses.count
     }
-    func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
+    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
         guard let channelInput = getChannelController(type: channelType, channel: channel)?.inputNode else { return }
+        if let previousBusInput = getBusInputNumber(channelNumber: channel, channelType: channelType){
+            if previousBusInput == busNumber { return }
+        }
         engine.disconnectNodeInput(channelInput)
-        if number < 0 || number >= busses.count { return }
-        let bus = busses[number]
+        if busNumber < 0 || busNumber >= busses.count { return }
+        let bus = busses[busNumber]
         let format = bus.outputFormat(forBus: 0)
-        engine.connect(bus, to: channelInput, format: format)
+        var connections = engine.outputConnectionPoints(for: bus, outputBus: 0)
+        let newConnection = AVAudioConnectionPoint(node: channelInput, bus: 0)
+        connections.append(newConnection)
+        engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
     func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return }
@@ -297,7 +303,6 @@ public class AudioService: NSObject {
         }
         return nil
     }
-
 }
 
 extension AudioService : ChannelControllerDelegate{
