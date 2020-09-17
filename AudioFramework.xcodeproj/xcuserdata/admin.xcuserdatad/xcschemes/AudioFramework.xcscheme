@@ -19,8 +19,5 @@
       useCustomWorkingDirectory = "NO"
       buildConfiguration = "Debug"
       allowLocationSimulation = "YES">
-      <PathRunnable
-         FilePath = "/Users/admin/Library/Developer/Xcode/DerivedData/Composer_Bot_Desktop-bkyzoowylzjpiwcjtsriztugcidg/Build/Products/Debug/Composer Bot Desktop.app">
-      </PathRunnable>
    </LaunchAction>
 </Scheme>

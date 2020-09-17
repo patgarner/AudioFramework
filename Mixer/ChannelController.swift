@@ -61,14 +61,17 @@ class ChannelController {
         }
         guard let preOutputNode = preOutputNode else { return }
         let format = preOutputNode.outputFormat(forBus: 0)
-        for sendNode in sendOutputs{
-            delegate.engine.connect(preOutputNode, to: sendNode, format: format)
+        var connectionPoints : [AVAudioConnectionPoint] = []
+        let connectionPoint = AVAudioConnectionPoint(node: outputNode!, bus: 0)
+        connectionPoints.append(connectionPoint)
+        for i in 0..<sendOutputs.count{
+            let sendOutput = sendOutputs[i]
+            let connectionPoint = AVAudioConnectionPoint(node: sendOutput, bus: 0)
+            connectionPoints.append(connectionPoint)
         }
-        for i in 0..<audioUnits.count{
-            let node = audioUnits[i]
-            let connections = delegate.engine.outputConnectionPoints(for: node, outputBus: 0)
-            print("node: \(i), numConnections:\(connections.count)")
-        }
+        delegate.engine.connect(preOutputNode, to: connectionPoints, fromBus: 0, format: format)
+
+//        delegate.engine.connect(<#T##node1: AVAudioNode##AVAudioNode#>, to: <#T##AVAudioNode#>, fromBus: <#T##AVAudioNodeBus#>, toBus: <#T##AVAudioNodeBus#>, format: <#T##AVAudioFormat?#>)
     }
     func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits
@@ -159,6 +162,7 @@ class ChannelController {
         let preOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
+//        AudioNodeFactory.splitter(channelSettable: self)
     }
     func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect{
@@ -175,6 +179,14 @@ class ChannelController {
         if number < 0 || number >= sendOutputs.count { return }
         let sendOutput = sendOutputs[number]
         sendOutput.volume = Float(volume)
+    }
+}
+
+extension ChannelController : ChannelSettable{
+    func setPreOutput(node: AVAudioUnit) {
+        self.delegate.engine.attach(node)
+        preOutputNode = node
+        reconnectNodes()
     }
 }
 

@@ -45,7 +45,7 @@ public class AudioService: NSObject {
             }
         }
         //Aux Channels
-        for _ in 0..<0{
+        for _ in 0..<2{
             let auxController = AuxChannelController(delegate: self)
             auxController.delegate = self
             auxController.type = .aux
@@ -56,7 +56,7 @@ public class AudioService: NSObject {
             }
         }
         //Busses
-        for _ in 0..<0{
+        for _ in 0..<1{
             let bus = AudioNodeFactory.mixerNode()
             engine.attach(bus)
             busses.append(bus)
@@ -130,14 +130,14 @@ public class AudioService: NSObject {
         let channelController = instrumentControllers[Int(channel)]
         channelController.noteOn(note, withVelocity: velocity, channel: channel)
         
-        let allNodes = engine.attachedNodes
-        for node in allNodes{
-            print("node = \(node)")
-            let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
-            for connection in connections{
-                print("connection: \(connection) node: \(connection.node)")
-            }
-        }
+//        let allNodes = engine.attachedNodes
+//        for node in allNodes{
+//            print("node = \(node)")
+//            let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
+//            for connection in connections{
+//                print("connection: \(connection) node: \(connection.node)")
+//            }
+//        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -288,7 +288,7 @@ public class AudioService: NSObject {
         engine.disconnectNodeInput(channelInput)
         if number < 1 { return }
         if number > busses.count { return }
-        let bus = busses[number]
+        let bus = busses[number-1]
         let format = bus.outputFormat(forBus: 0)
         engine.connect(bus, to: channelInput, format: format)
     }
