@@ -70,8 +70,6 @@ class ChannelController {
             connectionPoints.append(connectionPoint)
         }
         delegate.engine.connect(preOutputNode, to: connectionPoints, fromBus: 0, format: format)
-
-//        delegate.engine.connect(<#T##node1: AVAudioNode##AVAudioNode#>, to: <#T##AVAudioNode#>, fromBus: <#T##AVAudioNodeBus#>, toBus: <#T##AVAudioNodeBus#>, format: <#T##AVAudioFormat?#>)
     }
     func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits
@@ -162,7 +160,6 @@ class ChannelController {
         let preOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
-//        AudioNodeFactory.splitter(channelSettable: self)
     }
     func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect{
@@ -183,11 +180,6 @@ class ChannelController {
 }
 
 extension ChannelController : ChannelSettable{
-    func setPreOutput(node: AVAudioUnit) {
-        self.delegate.engine.attach(node)
-        preOutputNode = node
-        reconnectNodes()
-    }
 }
 
 protocol ChannelControllerDelegate{

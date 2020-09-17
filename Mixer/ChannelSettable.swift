@@ -10,5 +10,4 @@ import Foundation
 import AVFoundation
 
 protocol ChannelSettable{
-    func setPreOutput(node: AVAudioUnit)
 }

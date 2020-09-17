@@ -41,7 +41,6 @@ public class AudioService: NSObject {
             if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
                 let format = channelOutput.outputFormat(forBus: 0)
                 engine.connect(channelOutput, to: masterInput, format: format)
-//                engine.connect(channelOutput, to: engine.mainMixerNode, format: format)
             }
         }
         //Aux Channels
@@ -129,15 +128,6 @@ public class AudioService: NSObject {
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
         channelController.noteOn(note, withVelocity: velocity, channel: channel)
-        
-//        let allNodes = engine.attachedNodes
-//        for node in allNodes{
-//            print("node = \(node)")
-//            let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
-//            for connection in connections{
-//                print("connection: \(connection) node: \(connection.node)")
-//            }
-//        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -254,19 +244,7 @@ public class AudioService: NSObject {
             }
         }
     }
-    public func render(musicSequence: MusicSequence, url: URL){
-//        engine.musicSequence = musicSequence
-//        var allMidiInstruments : [AVAudioUnit] = []
-//        for channel in instrumentControllers {
-//            if let audioUnit = channel.instrumentHost.audioUnit{
-//                allMidiInstruments.append(audioUnit)
-//            }
-//        }
-//
-//        let sequencer = AVAudioSequencer(audioEngine: engine)
-//        let track = AVMusicTrack()
-//        track.destinationAudioUnit = instrumentControllers[0].instrumentHost.audioUnit
-    }
+    public func render(musicSequence: MusicSequence, url: URL){}
     func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
         let sendOutput = channelController.sendOutputs[sendNumber]
