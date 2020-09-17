@@ -128,18 +128,6 @@ public class AudioService: NSObject {
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
         channelController.noteOn(note, withVelocity: velocity, channel: channel)
-<<<<<<< HEAD
-=======
-        
-//        let allNodes = engine.attachedNodes
-//        for node in allNodes{
-//            print("node = \(node)")
-//            let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
-//            for connection in connections{
-//                print("connection: \(connection) node: \(connection.node)")
-//            }
-//        }
->>>>>>> 5bd6a24f3f4357ab39568abb55ee3529df7fa2ee
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {

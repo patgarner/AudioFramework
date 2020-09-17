@@ -70,11 +70,6 @@ class ChannelController {
             connectionPoints.append(connectionPoint)
         }
         delegate.engine.connect(preOutputNode, to: connectionPoints, fromBus: 0, format: format)
-<<<<<<< HEAD
-=======
-
-//        delegate.engine.connect(<#T##node1: AVAudioNode##AVAudioNode#>, to: <#T##AVAudioNode#>, fromBus: <#T##AVAudioNodeBus#>, toBus: <#T##AVAudioNodeBus#>, format: <#T##AVAudioFormat?#>)
->>>>>>> 5bd6a24f3f4357ab39568abb55ee3529df7fa2ee
     }
     func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits
@@ -186,14 +181,6 @@ class ChannelController {
 }
 
 extension ChannelController : ChannelSettable{
-<<<<<<< HEAD
-=======
-    func setPreOutput(node: AVAudioUnit) {
-        self.delegate.engine.attach(node)
-        preOutputNode = node
-        reconnectNodes()
-    }
->>>>>>> 5bd6a24f3f4357ab39568abb55ee3529df7fa2ee
 }
 
 protocol ChannelControllerDelegate{
