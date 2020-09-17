@@ -79,8 +79,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else {
             soloButton.state = .off
         }
-        volumeSlider.integerValue = state.volume
-        volumeValueTextField.integerValue = state.volume
+        volumeSlider.floatValue = state.volume
+        volumeValueTextField.floatValue = state.volume
         panKnob.integerValue = (state.pan + 64) % 128
         labelView.isHidden = true
         if type == .master {
@@ -126,18 +126,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         pluginSelectionDelegate.select(sendNumber: 0, bus: index, channel: trackNumber, channelType: type)
     }
     @objc func volumeSliderMoved(){
-        let sliderValue = volumeSlider.integerValue
-        volumeValueTextField.integerValue = sliderValue
+        let sliderValue = volumeSlider.floatValue
+        volumeValueTextField.floatValue = sliderValue
         volumeValueTextField.needsDisplay = true
-        if type == .master{
-            let volumeFloat = Float(sliderValue) / 128.0
-            delegate?.setMasterVolume(volumeFloat)
-            return 
-        } else if type == .midiInstrument{
-            delegate?.set(volume: sliderValue, channel: trackNumber)
-        }
+        delegate?.set(volume: sliderValue, channel: trackNumber, channelType: type)
         if let existingState = delegate?.getChannelState(trackNumber, type: type){
-            volumeValueTextField.integerValue = sliderValue
+            volumeValueTextField.floatValue = sliderValue
             existingState.volume = sliderValue
         }
     }
@@ -149,14 +143,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         
     }
     @objc func volumeTextChanged(){
-        let volumeString = volumeValueTextField.stringValue
-        guard let volume = Int(volumeString) else {
-            volumeSliderMoved()
-            return
-        }
+        let volume = volumeSlider.floatValue
         if let existingState = delegate?.getChannelState(trackNumber, type: type){
             existingState.volume = volume
-            volumeSlider.integerValue = volume
+            volumeSlider.floatValue = volume
         }
     }
     @objc func muteChanged(){

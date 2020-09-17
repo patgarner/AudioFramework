@@ -101,8 +101,8 @@ extension MixerViewController : ChannelViewDelegate{
     public func setMasterVolume(_ volume: Float) {
         AudioService.shared.engine.mainMixerNode.outputVolume = volume
     }
-    public func set(volume: Int, channel: Int) {
-        AudioService.shared.set(volume: UInt8(volume), channel: UInt8(channel))
+    public func set(volume: Float, channel: Int, channelType: ChannelType) {
+        AudioService.shared.set(volume: volume, channel: channel, channelType: channelType)
     }
     public func numChannels(type: ChannelType) -> Int{
         if let numChannels = delegate?.numChannels(type: type){

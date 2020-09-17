@@ -55,7 +55,7 @@ public class AudioService: NSObject {
             }
         }
         //Busses
-        for _ in 0..<1{
+        for _ in 0..<4{
             let bus = AudioNodeFactory.mixerNode()
             engine.attach(bus)
             busses.append(bus)
@@ -135,10 +135,9 @@ public class AudioService: NSObject {
         let channelController = instrumentControllers[Int(channel)]
         channelController.noteOff(note, channel: channel)
     } 
-    public func set(volume: UInt8, channel: UInt8){
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.set(volume: volume, channel: channel)
+    public func set(volume: Float, channel: Int, channelType: ChannelType){
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
+        channelController.volume = volume
     }
     public func set(pan: UInt8, channel: UInt8){
         if channel >= instrumentControllers.count { return }

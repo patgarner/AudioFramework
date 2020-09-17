@@ -19,7 +19,7 @@ class ChannelController {
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
     var preOutputNode : AVAudioNode? = nil
-    var outputNode : AVAudioNode? = nil
+    var outputNode : AVAudioMixerNode!
     var sendOutputs : [AVAudioMixerNode] = []
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
@@ -160,7 +160,6 @@ class ChannelController {
         let preOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
-//        AudioNodeFactory.splitter(channelSettable: self)
     }
     func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect{
@@ -177,6 +176,14 @@ class ChannelController {
         if number < 0 || number >= sendOutputs.count { return }
         let sendOutput = sendOutputs[number]
         sendOutput.volume = Float(volume)
+    }
+    var volume : Float {
+        get {
+            return outputNode!.outputVolume
+        }
+        set {
+            outputNode!.outputVolume = newValue
+        }
     }
 }
 
