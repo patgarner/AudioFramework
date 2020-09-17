@@ -92,7 +92,7 @@ public class ChannelModels : Codable, Equatable, ChannelViewDelegate{
             channel.trackName = ""
         }
     }
-    public func setMasterVolume(_ volume: Float) {}
+//    public func setMasterVolume(_ volume: Float) {}
     public func set(volume: Float, channel: Int, channelType: ChannelType) {}
     
 }

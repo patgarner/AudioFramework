@@ -20,7 +20,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var sendPopup: NSPopUpButton!
     @IBOutlet weak var sendLevelKnob: NSSlider!
     @IBOutlet weak var panKnob: NSSlider!
+//    @IBOutlet weak var volumeValueTextField: NSTextField!
     @IBOutlet weak var volumeValueTextField: NSTextField!
+    
+    @IBOutlet weak var test: NSTextField!
     @IBOutlet weak var volumeSlider: NSSlider!
     @IBOutlet weak var soloButton: NSButton!
     @IBOutlet weak var muteButton: NSButton!
@@ -213,6 +216,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         for title in getBusList(){
             inputPopup.addItem(withTitle: title)
         }
+        //inputPopup.selectItem(at: inputPopup.numberOfItems - 1)
+        if let busNumber = pluginSelectionDelegate.getBusInputNumber(channelNumber: trackNumber, channelType: type) {
+            inputPopup.selectItem(at: busNumber)
+        } else {
+            inputPopup.selectItem(at: inputPopup.numberOfItems - 1)
+        }
     }
 
     @objc func inputChanged(){
@@ -268,17 +277,22 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     ///////////////////////////////////////////////////
     func fillSendPopup(){
         sendPopup.removeAllItems()
-        for title in getBusList(){
-            sendPopup.addItem(withTitle: title)
+        let busList = getBusList()
+        sendPopup.addItems(withTitles: busList)
+        if let busNumber = pluginSelectionDelegate.getSendOutput(sendNumber: 0, channelNumber: trackNumber, channelType: type) {
+            sendPopup.selectItem(at: busNumber)
+        } else {
+            sendPopup.selectItem(at: sendPopup.numberOfItems - 1)
         }
     }
     func getBusList() -> [String]{
         let numBusses = pluginSelectionDelegate.numBusses()
-        var busList : [String] = [""]
+        var busList : [String] = []
         for i in 0..<numBusses{
             let title = "Bus " + String(i+1)
             busList.append(title)
         }
+        busList.append("")
         return busList
     }
     @objc func sendLevelChanged(){

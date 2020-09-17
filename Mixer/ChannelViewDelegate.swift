@@ -15,7 +15,7 @@ import Foundation
 public protocol ChannelViewDelegate {
     func getChannelState(_ index: Int, type: ChannelType) -> ChannelModel?
     func set(channelState: ChannelModel, index: Int)
-    func setMasterVolume(_ volume: Float)
+//    func setMasterVolume(_ volume: Float)
     func set(volume: Float, channel: Int, channelType: ChannelType)
     func numChannels(type: ChannelType) -> Int
 }

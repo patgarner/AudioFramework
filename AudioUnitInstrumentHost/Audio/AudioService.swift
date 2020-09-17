@@ -244,16 +244,16 @@ public class AudioService: NSObject {
         }
     }
     public func render(musicSequence: MusicSequence, url: URL){}
-    func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType){
+    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
         let sendOutput = channelController.sendOutputs[sendNumber]
         if engine.outputConnectionPoints(for: sendOutput, outputBus: 0).count > 0{
             engine.disconnectNodeOutput(sendOutput) 
         }
-        if bus == 0 { 
+        if busNumber < 0 || busNumber >= busses.count { 
             return
         }
-        let bus = busses[bus - 1]
+        let bus = busses[busNumber]
         let format = sendOutput.outputFormat(forBus: 0)
         engine.connect(sendOutput, to: bus, format: format)
     }
@@ -263,9 +263,8 @@ public class AudioService: NSObject {
     func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
         guard let channelInput = getChannelController(type: channelType, channel: channel)?.inputNode else { return }
         engine.disconnectNodeInput(channelInput)
-        if number < 1 { return }
-        if number > busses.count { return }
-        let bus = busses[number-1]
+        if number < 0 || number >= busses.count { return }
+        let bus = busses[number]
         let format = bus.outputFormat(forBus: 0)
         engine.connect(bus, to: channelInput, format: format)
     }
@@ -273,6 +272,32 @@ public class AudioService: NSObject {
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return }
         channelController.setSend(volume: volume, number: sendNumber)
     }
+    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
+        guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
+        if sendNumber < 0 || sendNumber >= channelController.sendOutputs.count { return nil }
+        let sendNode = channelController.sendOutputs[sendNumber]
+        let connections = engine.outputConnectionPoints(for: sendNode, outputBus: 0)
+        if connections.count != 1 { return nil }
+        guard let connectionNode = connections[0].node else { return nil }
+        for i in 0..<busses.count{
+            let bus = busses[i]
+            if connectionNode === bus { return i }
+        }
+        return nil
+    }
+    func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{
+        if channelType != .aux { return nil }
+        guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil }
+        guard let channelInput = channelController.inputNode else { return nil }
+        guard let inputConnection = engine.inputConnectionPoint(for: channelInput, inputBus: 0) else { return nil }
+        guard let sourceNode = inputConnection.node else { return nil}
+        for b in 0..<busses.count{
+            let bus = busses[b]
+            if sourceNode === bus { return b }
+        }
+        return nil
+    }
+
 }
 
 extension AudioService : ChannelControllerDelegate{

@@ -98,9 +98,9 @@ extension MixerViewController : ChannelViewDelegate{
     public func set(channelState: ChannelModel, index: Int){
         delegate?.set(channelState: channelState, index: index)
     }
-    public func setMasterVolume(_ volume: Float) {
-        AudioService.shared.engine.mainMixerNode.outputVolume = volume
-    }
+//    public func setMasterVolume(_ volume: Float) {
+//        AudioService.shared.engine.mainMixerNode.outputVolume = volume
+//    }
     public func set(volume: Float, channel: Int, channelType: ChannelType) {
         AudioService.shared.set(volume: volume, channel: channel, channelType: channelType)
     }
@@ -160,7 +160,7 @@ extension MixerViewController : PluginSelectionDelegate{
         }
     }
     func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType){
-        AudioService.shared.select(sendNumber: sendNumber, bus: bus, channel: channel, channelType: channelType)
+        AudioService.shared.select(sendNumber: sendNumber, busNumber: bus, channel: channel, channelType: channelType)
     }
     func numBusses() -> Int{
         let busses = AudioService.shared.numBusses()
@@ -172,6 +172,14 @@ extension MixerViewController : PluginSelectionDelegate{
     func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
         AudioService.shared.setSend(volume: volume, sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
     }
-    
+    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
+        let sendOutput = AudioService.shared.getSendOutput(sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
+        return sendOutput
+    }
+    func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{
+        let busOutput = AudioService.shared.getBusInputNumber(channelNumber: channelNumber, channelType: channelType)
+        return busOutput
+    }
+
 }
 

@@ -20,7 +20,7 @@
                 <outlet property="trackNameField" destination="4Gh-6W-30O" id="a8T-FZ-bkX"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
                 <outlet property="volumeSlider" destination="rTB-d8-KWM" id="2ZW-f9-kuW"/>
-                <outlet property="volumeValueTextField" destination="h6W-1F-h9N" id="ic9-Cv-Hec"/>
+                <outlet property="volumeValueTextField" destination="h6W-1F-h9N" id="scJ-MO-Dl5"/>
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
@@ -102,7 +102,7 @@
                 <textField verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h6W-1F-h9N" userLabel="Volume Field">
                     <rect key="frame" x="1" y="188" width="68" height="22"/>
                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" allowsUndo="NO" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" alignment="center" bezelStyle="round" id="A3Z-3a-71g">
-                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="#" negativeFormat="#" numberStyle="scientific" usesGroupingSeparator="NO" formatWidth="-1" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" minimumFractionDigits="2" maximumFractionDigits="2" id="cjK-0x-EI2">
+                        <numberFormatter key="formatter" formatterBehavior="custom10_4" positiveFormat="0.##" negativeFormat="-0.##" numberStyle="scientific" usesGroupingSeparator="NO" formatWidth="-1" groupingSize="0" minimumIntegerDigits="1" maximumIntegerDigits="1" minimumFractionDigits="2" maximumFractionDigits="2" decimalSeparator="." groupingSeparator="," id="cjK-0x-EI2">
                             <real key="minimum" value="1"/>
                             <real key="maximum" value="0.0"/>
                         </numberFormatter>
