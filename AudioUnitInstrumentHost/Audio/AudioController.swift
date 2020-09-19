@@ -220,6 +220,26 @@ public class AudioController: NSObject {
         }
         return nil
     }
+    public func getTrackName(channel: Int, channelType: ChannelType) -> String?{
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
+        let trackName = channelController.trackName
+        return trackName
+    }
+    public func isMuted(channel: Int, channelType: ChannelType) -> Bool{
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return false }
+        let mute = channelController.mute
+        return mute
+    }
+    public func numTracks(channelType: ChannelType) -> Int{
+        if channelType == .midiInstrument {
+            return instrumentControllers.count
+        } else if channelType == .aux {
+            return auxControllers.count
+        } else if channelType == .master {
+            return 1
+        }
+        return 0
+    }
     func load(viewController: NSViewController){
         delegate.load(viewController: viewController)
     }
@@ -247,46 +267,11 @@ extension AudioController : ChannelControllerDelegate{
 }
 
 extension AudioController : PluginSelectionDelegate{
-    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){
-        
-    }
-    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){
-        
-    }
-    func displayInstrumentInterface(channel: Int){
-        
-    }
-    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
-        
-    }
-    func getSendData(sendNumber: Int, channel: Int, channelType: ChannelType) -> SendData?{
-        //We need to know which # bus the send is connected to
-        //We need the send level
-        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
-        guard let send = channelController.get(sendNumber: sendNumber) else { return nil }
-        let sendData = SendData(busNumber: -1, level: send.outputVolume) //TODO: Get actual bus number
-        return sendData
-    }
+    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){}
+    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){}
+    func displayInstrumentInterface(channel: Int){}
+    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){}
     
-    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
-        if let channelController = getChannelController(type: type, channel: channel) {
-            channelController.deselectEffect(number: number)
-        }
-    }
-    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
-        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
-        let pluginSelection = channelController.getPluginSelection(pluginType: pluginType, pluginNumber: pluginNumber)
-        return pluginSelection
-    }
-    public func getListOfInstruments() -> [AVAudioUnitComponent] {
-        var desc = AudioComponentDescription()
-        desc.componentType = kAudioUnitType_MusicDevice
-        desc.componentSubType = 0
-        desc.componentManufacturer = 0
-        desc.componentFlags = 0
-        desc.componentFlagsMask = 0
-        return AVAudioUnitComponentManager.shared().components(matching: desc)
-    }
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
         guard let sendOutput = channelController.get(sendNumber: sendNumber) else { return }
@@ -303,9 +288,6 @@ extension AudioController : PluginSelectionDelegate{
     func numBusses() -> Int{
         return busses.count
     }
-//    func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
-//        <#code#>
-//    }
     func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
         guard let channelInput = getChannelController(type: channelType, channel: channel)?.inputNode else { return }
         if let previousBusInput = getBusInputNumber(channelNumber: channel, channelType: channelType){
@@ -319,10 +301,6 @@ extension AudioController : PluginSelectionDelegate{
         let newConnection = AVAudioConnectionPoint(node: channelInput, bus: 0)
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
-    }
-    func setSend(volume: Float, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
-        guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return }
-        channelController.setSend(volume: volume, number: sendNumber)
     }
     func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}

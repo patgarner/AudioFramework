@@ -13,13 +13,16 @@
 import Foundation
 import AVFoundation
 
-class ChannelController {
+class ChannelController : ChannelViewDelegate2 {
     var delegate : ChannelControllerDelegate!
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
     var preOutputNode : AVAudioNode? = nil
     var outputNode : AVAudioMixerNode!
     private var sendOutputs : [AVAudioMixerNode] = []
+    var solo = false
+    var trackName = ""
+    var mute = false
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -135,13 +138,6 @@ class ChannelController {
             completion(true)
         }
     }
-    func deselectEffect(number: Int){
-        if number < 0 || number >= effects.count{
-            return
-        }
-        effects.remove(at: number)
-        reconnectNodes()
-    }
     func set(effect: AVAudioUnit, number: Int){
         if number < effects.count { //There is already an effect there
             let existingEffect = effects[number]
@@ -168,6 +164,7 @@ class ChannelController {
         self.outputNode = mixerOutput
         
         let sendOutput = AudioNodeFactory.mixerNode()
+        sendOutput.outputVolume = 0.0
         self.delegate.engine.attach(sendOutput)
         sendOutputs.append(sendOutput)
         
@@ -175,23 +172,6 @@ class ChannelController {
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
     }
-    func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
-        if pluginType == .effect{
-            guard let effect = getEffect(number: pluginNumber) else { return nil }
-            let manufacturer = effect.manufacturerName
-            let name = effect.name
-            let pluginSelection = PluginSelection(manufacturer: manufacturer, name: name)
-            return pluginSelection
-        } else {
-            return nil
-        }
-    }
-    func setSend(volume: Float, number: Int){
-        if number < 0 || number >= sendOutputs.count { return }
-        let sendOutput = sendOutputs[number]
-        sendOutput.outputVolume = volume
-    }
-
     var pan : Float {
         get {
             return outputNode.pan
@@ -207,12 +187,9 @@ class ChannelController {
         let send = sendOutputs[sendNumber]
         return send
     }
-}
-
-extension ChannelController : ChannelSettable{
-}
-
-extension ChannelController : ChannelViewDelegate2 {
+    ///////////////////////////////////////////////////////////////////////////////
+    // ChannelViewDelegate2
+    ///////////////////////////////////////////////////////////////////////////////
     var volume : Float {
         get {
             return outputNode.outputVolume
@@ -221,6 +198,46 @@ extension ChannelController : ChannelViewDelegate2 {
             outputNode.outputVolume = newValue
         }
     }
+    func deselectEffect(number: Int){
+        if number < 0 || number >= effects.count{
+            return
+        }
+        effects.remove(at: number)
+        reconnectNodes()
+    }
+    func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+        if pluginType == .effect{
+            guard let effect = getEffect(number: pluginNumber) else { return nil }
+            let manufacturer = effect.manufacturerName
+            let name = effect.name
+            let pluginSelection = PluginSelection(manufacturer: manufacturer, name: name)
+            return pluginSelection
+        } else {
+            return nil
+        }
+    }
+    func setSend(volume: Float, sendNumber: Int){
+        if sendNumber < 0 || sendNumber >= sendOutputs.count { return }
+        let sendOutput = sendOutputs[sendNumber]
+        sendOutput.outputVolume = volume
+    }
+    func getSendData(sendNumber: Int) -> SendData?{
+        guard let send = get(sendNumber: sendNumber) else { return nil }
+        let sendData = SendData(busNumber: -1, level: send.outputVolume) //TODO: Get actual bus number
+        return sendData
+    }
+    public func getListOfInstruments() -> [AVAudioUnitComponent] {
+        var desc = AudioComponentDescription()
+        desc.componentType = kAudioUnitType_MusicDevice
+        desc.componentSubType = 0
+        desc.componentManufacturer = 0
+        desc.componentFlags = 0
+        desc.componentFlagsMask = 0
+        return AVAudioUnitComponentManager.shared().components(matching: desc)
+    }
+}
+
+extension ChannelController : ChannelSettable{
 }
 
 protocol ChannelControllerDelegate{

@@ -65,26 +65,26 @@ public class ChannelModels : Codable, Equatable, ChannelViewDelegate{
         }
         return 0
     }
-    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelModel? {
-        var state : ChannelModel? = nil
-        if type == .midiInstrument{
-            if index < 0 || index >= channels.count {
-                return nil
-            }
-            state = channels[index]
-        } else if type == .master{
-            state = master
-        } else if type == .aux{
-            if index < 0 || index >= aux.count {
-                 return nil
-             }
-            state = aux[index]
-        }
-        return state
-    }
-    public func set(channelState: ChannelModel, index: Int){
-        channels[index] = channelState
-    }
+//    public func getChannelState(_ index: Int, type: ChannelType) -> ChannelModel? {
+//        var state : ChannelModel? = nil
+//        if type == .midiInstrument{
+//            if index < 0 || index >= channels.count {
+//                return nil
+//            }
+//            state = channels[index]
+//        } else if type == .master{
+//            state = master
+//        } else if type == .aux{
+//            if index < 0 || index >= aux.count {
+//                 return nil
+//             }
+//            state = aux[index]
+//        }
+//        return state
+//    }
+//    public func set(channelState: ChannelModel, index: Int){
+//        channels[index] = channelState
+//    }
     public func reset(){
         for channel in channels {
             channel.mute = false
@@ -96,9 +96,9 @@ public class ChannelModels : Codable, Equatable, ChannelViewDelegate{
 //    public func getVolume(channel: Int, channelType: ChannelType) -> Float {
 //        return 1.0
 //    }
-    public func getPan(channel: Int, channelType: ChannelType) -> Float {
-        return 0.0
-    }
-    public func set(pan: Float, channel: Int, channelType: ChannelType){}
+//    public func getPan(channel: Int, channelType: ChannelType) -> Float {
+//        return 0.0
+//    }
+//    public func set(pan: Float, channel: Int, channelType: ChannelType){}
 
 }
