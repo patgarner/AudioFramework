@@ -20,10 +20,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var sendPopup: NSPopUpButton!
     @IBOutlet weak var sendLevelKnob: NSSlider!
     @IBOutlet weak var panKnob: NSSlider!
-//    @IBOutlet weak var volumeValueTextField: NSTextField!
     @IBOutlet weak var volumeValueTextField: NSTextField!
-    
-    @IBOutlet weak var test: NSTextField!
     @IBOutlet weak var volumeSlider: NSSlider!
     @IBOutlet weak var soloButton: NSButton!
     @IBOutlet weak var muteButton: NSButton!
@@ -31,11 +28,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
     var delegate : ChannelViewDelegate! 
-    var trackNumber = -1
+    var pluginSelectionDelegate : PluginSelectionDelegate!
+    var channelViewDelegate2 : ChannelViewDelegate2!
+    var channelNumber = -1
     var type = ChannelType.midiInstrument
     var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
     var instrumentsFlat : [AVAudioUnitComponent] = []
-    var pluginSelectionDelegate : PluginSelectionDelegate!
     override public func viewDidLoad() {
         super.viewDidLoad()
         inputPopup.target = self
@@ -70,7 +68,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             labelView.needsLayout = true
             return
         }
-        guard let state = delegate?.getChannelState(trackNumber, type: type) else { return }
+        guard let state = delegate.getChannelState(channelNumber, type: type) else { return }
         trackNameField.stringValue = state.trackName
         if state.mute{
             muteButton.state = .on
@@ -82,9 +80,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else {
             soloButton.state = .off
         }
-        volumeSlider.floatValue = state.volume
-        volumeValueTextField.floatValue = state.volume
-        panKnob.integerValue = (state.pan + 64) % 128
+       // volumeSlider.floatValue = delegate.getVolume(channel: channelNumber, channelType: type)
+        volumeSlider.floatValue = channelViewDelegate2.volume
+        volumeValueTextField.floatValue = volumeSlider.floatValue
+       // let panValue = delegate.getPan(channel: channelNumber, channelType: type)
+        let panValue = channelViewDelegate2.pan
+        set(popupButton: panKnob, value: panValue, blackoutRegion: 0.2, minValue: -1.0, maxValue: 1.0)
         labelView.isHidden = true
         if type == .master {
             self.trackNameField.stringValue = "Master"
@@ -92,21 +93,22 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             inputPopup.isHidden = true
         }  else if type == .aux {
             labelView.color = NSColor(calibratedRed: 0.68, green: 0.75, blue: 0.85, alpha: 1.0)
-            self.trackNameField.stringValue = "Aux " + String(trackNumber + 1)
+            self.trackNameField.stringValue = "Aux " + String(channelNumber + 1)
             self.trackNameField.isEditable = false
             reloadInstruments()
         } else if type == .midiInstrument{
             reloadInstruments()
-            let instrumentSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: 0)
+            let instrumentSelection = pluginSelectionDelegate.getPluginSelection(channel: channelNumber, channelType: type, pluginType: .instrument, pluginNumber: 0)
             select(popup: inputPopup, list: instrumentsFlat, pluginSelection: instrumentSelection)
         }
-
         fillSendPopup()
-        
+        if let sendData = pluginSelectionDelegate.getSendData(sendNumber: 0, channel: channelNumber, channelType: type) {
+            self.set(popupButton: sendLevelKnob, value: sendData.level, blackoutRegion: 0.2, minValue: 0, maxValue: 1)
+        }
         fillEffectsPopup()
         let effectsPopups = [audioFXPopup!, audioFXPopup2!]
         for i in 0..<effectsPopups.count{
-            let pluginSelection = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .effect, pluginNumber: i)
+            let pluginSelection = pluginSelectionDelegate.getPluginSelection(channel: channelNumber, channelType: type, pluginType: .effect, pluginNumber: i)
             let popup = effectsPopups[i]
             select(popup: popup, list: getListOfEffects(), pluginSelection: pluginSelection)
         }
@@ -126,48 +128,41 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc private func sendChanged(){
         let index = sendPopup.indexOfSelectedItem
-        pluginSelectionDelegate.select(sendNumber: 0, bus: index, channel: trackNumber, channelType: type)
+        pluginSelectionDelegate.select(sendNumber: 0, busNumber: index, channel: channelNumber, channelType: type)
     }
     @objc func volumeSliderMoved(){
         let sliderValue = volumeSlider.floatValue
         volumeValueTextField.floatValue = sliderValue
         volumeValueTextField.needsDisplay = true
-        delegate?.set(volume: sliderValue, channel: trackNumber, channelType: type)
-        if let existingState = delegate?.getChannelState(trackNumber, type: type){
-            volumeValueTextField.floatValue = sliderValue
-            existingState.volume = sliderValue
-        }
+        //delegate.set(volume: sliderValue, channel: channelNumber, channelType: type)
+        channelViewDelegate2.volume = sliderValue
+//        if let existingState = delegate.getChannelState(channelNumber, type: type){
+//            volumeValueTextField.floatValue = sliderValue
+//        }
     }
     @objc func trackNameChanged(){
         let trackName = trackNameField.stringValue
-        if let existingState = delegate?.getChannelState(trackNumber, type: type){
+        if let existingState = delegate.getChannelState(channelNumber, type: type){
             existingState.trackName = trackName
         }
         
     }
     @objc func volumeTextChanged(){
         let volume = volumeSlider.floatValue
-        if let existingState = delegate?.getChannelState(trackNumber, type: type){
-            existingState.volume = volume
-            volumeSlider.floatValue = volume
-        }
+//        if let existingState = delegate.getChannelState(channelNumber, type: type){
+//            volumeSlider.floatValue = volume
+//        }
     }
     @objc func muteChanged(){
         let mute = muteButton.state
-        if let existingState = delegate?.getChannelState(trackNumber, type: type){
+        if let existingState = delegate.getChannelState(channelNumber, type: type){
             existingState.mute = (mute == .on) 
         }
     }
     @objc func soloChanged(){
         let solo = soloButton.state
-        if let existingState = delegate?.getChannelState(trackNumber, type: type){
+        if let existingState = delegate.getChannelState(channelNumber, type: type){
             existingState.solo = (solo == .on) 
-        }
-    }
-    @objc func panChanged(){
-        let pan = (panKnob.integerValue + 64) % 127
-        if let existingState = delegate?.getChannelState(trackNumber, type: type){
-            existingState.pan = pan
         }
     }
     @objc func audioEffectChanged(sender: Any){
@@ -176,14 +171,14 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let index = popupButton.indexOfSelectedItem
         let effects = getListOfEffects()
         if index >= effects.count {
-            pluginSelectionDelegate.deselectEffect(channel: trackNumber, number: number, type: type)
+            pluginSelectionDelegate.deselectEffect(channel: channelNumber, number: number, type: type)
             return
         }
         let effect = effects[index]
-        if let previousEffect = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .effect, pluginNumber: number), previousEffect.manufacturer == effect.manufacturerName, previousEffect.name == effect.name {
-            pluginSelectionDelegate.displayEffectInterface(channel: trackNumber, number: number, type: type)
+        if let previousEffect = pluginSelectionDelegate.getPluginSelection(channel: channelNumber, channelType: type, pluginType: .effect, pluginNumber: number), previousEffect.manufacturer == effect.manufacturerName, previousEffect.name == effect.name {
+            pluginSelectionDelegate.displayEffectInterface(channel: channelNumber, number: number, type: type)
         } else {
-            pluginSelectionDelegate.select(effect: effect, channel: trackNumber, number: number, type: type)
+            pluginSelectionDelegate.select(effect: effect, channel: channelNumber, number: number, type: type)
         }
     }
     ////////////////////////////////////////////////////////
@@ -216,8 +211,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         for title in getBusList(){
             inputPopup.addItem(withTitle: title)
         }
-        //inputPopup.selectItem(at: inputPopup.numberOfItems - 1)
-        if let busNumber = pluginSelectionDelegate.getBusInputNumber(channelNumber: trackNumber, channelType: type) {
+        if let busNumber = pluginSelectionDelegate.getBusInputNumber(channelNumber: channelNumber, channelType: type) {
             inputPopup.selectItem(at: busNumber)
         } else {
             inputPopup.selectItem(at: inputPopup.numberOfItems - 1)
@@ -234,18 +228,18 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     private func inputInstrumentChanged(){
         let index = inputPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
-        if let virtualInstrument = pluginSelectionDelegate.getPluginSelection(channel: trackNumber, channelType: type, pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
+        if let virtualInstrument = pluginSelectionDelegate.getPluginSelection(channel: channelNumber, channelType: type, pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
             component.name == virtualInstrument.name {
-            pluginSelectionDelegate.displayInstrumentInterface(channel: trackNumber)
+            pluginSelectionDelegate.displayInstrumentInterface(channel: channelNumber)
             return
         } else {
-            pluginSelectionDelegate.selectInstrument(component, channel: trackNumber, type: type)
+            pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)
             return
         }
     }
     private func audioInputChanged(){
         let index = inputPopup.indexOfSelectedItem
-        pluginSelectionDelegate.selectInputBus(number: index, channel: trackNumber, channelType: type)
+        pluginSelectionDelegate.selectInput(busNumber: index, channel: channelNumber, channelType: type)
     }
     /////////////////////////////////////////////////////////////////
     // Effects
@@ -279,7 +273,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         sendPopup.removeAllItems()
         let busList = getBusList()
         sendPopup.addItems(withTitles: busList)
-        if let busNumber = pluginSelectionDelegate.getSendOutput(sendNumber: 0, channelNumber: trackNumber, channelType: type) {
+        if let busNumber = pluginSelectionDelegate.getSendOutput(sendNumber: 0, channelNumber: channelNumber, channelType: type) {
             sendPopup.selectItem(at: busNumber)
         } else {
             sendPopup.selectItem(at: sendPopup.numberOfItems - 1)
@@ -296,22 +290,45 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         return busList
     }
     @objc func sendLevelChanged(){
+        let value = getKnobLevel(blackoutRegion: 0.2, popupButton: sendLevelKnob, minValue: 0.0, maxValue: 1.0)
+        pluginSelectionDelegate.setSend(volume: value, sendNumber: 0, channelNumber: channelNumber, channelType: type)
+    }
+    @objc func panChanged(){
+        let value = getKnobLevel(blackoutRegion: 0.2, popupButton: panKnob, minValue: -1.0, maxValue: 1.0)
+       // delegate.set(pan: value, channel: channelNumber, channelType: type)
+        channelViewDelegate2.pan = value
+    }
+    @objc func getKnobLevel(blackoutRegion: Float, popupButton: NSSlider, minValue: Float, maxValue: Float) -> Float{
         let blackoutRegion = 0.2
         let upperLim = 0.5 + (blackoutRegion * 0.5)
         let lowerLim = 0.5 - (blackoutRegion * 0.5)
-        var rawValue = sendLevelKnob.doubleValue
+        var rawValue = popupButton.doubleValue
         if rawValue >= 0.5, rawValue < upperLim{
             rawValue = upperLim
-            sendLevelKnob.doubleValue = rawValue
+            popupButton.doubleValue = rawValue
         } else if rawValue < 0.5, rawValue > lowerLim{
             rawValue = lowerLim
-            sendLevelKnob.doubleValue = rawValue
+            popupButton.doubleValue = rawValue
         } 
         let rotatedValue = (rawValue + 0.5).truncatingRemainder(dividingBy: 1.0)
-        let nonBlackoutRegion = 1.0 - blackoutRegion
-        var calibratedValue = (rotatedValue - blackoutRegion * 0.5) / nonBlackoutRegion
-        if calibratedValue < 0.000001 { calibratedValue = 0 }
-        pluginSelectionDelegate.setSend(volume: calibratedValue, sendNumber: 0, channelNumber: trackNumber, channelType: type)
+        //Now we have a value between lowerLim and UpperLim
+        let whiteoutRegion = 1.0 - blackoutRegion
+       
+        var completeness = (rotatedValue - blackoutRegion * 0.5) / whiteoutRegion
+        if completeness < 0.000001 { completeness = 0 }
+        let finalValue = (maxValue - minValue) * Float(completeness) + minValue
+        print("finalValue = \(finalValue)")
+        return finalValue
+    }
+    func set(popupButton: NSSlider, value: Float, blackoutRegion: Float, minValue: Float, maxValue: Float){
+        //We'll just assume buttonSpread is always 1 and make our live easier.
+        let inputValueSpread = maxValue - minValue
+        let completeness = (value - minValue) / inputValueSpread
+        let whiteoutRegion = 1.0 - blackoutRegion
+        let newPosition = (blackoutRegion / 2) + completeness * whiteoutRegion
+        let newPositionRotated = (newPosition + 0.5).truncatingRemainder(dividingBy: 1.0)
+        popupButton.floatValue = newPositionRotated
+        popupButton.needsDisplay = true
     }
 }
 

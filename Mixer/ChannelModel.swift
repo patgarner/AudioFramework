@@ -15,17 +15,13 @@ import AVFoundation
 
 public class ChannelModel : Codable, Equatable{
     public var mute = false
-    public var volume : Float = 1.0
     public var trackName = ""
     public var solo = false
-    public var pan = 64
     public var number = 0
     public static func == (lhs: ChannelModel, rhs: ChannelModel) -> Bool {
         if lhs.mute != rhs.mute { return false }
-        if lhs.volume != rhs.volume { return false }
         if lhs.trackName != rhs.trackName { return false }
         if lhs.solo != rhs.solo { return false }
-        if lhs.pan != rhs.pan { return false }
         return true
     }
 }

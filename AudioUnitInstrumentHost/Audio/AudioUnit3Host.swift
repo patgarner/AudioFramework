@@ -11,7 +11,7 @@ import AVFoundation
 
 class AudioUnit3Host : VirtualInstrumentHost{
     var engine : AVAudioEngine {
-        return AudioService.shared.engine
+        return AudioController.shared.engine
     } 
     private var instrumentAU : AVAudioUnitMIDIInstrument? = nil
     var audioUnit: AVAudioUnit? {

@@ -13,9 +13,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Foundation
 
 public class AllPluginData : Codable{
-    public var channels : [ChannelPluginData] = []
+    public var instrumentChannels : [ChannelPluginData] = []
+    public var auxChannels : [ChannelPluginData] = []
+    public var masterChannel = ChannelPluginData()
+
+    public var sends : [SendData] = []
     enum CodingKeys : CodingKey{
-        case channels
+        case instrumentChannels
+        case auxChannels
+        case masterChannel
     }
     public init(){
         
@@ -23,13 +29,26 @@ public class AllPluginData : Codable{
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         do {
-            channels = try container.decode([ChannelPluginData].self, forKey: .channels)
+            instrumentChannels = try container.decode([ChannelPluginData].self, forKey: .instrumentChannels)
         } catch {
-            print("AllPluginData: failed to load channel plugins: Error: \(error)")
+            print("AllPluginData: failed to load instrument channels: Error: \(error)")
+        }
+        do {
+            auxChannels = try container.decode([ChannelPluginData].self, forKey: .auxChannels)
+        } catch {
+            print("AllPluginData: failed to load aux channels: Error: \(error)")
+        }
+        do {
+            masterChannel = try container.decode(ChannelPluginData.self, forKey: .masterChannel)
+        } catch {
+            print("AllPluginData: failed to load master channel: Error: \(error)")
         }
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(channels, forKey: .channels)
+        try container.encode(instrumentChannels, forKey: .instrumentChannels)
+        try container.encode(auxChannels, forKey: .auxChannels)
+        try container.encode(masterChannel, forKey: .masterChannel)
+
     }
 }

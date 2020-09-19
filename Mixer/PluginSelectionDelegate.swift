@@ -22,10 +22,30 @@ protocol PluginSelectionDelegate{
     func getListOfInstruments() -> [AVAudioUnitComponent]
     func displayInstrumentInterface(channel: Int)
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
-    func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType)
+    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType)
     func numBusses() -> Int
-    func selectInputBus(number: Int, channel: Int, channelType: ChannelType)
-    func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType)
+    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType)
+    func setSend(volume: Float, sendNumber: Int, channelNumber: Int, channelType: ChannelType)
     func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int?
+    func getSendData(sendNumber: Int, channel: Int, channelType: ChannelType) -> SendData?
     func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?
+}
+
+public protocol ChannelViewDelegate {
+    func numChannels(type: ChannelType) -> Int
+//    func getVolume(channel: Int, channelType: ChannelType) -> Float
+//    func set(volume: Float, channel: Int, channelType: ChannelType)
+//    func getPan(channel: Int, channelType: ChannelType) -> Float
+//    func set(pan: Float, channel: Int, channelType: ChannelType)
+    ////////////////////////////////
+    // These are being phased out
+    ////////////////////////////////
+    func getChannelState(_ index: Int, type: ChannelType) -> ChannelModel?
+    func set(channelState: ChannelModel, index: Int)
+}
+
+public protocol ChannelViewDelegate2 {
+    //We will start transferring other delegate methods into this one.
+    var volume : Float { get set }
+    var pan : Float { get set }
 }

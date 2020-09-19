@@ -64,7 +64,7 @@ extension MixerViewController : NSCollectionViewDataSource{
             return 1
         } else if section == 1{ //Instrument Channels
             return numChannels(type: .midiInstrument)
-        } else if section == 2{ //Aux Channels
+        } else if section == 1{ //Aux Channels
             return numChannels(type: .aux)
         } else if section == 3{ //Master Channel
             return 1
@@ -75,8 +75,8 @@ extension MixerViewController : NSCollectionViewDataSource{
         let bundle = Bundle(for: ChannelCollectionViewItem.self)
         let channelView = ChannelCollectionViewItem(nibName: nil, bundle: bundle)
         channelView.delegate = self
-        let trackNumber = indexPath[1]
-        channelView.trackNumber = trackNumber
+        let channelNumber = indexPath[1]
+        channelView.channelNumber = channelNumber
         channelView.pluginSelectionDelegate = self
         if indexPath[0] == 0{
             channelView.type = .labels
@@ -86,6 +86,9 @@ extension MixerViewController : NSCollectionViewDataSource{
             channelView.type = .aux
         } else if indexPath[0] == 3{
             channelView.type = .master
+        }
+        if let channelController = AudioController.shared.getChannelController(type: channelView.type, channel: channelNumber){
+            channelView.channelViewDelegate2 = channelController
         }
         return channelView
     }
@@ -98,12 +101,7 @@ extension MixerViewController : ChannelViewDelegate{
     public func set(channelState: ChannelModel, index: Int){
         delegate?.set(channelState: channelState, index: index)
     }
-//    public func setMasterVolume(_ volume: Float) {
-//        AudioService.shared.engine.mainMixerNode.outputVolume = volume
-//    }
-    public func set(volume: Float, channel: Int, channelType: ChannelType) {
-        AudioService.shared.set(volume: volume, channel: channel, channelType: channelType)
-    }
+
     public func numChannels(type: ChannelType) -> Int{
         if let numChannels = delegate?.numChannels(type: type){
             return numChannels
@@ -111,21 +109,31 @@ extension MixerViewController : ChannelViewDelegate{
             return 0
         }
     }
+//    public func set(volume: Float, channel: Int, channelType: ChannelType) {
+//        AudioController.shared.set(volume: volume, channel: channel, channelType: channelType)
+//    }
+//    public func getVolume(channel: Int, channelType: ChannelType) -> Float {
+//        let volume = AudioController.shared.getVolume(channel: channel, channelType: channelType)
+//        return volume
+//    }
+//    public func getPan(channel: Int, channelType: ChannelType) -> Float {
+//        let pan = AudioController.shared.getPan(channel: channel, channelType: channelType)
+//        return pan
+//    }
+//    public func set(pan: Float, channel: Int, channelType: ChannelType) {
+//        AudioController.shared.set(pan: pan, channel: channel, channelType: channelType)
+//    }
 }
 
-extension MixerViewController : PluginSelectionDelegate{ 
-    func getListOfInstruments() -> [AVAudioUnitComponent] {
-        let instruments = AudioService.shared.getListOfInstruments()
-        return instruments
-    }
+extension MixerViewController : PluginSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0, type: ChannelType) { //TODO: This absolutely should NOT be here.
-        AudioService.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
+        AudioController.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
             self?.displayInstrumentInterface(channel: channel)
         }
     }
     func displayInstrumentInterface(channel: Int) {
         DispatchQueue.main.async {
-            AudioService.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
+            AudioController.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
                 guard let interface = maybeInterface else { return }
                 PluginInterfaceModel.shared.pluginInterfaceInstance = interface
                 DispatchQueue.main.async {                        
@@ -136,20 +144,13 @@ extension MixerViewController : PluginSelectionDelegate{
         }
     }
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType) { 
-        AudioService.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) { [weak self] (successful) in
+        AudioController.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) { [weak self] (successful) in
             self?.displayEffectInterface(channel: channel, number: number, type: type)
         }
     }
-    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
-        let pluginSelection = AudioService.shared.getPluginSelection(channel: channel, channelType: channelType, pluginType: pluginType, pluginNumber: pluginNumber)
-        return pluginSelection
-    }
-    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
-        AudioService.shared.deselectEffect(channel: channel, number: number, type: type)
-    }
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
         DispatchQueue.main.async {
-            guard let audioEffect = AudioService.shared.getAudioEffect(channel: channel, number: number, type: type) else { return }
+            guard let audioEffect = AudioController.shared.getAudioEffect(channel: channel, number: number, type: type) else { return }
             let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
             let interfaceInstance = view.map(InterfaceInstance.view)
             PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
@@ -159,27 +160,44 @@ extension MixerViewController : PluginSelectionDelegate{
             }           
         }
     }
-    func select(sendNumber: Int, bus: Int, channel: Int, channelType: ChannelType){
-        AudioService.shared.select(sendNumber: sendNumber, busNumber: bus, channel: channel, channelType: channelType)
+    //////////////////////////////////////////////////////////////////////////////////////
+    //TODO: Pass through functions. These just get infro from the AudioController.
+    //////////////////////////////////////////////////////////////////////////////////////
+    func getSendData(sendNumber: Int, channel: Int, channelType: ChannelType) -> SendData? {
+        let sendData = AudioController.shared.getSendData(sendNumber: sendNumber, channel: channel, channelType: channelType)
+        return sendData
+    }
+    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
+        AudioController.shared.select(sendNumber: sendNumber, busNumber: busNumber, channel: channel, channelType: channelType)
     }
     func numBusses() -> Int{
-        let busses = AudioService.shared.numBusses()
+        let busses = AudioController.shared.numBusses()
         return busses
     }
-    func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
-        AudioService.shared.selectInput(busNumber: number, channel: channel, channelType: channelType)
+    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
+        AudioController.shared.selectInput(busNumber: busNumber, channel: channel, channelType: channelType)
     }
-    func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
-        AudioService.shared.setSend(volume: volume, sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
+    func setSend(volume: Float, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
+        AudioController.shared.setSend(volume: volume, sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
     }
     func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
-        let sendOutput = AudioService.shared.getSendOutput(sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
+        let sendOutput = AudioController.shared.getSendOutput(sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
         return sendOutput
     }
     func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{
-        let busOutput = AudioService.shared.getBusInputNumber(channelNumber: channelNumber, channelType: channelType)
+        let busOutput = AudioController.shared.getBusInputNumber(channelNumber: channelNumber, channelType: channelType)
         return busOutput
     }
-
+    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+        let pluginSelection = AudioController.shared.getPluginSelection(channel: channel, channelType: channelType, pluginType: pluginType, pluginNumber: pluginNumber)
+        return pluginSelection
+    }
+    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
+        AudioController.shared.deselectEffect(channel: channel, number: number, type: type)
+    }
+    func getListOfInstruments() -> [AVAudioUnitComponent] {
+        let instruments = AudioController.shared.getListOfInstruments()
+        return instruments
+    }
 }
 

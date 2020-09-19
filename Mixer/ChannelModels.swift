@@ -88,11 +88,17 @@ public class ChannelModels : Codable, Equatable, ChannelViewDelegate{
     public func reset(){
         for channel in channels {
             channel.mute = false
-            channel.volume = 127
+//            channel.volume = 127
             channel.trackName = ""
         }
     }
-//    public func setMasterVolume(_ volume: Float) {}
-    public func set(volume: Float, channel: Int, channelType: ChannelType) {}
-    
+//    public func set(volume: Float, channel: Int, channelType: ChannelType) {}
+//    public func getVolume(channel: Int, channelType: ChannelType) -> Float {
+//        return 1.0
+//    }
+    public func getPan(channel: Int, channelType: ChannelType) -> Float {
+        return 0.0
+    }
+    public func set(pan: Float, channel: Int, channelType: ChannelType){}
+
 }

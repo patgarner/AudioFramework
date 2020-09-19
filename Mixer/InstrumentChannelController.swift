@@ -54,18 +54,11 @@ class InstrumentChannelController : ChannelController{
         
     }
     override func getChannelPluginData() -> ChannelPluginData{
-        let channelPluginData = ChannelPluginData()
+        let channelPluginData = super.getChannelPluginData()
         let instrumentPluginData = instrumentHost.samplerData
         channelPluginData.instrumentPlugin = instrumentPluginData
-        for effect in effects{
-            let effectPluginData = PluginData()
-            effectPluginData.audioComponentDescription = effect.audioComponentDescription
-            effectPluginData.state = effect.auAudioUnit.fullState
-            channelPluginData.effectPlugins.append(effectPluginData)
-        }
         return channelPluginData
     }
-    
     override var allAudioUnits : [AVAudioNode] {
         var audioUnits : [AVAudioNode] = []
         if let instrumentAU = instrumentHost.audioUnit {

@@ -3,19 +3,19 @@
 //
 /*
  Copyright 2020 David Mann Music LLC
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import Foundation
 import AVFoundation
 import Cocoa
 
-public class AudioService: NSObject {
-    public static var shared = AudioService()
+public class AudioController: NSObject {
+    public static var shared = AudioController()
     var recordingUrl : URL?
     public let engine = AVAudioEngine()
     public var delegate : AudioServiceDelegate!
@@ -47,7 +47,7 @@ public class AudioService: NSObject {
         for _ in 0..<2{
             let auxController = AuxChannelController(delegate: self)
             auxController.delegate = self
-            auxController.type = .aux
+            //auxController.type = .aux
             auxControllers.append(auxController)
             if let channelOutput = auxController.outputNode, let masterInput = masterController.inputNode{
                 let format = channelOutput.outputFormat(forBus: 0)
@@ -64,15 +64,6 @@ public class AudioService: NSObject {
     func getListOfEffects() -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_Effect
-        desc.componentSubType = 0
-        desc.componentManufacturer = 0
-        desc.componentFlags = 0
-        desc.componentFlagsMask = 0
-        return AVAudioUnitComponentManager.shared().components(matching: desc)
-    }
-    public func getListOfInstruments() -> [AVAudioUnitComponent] {
-        var desc = AudioComponentDescription()
-        desc.componentType = kAudioUnitType_MusicDevice
         desc.componentSubType = 0
         desc.componentManufacturer = 0
         desc.componentFlags = 0
@@ -109,9 +100,9 @@ public class AudioService: NSObject {
         }
     }
     func stopRecording() { //TODO: Move somewhere else
-        engine.mainMixerNode.volume = 0
+        engine.mainMixerNode.outputVolume = 0
         engine.mainMixerNode.removeTap(onBus: 0)
-        engine.mainMixerNode.volume = 1
+        engine.mainMixerNode.outputVolume = 1
         guard let url = self.recordingUrl else { return }
         let destinationUrl = url.deletingPathExtension().appendingPathExtension("wav")
         AudioFileConverter.convert(sourceURL: url, destinationURL: destinationUrl)
@@ -135,11 +126,8 @@ public class AudioService: NSObject {
         let channelController = instrumentControllers[Int(channel)]
         channelController.noteOff(note, channel: channel)
     } 
-    public func set(volume: Float, channel: Int, channelType: ChannelType){
-        guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
-        channelController.volume = volume
-    }
-    public func set(pan: UInt8, channel: UInt8){
+    
+    public func set(pan: UInt8, channel: UInt8){ //TODO: MIDI Pan. Kill.
         if channel >= instrumentControllers.count { return }
         let channelController = instrumentControllers[Int(channel)]
         channelController.set(pan: pan, channel: channel)
@@ -165,22 +153,39 @@ public class AudioService: NSObject {
         get {
             let allData = AllPluginData()
             for channelController in instrumentControllers{
-                let audioUnitData = channelController.getChannelPluginData()
-                allData.channels.append(audioUnitData)
+                let channelData = channelController.getChannelPluginData()
+                allData.instrumentChannels.append(channelData)
             }
+            for auxController in auxControllers{
+                let channelData = auxController.getChannelPluginData()
+                allData.auxChannels.append(channelData)
+            }
+            let masterChannelData = masterController.getChannelPluginData()
+            allData.masterChannel = masterChannelData
             return allData
         }
         set {
             let allData = newValue
-            for i in 0..<allData.channels.count{
-                let channelPluginData = allData.channels[i]
-                if i >= instrumentControllers.count {
-                    let instrumentChannelController = InstrumentChannelController(delegate: self)
-                    instrumentControllers.append(instrumentChannelController)
-                }
+            instrumentControllers.removeAll()
+            for _ in 0..<allData.instrumentChannels.count{
+                instrumentControllers.append(InstrumentChannelController(delegate: self))
+            }
+            for i in 0..<allData.instrumentChannels.count{
+                let channelPluginData = allData.instrumentChannels[i]
                 let channelController = instrumentControllers[i]
                 channelController.set(channelPluginData:channelPluginData)
             }
+            auxControllers.removeAll()
+            for _ in 0..<allData.auxChannels.count{
+                auxControllers.append(AuxChannelController(delegate: self))
+            }
+            for i in 0..<allData.auxChannels.count{
+                let auxPluginData = allData.auxChannels[i]
+                let auxController = auxControllers[i]
+                auxController.set(channelPluginData:auxPluginData)
+            }
+            masterController = MasterChannelController(delegate: self)
+            masterController.set(channelPluginData: allData.masterChannel)
         }
     }
     /////////////////////////////////////////////////////////////
@@ -191,12 +196,6 @@ public class AudioService: NSObject {
             channelController.loadEffect(fromDescription: desc, number: number, completion: completion)
         }
     }
-    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
-        if let channelController = getChannelController(type: type, channel: channel) {
-            channelController.deselectEffect(number: number)
-        }
-
-    }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
         if let channelController = getChannelController(type: type, channel: channel) {
             let effect = channelController.getEffect(number: number)
@@ -204,11 +203,6 @@ public class AudioService: NSObject {
         } else {
             return nil
         }
-    }
-    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
-        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
-        let pluginSelection = channelController.getPluginSelection(pluginType: pluginType, pluginNumber: pluginNumber)
-        return pluginSelection
     }
     ////////////////////////////////////////////////////////////
     func getChannelController(type: ChannelType, channel: Int) -> ChannelController? {
@@ -244,9 +238,58 @@ public class AudioService: NSObject {
         }
     }
     public func render(musicSequence: MusicSequence, url: URL){}
+}
+
+extension AudioController : ChannelControllerDelegate{
+    func log(_ message: String) {
+        delegate.log(message)
+    }
+}
+
+extension AudioController : PluginSelectionDelegate{
+    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){
+        
+    }
+    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){
+        
+    }
+    func displayInstrumentInterface(channel: Int){
+        
+    }
+    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
+        
+    }
+    func getSendData(sendNumber: Int, channel: Int, channelType: ChannelType) -> SendData?{
+        //We need to know which # bus the send is connected to
+        //We need the send level
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
+        guard let send = channelController.get(sendNumber: sendNumber) else { return nil }
+        let sendData = SendData(busNumber: -1, level: send.outputVolume) //TODO: Get actual bus number
+        return sendData
+    }
+    
+    func deselectEffect(channel: Int, number: Int, type: ChannelType) {
+        if let channelController = getChannelController(type: type, channel: channel) {
+            channelController.deselectEffect(number: number)
+        }
+    }
+    func getPluginSelection(channel: Int, channelType: ChannelType, pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
+        let pluginSelection = channelController.getPluginSelection(pluginType: pluginType, pluginNumber: pluginNumber)
+        return pluginSelection
+    }
+    public func getListOfInstruments() -> [AVAudioUnitComponent] {
+        var desc = AudioComponentDescription()
+        desc.componentType = kAudioUnitType_MusicDevice
+        desc.componentSubType = 0
+        desc.componentManufacturer = 0
+        desc.componentFlags = 0
+        desc.componentFlagsMask = 0
+        return AVAudioUnitComponentManager.shared().components(matching: desc)
+    }
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
-        let sendOutput = channelController.sendOutputs[sendNumber]
+        guard let sendOutput = channelController.get(sendNumber: sendNumber) else { return }
         if engine.outputConnectionPoints(for: sendOutput, outputBus: 0).count > 0{
             engine.disconnectNodeOutput(sendOutput) 
         }
@@ -260,6 +303,9 @@ public class AudioService: NSObject {
     func numBusses() -> Int{
         return busses.count
     }
+//    func selectInputBus(number: Int, channel: Int, channelType: ChannelType) {
+//        <#code#>
+//    }
     func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
         guard let channelInput = getChannelController(type: channelType, channel: channel)?.inputNode else { return }
         if let previousBusInput = getBusInputNumber(channelNumber: channel, channelType: channelType){
@@ -274,14 +320,13 @@ public class AudioService: NSObject {
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
-    func setSend(volume: Double, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
+    func setSend(volume: Float, sendNumber: Int, channelNumber: Int, channelType: ChannelType) {
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return }
         channelController.setSend(volume: volume, number: sendNumber)
     }
     func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
-        if sendNumber < 0 || sendNumber >= channelController.sendOutputs.count { return nil }
-        let sendNode = channelController.sendOutputs[sendNumber]
+        guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
         let connections = engine.outputConnectionPoints(for: sendNode, outputBus: 0)
         if connections.count != 1 { return nil }
         guard let connectionNode = connections[0].node else { return nil }
@@ -302,12 +347,6 @@ public class AudioService: NSObject {
             if sourceNode === bus { return b }
         }
         return nil
-    }
-}
-
-extension AudioService : ChannelControllerDelegate{
-    func log(_ message: String) {
-        delegate.log(message)
     }
 }
 

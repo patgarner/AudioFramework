@@ -97,7 +97,7 @@
                         <constraint firstAttribute="width" constant="30" id="6SH-zX-HIs"/>
                         <constraint firstAttribute="height" constant="30" id="s6j-8B-Hqj"/>
                     </constraints>
-                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="127" allowsTickMarkValuesOnly="YES" sliderType="circular" id="ahU-1G-g8a"/>
+                    <sliderCell key="cell" continuous="YES" alignment="left" maxValue="1" allowsTickMarkValuesOnly="YES" sliderType="circular" id="ahU-1G-g8a"/>
                 </slider>
                 <textField verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h6W-1F-h9N" userLabel="Volume Field">
                     <rect key="frame" x="1" y="188" width="68" height="22"/>

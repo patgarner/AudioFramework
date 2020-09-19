@@ -12,7 +12,7 @@ import AVFoundation
 class MasterChannelController : ChannelController{
     override init(delegate: ChannelControllerDelegate){
         super.init(delegate: delegate)
-        type = .master
+       // type = .master
     }
     override var allAudioUnits : [AVAudioNode] {
         var audioUnits : [AVAudioNode] = []

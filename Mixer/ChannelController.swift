@@ -3,11 +3,11 @@
 //
 /*
  Copyright 2020 David Mann Music LLC
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import Foundation
@@ -15,34 +15,48 @@ import AVFoundation
 
 class ChannelController {
     var delegate : ChannelControllerDelegate!
-    var type : ChannelType = .midiInstrument
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
     var preOutputNode : AVAudioNode? = nil
     var outputNode : AVAudioMixerNode!
-    var sendOutputs : [AVAudioMixerNode] = []
+    private var sendOutputs : [AVAudioMixerNode] = []
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
     }
-    public init(type: ChannelType){
-        self.type = type
+    public init(){
     }
     func getChannelPluginData() -> ChannelPluginData{
         let channelPluginData = ChannelPluginData()
-             for effect in effects{
-                 let effectPluginData = PluginData()
-                 effectPluginData.audioComponentDescription = effect.audioComponentDescription
-                 effectPluginData.state = effect.auAudioUnit.fullState
-                 channelPluginData.effectPlugins.append(effectPluginData)
-             }
-             return channelPluginData
+        for effect in effects{
+            let effectPluginData = PluginData()
+            effectPluginData.audioComponentDescription = effect.audioComponentDescription
+            effectPluginData.state = effect.auAudioUnit.fullState
+            channelPluginData.effectPlugins.append(effectPluginData)
+        }
+        channelPluginData.volume = outputNode.outputVolume
+        channelPluginData.pan = outputNode.pan
+        for i in 0..<sendOutputs.count{
+            let send = sendOutputs[i]
+            let sendLevel = send.outputVolume
+            let sendData = SendData(busNumber: 0, level: sendLevel)
+            channelPluginData.sends.append(sendData)
+        }
+        return channelPluginData
     }
     func set(channelPluginData: ChannelPluginData){
-         for effectNumber in 0..<channelPluginData.effectPlugins.count{
-             let pluginData = channelPluginData.effectPlugins[effectNumber]
-             loadEffect(pluginData: pluginData, number: effectNumber)
-         }
+        for effectNumber in 0..<channelPluginData.effectPlugins.count{
+            let pluginData = channelPluginData.effectPlugins[effectNumber]
+            loadEffect(pluginData: pluginData, number: effectNumber)
+        }
+        outputNode.outputVolume = channelPluginData.volume
+        outputNode.pan = channelPluginData.pan
+        for i in 0..<channelPluginData.sends.count{
+            let sendData = channelPluginData.sends[i]
+            if i >= sendOutputs.count { break }
+            let sendOutput = sendOutputs[i]
+            sendOutput.outputVolume = sendData.level
+        }
     }
     func reconnectNodes(){
         let audioUnits = allAudioUnits
@@ -62,7 +76,7 @@ class ChannelController {
         guard let preOutputNode = preOutputNode else { return }
         let format = preOutputNode.outputFormat(forBus: 0)
         var connectionPoints : [AVAudioConnectionPoint] = []
-        let connectionPoint = AVAudioConnectionPoint(node: outputNode!, bus: 0)
+        let connectionPoint = AVAudioConnectionPoint(node: outputNode, bus: 0)
         connectionPoints.append(connectionPoint)
         for i in 0..<sendOutputs.count{
             let sendOutput = sendOutputs[i]
@@ -156,7 +170,7 @@ class ChannelController {
         let sendOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(sendOutput)
         sendOutputs.append(sendOutput)
-            
+        
         let preOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
@@ -172,22 +186,41 @@ class ChannelController {
             return nil
         }
     }
-    func setSend(volume: Double, number: Int){
+    func setSend(volume: Float, number: Int){
         if number < 0 || number >= sendOutputs.count { return }
         let sendOutput = sendOutputs[number]
-        sendOutput.volume = Float(volume)
+        sendOutput.outputVolume = volume
     }
-    var volume : Float {
+
+    var pan : Float {
         get {
-            return outputNode!.outputVolume
+            return outputNode.pan
         }
         set {
-            outputNode!.outputVolume = newValue
+            outputNode.pan = newValue
         }
+    }
+    func get(sendNumber: Int) -> AVAudioMixerNode?{
+        if sendNumber < 0 || sendNumber >= sendOutputs.count {
+            return nil
+        }
+        let send = sendOutputs[sendNumber]
+        return send
     }
 }
 
 extension ChannelController : ChannelSettable{
+}
+
+extension ChannelController : ChannelViewDelegate2 {
+    var volume : Float {
+        get {
+            return outputNode.outputVolume
+        }
+        set {
+            outputNode.outputVolume = newValue
+        }
+    }
 }
 
 protocol ChannelControllerDelegate{

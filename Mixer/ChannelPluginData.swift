@@ -15,9 +15,15 @@ import Foundation
 public class ChannelPluginData : Codable{
     public var instrumentPlugin = PluginData()
     public var effectPlugins : [PluginData] = []
+    public var sends : [SendData] = []
+    public var volume : Float = 1.0
+    public var pan : Float = 0.0
     enum CodingKeys: CodingKey{
         case instrumentPlugin
         case effectPlugins
+        case volume
+        case pan
+        case sends
     }
     public init(){
         
@@ -30,10 +36,22 @@ public class ChannelPluginData : Codable{
         do {
             effectPlugins = try container.decode([PluginData].self, forKey: .effectPlugins)
         } catch {}
+        do {
+            volume = try container.decode(Float.self, forKey: .volume)
+        } catch {}
+        do {
+            pan = try container.decode(Float.self, forKey: .pan)
+        } catch {}
+        do {
+            sends = try container.decode([SendData].self, forKey: .sends)
+         } catch {}
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(instrumentPlugin, forKey: .instrumentPlugin)
         try container.encode(effectPlugins, forKey: .effectPlugins)
+        try container.encode(volume, forKey: .volume)
+        try container.encode(pan, forKey: .pan)
+        try container.encode(sends, forKey: .sends)
     }
 }
