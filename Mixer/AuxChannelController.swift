@@ -31,4 +31,21 @@ class AuxChannelController : ChannelController{
         }
         return audioUnits
     }
+    override func getChannelPluginData() -> ChannelPluginData {
+        let pluginData = super.getChannelPluginData()
+        guard let input = inputNode else {
+            return pluginData
+        }
+        if let busInputNumber = delegate.getBusInput(for: input){
+            pluginData.busInput = busInputNumber
+        } else {
+            pluginData.busInput = -1
+        }
+        return pluginData
+    }
+    override func set(channelPluginData: ChannelPluginData) {
+        super.set(channelPluginData: channelPluginData)
+        guard let inputNode = inputNode else { return }
+        delegate.connectBusInput(to: inputNode, busNumber: channelPluginData.busInput)
+    }
 }

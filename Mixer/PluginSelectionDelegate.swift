@@ -23,7 +23,6 @@ protocol PluginSelectionDelegate{
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
     //////////////////////////////////////////////////////////////////////////////////////////
     func numBusses() -> Int
-    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType)
     func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?
 }
 
@@ -39,4 +38,5 @@ public protocol ChannelViewDelegate2 {
     func getSendData(sendNumber: Int) -> SendData?
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType)
     func getSendOutput(sendNumber: Int) -> Int?
+    func selectInput(busNumber: Int)
 }

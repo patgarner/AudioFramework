@@ -226,7 +226,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     private func audioInputChanged(){
         let index = inputPopup.indexOfSelectedItem
-        pluginSelectionDelegate.selectInput(busNumber: index, channel: channelNumber, channelType: type)
+        channelViewDelegate2.selectInput(busNumber: index)
     }
     /////////////////////////////////////////////////////////////////
     // Effects

@@ -252,6 +252,10 @@ class ChannelController : ChannelViewDelegate2 {
         let sendOutput = delegate.getSendOutput(for: sendNode)
         return sendOutput
     }
+    func selectInput(busNumber: Int){ //Only Aux nodes need this
+        guard let inputNode = inputNode else { return }
+        delegate.connectBusInput(to: inputNode, busNumber: busNumber)
+    }
 }
 
 protocol ChannelControllerDelegate{
@@ -259,6 +263,8 @@ protocol ChannelControllerDelegate{
     var engine : AVAudioEngine { get }
     func getSendOutput(for node: AVAudioNode) -> Int?
     func setSendOutput(for node: AVAudioNode, to busNumber: Int)
+    func getBusInput(for node: AVAudioNode) -> Int?
+    func connectBusInput(to node: AVAudioNode, busNumber: Int)
 }
 
 public enum PluginType{

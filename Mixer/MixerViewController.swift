@@ -131,19 +131,12 @@ extension MixerViewController : PluginSelectionDelegate{
     //////////////////////////////////////////////////////////////////////////////////////
     //TODO: Pass through functions. These just get infro from the AudioController.
     //////////////////////////////////////////////////////////////////////////////////////
-//    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
-//        AudioController.shared.select(sendNumber: sendNumber, busNumber: busNumber, channel: channel, channelType: channelType)
-//    }
     func numBusses() -> Int{
         let busses = AudioController.shared.numBusses()
         return busses
     }
-    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
-        AudioController.shared.selectInput(busNumber: busNumber, channel: channel, channelType: channelType)
-    }
-//    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
-//        let sendOutput = AudioController.shared.getSendOutput(sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
-//        return sendOutput
+//    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
+//        AudioController.shared.selectInput(busNumber: busNumber, channel: channel, channelType: channelType)
 //    }
     func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{
         let busOutput = AudioController.shared.getBusInputNumber(channelNumber: channelNumber, channelType: channelType)
