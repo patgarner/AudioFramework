@@ -18,12 +18,14 @@ public class ChannelPluginData : Codable{
     public var sends : [SendData] = []
     public var volume : Float = 1.0
     public var pan : Float = 0.0
+    public var trackName = ""
     enum CodingKeys: CodingKey{
         case instrumentPlugin
         case effectPlugins
         case volume
         case pan
         case sends
+        case trackName
     }
     public init(){
         
@@ -44,7 +46,10 @@ public class ChannelPluginData : Codable{
         } catch {}
         do {
             sends = try container.decode([SendData].self, forKey: .sends)
-         } catch {}
+        } catch {}
+        do {
+            trackName = try container.decode(String.self, forKey: .trackName)
+        } catch {}
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -53,5 +58,6 @@ public class ChannelPluginData : Codable{
         try container.encode(volume, forKey: .volume)
         try container.encode(pan, forKey: .pan)
         try container.encode(sends, forKey: .sends)
+        try container.encode(trackName, forKey: .trackName)
     }
 }

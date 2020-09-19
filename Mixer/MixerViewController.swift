@@ -16,7 +16,7 @@ import AVFoundation
 public class MixerViewController: NSViewController {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
-    public var delegate : ChannelViewDelegate?
+//    public var delegate : ChannelViewDelegate?
     
     override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -131,9 +131,9 @@ extension MixerViewController : PluginSelectionDelegate{
     //////////////////////////////////////////////////////////////////////////////////////
     //TODO: Pass through functions. These just get infro from the AudioController.
     //////////////////////////////////////////////////////////////////////////////////////
-    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
-        AudioController.shared.select(sendNumber: sendNumber, busNumber: busNumber, channel: channel, channelType: channelType)
-    }
+//    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
+//        AudioController.shared.select(sendNumber: sendNumber, busNumber: busNumber, channel: channel, channelType: channelType)
+//    }
     func numBusses() -> Int{
         let busses = AudioController.shared.numBusses()
         return busses
@@ -141,10 +141,10 @@ extension MixerViewController : PluginSelectionDelegate{
     func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) {
         AudioController.shared.selectInput(busNumber: busNumber, channel: channel, channelType: channelType)
     }
-    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
-        let sendOutput = AudioController.shared.getSendOutput(sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
-        return sendOutput
-    }
+//    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
+//        let sendOutput = AudioController.shared.getSendOutput(sendNumber: sendNumber, channelNumber: channelNumber, channelType: channelType)
+//        return sendOutput
+//    }
     func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{
         let busOutput = AudioController.shared.getBusInputNumber(channelNumber: channelNumber, channelType: channelType)
         return busOutput

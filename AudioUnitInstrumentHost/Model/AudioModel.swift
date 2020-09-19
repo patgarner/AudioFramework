@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import Foundation
 
-public class AllPluginData : Codable{
+public class AudioModel : Codable{
     public var instrumentChannels : [ChannelPluginData] = []
     public var auxChannels : [ChannelPluginData] = []
     public var masterChannel = ChannelPluginData()

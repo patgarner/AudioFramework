@@ -27,48 +27,87 @@ public class AudioController: NSObject {
         super.init()
     }
     public func initialize(){
+        createChannels(numInstChannels: 1, numAuxChannels: 1, numBusses: 4)
+    }
+    private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
         if let masterOutput = masterController.outputNode{
             let format = masterOutput.outputFormat(forBus: 0)
             engine.connect(masterOutput, to: engine.mainMixerNode, format: format)
         }
-        if delegate == nil { return }
         //Instrument Channels
-        for _ in 0..<1{ //TODO: Get num channels from delegate
+        for _ in 0..<numInstChannels{
             let channelController = InstrumentChannelController(delegate: self)
-            channelController.delegate = self
             instrumentControllers.append(channelController)
-            if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
-                let format = channelOutput.outputFormat(forBus: 0)
-                engine.connect(channelOutput, to: masterInput, format: format)
-            }
+            connectToMaster(channelController: channelController)
         }
         //Aux Channels
-        for _ in 0..<2{
+        for _ in 0..<numAuxChannels{
             let auxController = AuxChannelController(delegate: self)
-            auxController.delegate = self
-            //auxController.type = .aux
             auxControllers.append(auxController)
-            if let channelOutput = auxController.outputNode, let masterInput = masterController.inputNode{
-                let format = channelOutput.outputFormat(forBus: 0)
-                engine.connect(channelOutput, to: masterInput, format: format)
-            }
+            connectToMaster(channelController: auxController)
         }
         //Busses
-        for _ in 0..<4{
+        for _ in 0..<numBusses{
             let bus = AudioNodeFactory.mixerNode()
             engine.attach(bus)
             busses.append(bus)
         }
     }
-    func getListOfEffects() -> [AVAudioUnitComponent]{
-        var desc = AudioComponentDescription()
-        desc.componentType = kAudioUnitType_Effect
-        desc.componentSubType = 0
-        desc.componentManufacturer = 0
-        desc.componentFlags = 0
-        desc.componentFlagsMask = 0
-        return AVAudioUnitComponentManager.shared().components(matching: desc)
+    private func connectToMaster(channelController : ChannelController){
+        if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
+            let format = channelOutput.outputFormat(forBus: 0)
+            engine.connect(channelOutput, to: masterInput, format: format)
+        }
+    }
+    public func getAudioModel() -> AudioModel{
+        let allData = AudioModel()
+        for channelController in instrumentControllers{
+            let channelData = channelController.getChannelPluginData()
+            allData.instrumentChannels.append(channelData)
+        }
+        for auxController in auxControllers{
+            let channelData = auxController.getChannelPluginData()
+            allData.auxChannels.append(channelData)
+        }
+        let masterChannelData = masterController.getChannelPluginData()
+        allData.masterChannel = masterChannelData
+        return allData
+    }
+    public func set(audioModel: AudioModel){
+        removeAll()
+        createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
+        masterController.set(channelPluginData: audioModel.masterChannel)
+
+        for i in 0..<audioModel.instrumentChannels.count{
+            let channelPluginData = audioModel.instrumentChannels[i]
+            let channelController = instrumentControllers[i]
+            channelController.set(channelPluginData: channelPluginData)
+        }
+        for i in 0..<audioModel.auxChannels.count{
+            let channelPluginData = audioModel.instrumentChannels[i]
+            let channelController = auxControllers[i]
+            channelController.set(channelPluginData: channelPluginData)
+        }
+    }
+    private func removeAll(){
+        for channelController in allChannelControllers{
+            channelController.disconnectAll()
+        }
+        instrumentControllers.removeAll()
+        auxControllers.removeAll()
+        for bus in busses {
+            engine.disconnectNodeOutput(bus)
+            engine.detach(bus)
+        }
+        busses.removeAll()
+    }
+    private var allChannelControllers : [ChannelController]{
+        var allControllers : [ChannelController] = []
+        allControllers.append(contentsOf: instrumentControllers)
+        allControllers.append(contentsOf: auxControllers)
+        allControllers.append(masterController)
+        return allControllers
     }
     public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
         if channel >= instrumentControllers.count { return }
@@ -149,45 +188,7 @@ public class AudioController: NSObject {
     /////////////////////////////////////////////////////////////////////
     //
     /////////////////////////////////////////////////////////////////////
-    public var allPluginData : AllPluginData{
-        get {
-            let allData = AllPluginData()
-            for channelController in instrumentControllers{
-                let channelData = channelController.getChannelPluginData()
-                allData.instrumentChannels.append(channelData)
-            }
-            for auxController in auxControllers{
-                let channelData = auxController.getChannelPluginData()
-                allData.auxChannels.append(channelData)
-            }
-            let masterChannelData = masterController.getChannelPluginData()
-            allData.masterChannel = masterChannelData
-            return allData
-        }
-        set {
-            let allData = newValue
-            instrumentControllers.removeAll()
-            for _ in 0..<allData.instrumentChannels.count{
-                instrumentControllers.append(InstrumentChannelController(delegate: self))
-            }
-            for i in 0..<allData.instrumentChannels.count{
-                let channelPluginData = allData.instrumentChannels[i]
-                let channelController = instrumentControllers[i]
-                channelController.set(channelPluginData:channelPluginData)
-            }
-            auxControllers.removeAll()
-            for _ in 0..<allData.auxChannels.count{
-                auxControllers.append(AuxChannelController(delegate: self))
-            }
-            for i in 0..<allData.auxChannels.count{
-                let auxPluginData = allData.auxChannels[i]
-                let auxController = auxControllers[i]
-                auxController.set(channelPluginData:auxPluginData)
-            }
-            masterController = MasterChannelController(delegate: self)
-            masterController.set(channelPluginData: allData.masterChannel)
-        }
-    }
+    
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
@@ -260,31 +261,12 @@ public class AudioController: NSObject {
     public func render(musicSequence: MusicSequence, url: URL){}
 }
 
-extension AudioController : ChannelControllerDelegate{
-    func log(_ message: String) {
-        delegate.log(message)
-    }
-}
-
 extension AudioController : PluginSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){}
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){}
     func displayInstrumentInterface(channel: Int){}
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType){}
     
-    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
-        guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
-        guard let sendOutput = channelController.get(sendNumber: sendNumber) else { return }
-        if engine.outputConnectionPoints(for: sendOutput, outputBus: 0).count > 0{
-            engine.disconnectNodeOutput(sendOutput) 
-        }
-        if busNumber < 0 || busNumber >= busses.count { 
-            return
-        }
-        let bus = busses[busNumber]
-        let format = sendOutput.outputFormat(forBus: 0)
-        engine.connect(sendOutput, to: bus, format: format)
-    }
     func numBusses() -> Int{
         return busses.count
     }
@@ -302,18 +284,13 @@ extension AudioController : PluginSelectionDelegate{
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
-    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? {
+    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? { //TODO: Remove
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
         guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
-        let connections = engine.outputConnectionPoints(for: sendNode, outputBus: 0)
-        if connections.count != 1 { return nil }
-        guard let connectionNode = connections[0].node else { return nil }
-        for i in 0..<busses.count{
-            let bus = busses[i]
-            if connectionNode === bus { return i }
-        }
-        return nil
+        let sendOutput = getSendOutput(for: sendNode)
+        return sendOutput
     }
+    
     func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{
         if channelType != .aux { return nil }
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil }
@@ -325,6 +302,39 @@ extension AudioController : PluginSelectionDelegate{
             if sourceNode === bus { return b }
         }
         return nil
+    }
+    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
+        guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
+        guard let sendOutput = channelController.get(sendNumber: sendNumber) else { return }
+        setSendOutput(for: sendOutput, to: busNumber)
+    }
+}
+
+extension AudioController : ChannelControllerDelegate {
+    func getSendOutput(for node: AVAudioNode) -> Int?{
+        let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
+        if connections.count != 1 { return nil }
+        guard let connectionNode = connections[0].node else { return nil }
+        for i in 0..<busses.count{
+            let bus = busses[i]
+            if connectionNode === bus { return i }
+        }
+        return nil
+    }
+    func setSendOutput(for node: AVAudioNode, to busNumber: Int){
+        if engine.outputConnectionPoints(for: node, outputBus: 0).count > 0{
+            engine.disconnectNodeOutput(node) 
+        }
+        if busNumber < 0 || busNumber >= busses.count { 
+            return
+        }
+        let bus = busses[busNumber]
+        let format = node.outputFormat(forBus: 0)
+        engine.connect(node, to: bus, format: format)
+    }
+    
+    func log(_ message: String) {
+        delegate.log(message)
     }
 }
 

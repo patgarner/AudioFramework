@@ -13,7 +13,7 @@
 import Foundation
 import AVFoundation
 
-class ChannelController : ChannelViewDelegate2 {
+class ChannelController : ChannelViewDelegate2 {    
     var delegate : ChannelControllerDelegate!
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
@@ -37,14 +37,19 @@ class ChannelController : ChannelViewDelegate2 {
             effectPluginData.state = effect.auAudioUnit.fullState
             channelPluginData.effectPlugins.append(effectPluginData)
         }
-        channelPluginData.volume = outputNode.outputVolume
-        channelPluginData.pan = outputNode.pan
         for i in 0..<sendOutputs.count{
-            let send = sendOutputs[i]
-            let sendLevel = send.outputVolume
-            let sendData = SendData(busNumber: 0, level: sendLevel)
+            let sendNode = sendOutputs[i]
+            var busNumber = -1
+            if let number = AudioController.shared.getSendOutput(for: sendNode){
+                busNumber = number
+            }
+            let sendLevel = sendNode.outputVolume
+            let sendData = SendData(busNumber: busNumber, level: sendLevel)
             channelPluginData.sends.append(sendData)
         }
+        channelPluginData.volume = outputNode.outputVolume
+        channelPluginData.pan = outputNode.pan
+        channelPluginData.trackName = trackName
         return channelPluginData
     }
     func set(channelPluginData: ChannelPluginData){
@@ -52,14 +57,16 @@ class ChannelController : ChannelViewDelegate2 {
             let pluginData = channelPluginData.effectPlugins[effectNumber]
             loadEffect(pluginData: pluginData, number: effectNumber)
         }
-        outputNode.outputVolume = channelPluginData.volume
-        outputNode.pan = channelPluginData.pan
         for i in 0..<channelPluginData.sends.count{
             let sendData = channelPluginData.sends[i]
             if i >= sendOutputs.count { break }
             let sendOutput = sendOutputs[i]
             sendOutput.outputVolume = sendData.level
+            delegate.setSendOutput(for: sendOutput, to: sendData.busNumber)
         }
+        outputNode.outputVolume = channelPluginData.volume
+        outputNode.pan = channelPluginData.pan
+        trackName = channelPluginData.trackName
     }
     func reconnectNodes(){
         let audioUnits = allAudioUnits
@@ -187,6 +194,16 @@ class ChannelController : ChannelViewDelegate2 {
         let send = sendOutputs[sendNumber]
         return send
     }
+    func disconnectAll(){
+        for node in allAudioUnits{
+            delegate.engine.disconnectNodeOutput(node)
+            delegate.engine.detach(node)
+        }
+        for node in sendOutputs{
+            delegate.engine.disconnectNodeOutput(node)
+            delegate.engine.detach(node)
+        }
+    }
     ///////////////////////////////////////////////////////////////////////////////
     // ChannelViewDelegate2
     ///////////////////////////////////////////////////////////////////////////////
@@ -226,23 +243,22 @@ class ChannelController : ChannelViewDelegate2 {
         let sendData = SendData(busNumber: -1, level: send.outputVolume) //TODO: Get actual bus number
         return sendData
     }
-    public func getListOfInstruments() -> [AVAudioUnitComponent] {
-        var desc = AudioComponentDescription()
-        desc.componentType = kAudioUnitType_MusicDevice
-        desc.componentSubType = 0
-        desc.componentManufacturer = 0
-        desc.componentFlags = 0
-        desc.componentFlagsMask = 0
-        return AVAudioUnitComponentManager.shared().components(matching: desc)
+    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) {
+        guard let sendNode = get(sendNumber: sendNumber) else { return }
+        delegate.setSendOutput(for: sendNode, to: busNumber)
     }
-}
-
-extension ChannelController : ChannelSettable{
+    func getSendOutput(sendNumber: Int) -> Int? {
+        guard let sendNode = get(sendNumber: sendNumber) else { return nil}
+        let sendOutput = delegate.getSendOutput(for: sendNode)
+        return sendOutput
+    }
 }
 
 protocol ChannelControllerDelegate{
     func log(_ message: String)
     var engine : AVAudioEngine { get }
+    func getSendOutput(for node: AVAudioNode) -> Int?
+    func setSendOutput(for node: AVAudioNode, to busNumber: Int)
 }
 
 public enum PluginType{

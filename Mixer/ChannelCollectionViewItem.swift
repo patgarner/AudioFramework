@@ -105,9 +105,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         fillEffectsPopup()
         let effectsPopups = [audioFXPopup!, audioFXPopup2!]
         for i in 0..<effectsPopups.count{
-            let pluginSelection = channelViewDelegate2.getPluginSelection(pluginType: .instrument, pluginNumber: channelNumber)
+            let pluginSelection = channelViewDelegate2.getPluginSelection(pluginType: .effect, pluginNumber: i)
             let popup = effectsPopups[i]
-            select(popup: popup, list: getListOfEffects(), pluginSelection: pluginSelection)
+            let effectList = getAudioComponentList(type: .effect)
+            select(popup: popup, list: effectList, pluginSelection: pluginSelection)
         }
     }
     private func select(popup: NSPopUpButton, list: [AVAudioUnitComponent], pluginSelection: PluginSelection?){
@@ -125,7 +126,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc private func sendChanged(){
         let index = sendPopup.indexOfSelectedItem
-        pluginSelectionDelegate.select(sendNumber: 0, busNumber: index, channel: channelNumber, channelType: type)
+       // pluginSelectionDelegate.select(sendNumber: 0, busNumber: index, channel: channelNumber, channelType: type)
+        channelViewDelegate2.select(sendNumber: 0, busNumber: index, channel: channelNumber, channelType: type)
     }
     @objc func volumeSliderMoved(){
         let sliderValue = volumeSlider.floatValue
@@ -153,7 +155,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         guard let popupButton = sender as? NSPopUpButton else { return }
         let number = popupButton.tag
         let index = popupButton.indexOfSelectedItem
-        let effects = getListOfEffects()
+        let effects = getAudioComponentList(type: .effect)//getListOfEffects()
         if index >= effects.count {
             channelViewDelegate2.deselectEffect(number: number)
             return
@@ -169,8 +171,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     // Instruments
     /////////////////////////////////////////////////////////
     private func reloadInstruments() {
-        let instruments = channelViewDelegate2.getListOfInstruments()
-        instrumentsFlat = instruments
+        //let instruments = channelViewDelegate2.getListOfInstruments()
+        //instrumentsFlat = instruments
+        instrumentsFlat = getAudioComponentList(type: .instrument)
         fillInputPopup()
     }
     private func fillInputPopup(){
@@ -228,17 +231,14 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     /////////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////////
-    func getListOfEffects() -> [AVAudioUnitComponent]{ //TODO: It shouldn't have this much information in here
+    public func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]{
         var desc = AudioComponentDescription()
-        desc.componentType = kAudioUnitType_Effect
-        desc.componentSubType = 0
-        desc.componentManufacturer = 0
-        desc.componentFlags = 0
-        desc.componentFlagsMask = 0
+        if type == .effect { desc.componentType = kAudioUnitType_Effect }
+        if type == .instrument { desc.componentType = kAudioUnitType_MusicDevice}
         return AVAudioUnitComponentManager.shared().components(matching: desc)
     }
     func fillEffectsPopup(){
-        let effects = getListOfEffects()
+        let effects = getAudioComponentList(type: .effect)
         let popups = [audioFXPopup!, audioFXPopup2!]
         for popup in popups{
             popup.removeAllItems()
@@ -257,7 +257,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         sendPopup.removeAllItems()
         let busList = getBusList()
         sendPopup.addItems(withTitles: busList)
-        if let busNumber = pluginSelectionDelegate.getSendOutput(sendNumber: 0, channelNumber: channelNumber, channelType: type) {
+        //if let busNumber = pluginSelectionDelegate.getSendOutput(sendNumber: 0, channelNumber: channelNumber, channelType: type) {
+        if let busNumber = channelViewDelegate2.getSendOutput(sendNumber: 0){
             sendPopup.selectItem(at: busNumber)
         } else {
             sendPopup.selectItem(at: sendPopup.numberOfItems - 1)
@@ -300,7 +301,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         var completeness = (rotatedValue - blackoutRegion * 0.5) / whiteoutRegion
         if completeness < 0.000001 { completeness = 0 }
         let finalValue = (maxValue - minValue) * Float(completeness) + minValue
-        print("finalValue = \(finalValue)")
         return finalValue
     }
     func set(popupButton: NSSlider, value: Float, blackoutRegion: Float, minValue: Float, maxValue: Float){
