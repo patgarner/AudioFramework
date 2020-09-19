@@ -185,9 +185,6 @@ public class AudioController: NSObject {
     public func set(timeStamp: UInt64){ //We don't actually know yet the right way to implement this.
         
     }
-    /////////////////////////////////////////////////////////////////////
-    //
-    /////////////////////////////////////////////////////////////////////
     
     /////////////////////////////////////////////////////////////
     // Effects
@@ -270,31 +267,11 @@ extension AudioController : PluginSelectionDelegate{
     func numBusses() -> Int{
         return busses.count
     }
-//    func selectInput(busNumber: Int, channel: Int, channelType: ChannelType) { //TODO: Refactor
-//        guard let channelInput = getChannelController(type: channelType, channel: channel)?.inputNode else { return }
-//        if let previousBusInput = getBusInputNumber(channelNumber: channel, channelType: channelType){
-//            if previousBusInput == busNumber { return }
-//        }
-//        connectBusInput(to: channelInput, busNumber: busNumber)
-//    }
     func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? { //TODO: Remove
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
         guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
         let sendOutput = getSendOutput(for: sendNode)
         return sendOutput
-    }
-    
-    func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?{ //TODO: Refactor
-        if channelType != .aux { return nil }
-        guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil }
-        guard let channelInput = channelController.inputNode else { return nil }
-        guard let inputConnection = engine.inputConnectionPoint(for: channelInput, inputBus: 0) else { return nil }
-        guard let sourceNode = inputConnection.node else { return nil}
-        for b in 0..<busses.count{
-            let bus = busses[b]
-            if sourceNode === bus { return b }
-        }
-        return nil
     }
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }

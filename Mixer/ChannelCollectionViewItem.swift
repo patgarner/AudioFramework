@@ -198,7 +198,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         for title in getBusList(){
             inputPopup.addItem(withTitle: title)
         }
-        if let busNumber = pluginSelectionDelegate.getBusInputNumber(channelNumber: channelNumber, channelType: type) {
+        if let busNumber = channelViewDelegate2.getBusInputNumber(){
             inputPopup.selectItem(at: busNumber)
         } else {
             inputPopup.selectItem(at: inputPopup.numberOfItems - 1)

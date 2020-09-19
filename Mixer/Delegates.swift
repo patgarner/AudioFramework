@@ -23,7 +23,6 @@ protocol PluginSelectionDelegate{
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
     //////////////////////////////////////////////////////////////////////////////////////////
     func numBusses() -> Int
-    func getBusInputNumber(channelNumber: Int, channelType: ChannelType) -> Int?
 }
 
 public protocol ChannelViewDelegate2 {
@@ -39,4 +38,14 @@ public protocol ChannelViewDelegate2 {
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType)
     func getSendOutput(sendNumber: Int) -> Int?
     func selectInput(busNumber: Int)
+    func getBusInputNumber() -> Int?
+}
+
+protocol ChannelControllerDelegate{
+    func log(_ message: String)
+    var engine : AVAudioEngine { get }
+    func getSendOutput(for node: AVAudioNode) -> Int?
+    func setSendOutput(for node: AVAudioNode, to busNumber: Int)
+    func getBusInput(for node: AVAudioNode) -> Int?
+    func connectBusInput(to node: AVAudioNode, busNumber: Int)
 }

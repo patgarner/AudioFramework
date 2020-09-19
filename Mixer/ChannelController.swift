@@ -256,16 +256,14 @@ class ChannelController : ChannelViewDelegate2 {
         guard let inputNode = inputNode else { return }
         delegate.connectBusInput(to: inputNode, busNumber: busNumber)
     }
+    func getBusInputNumber() -> Int?{
+        guard let inputNode = inputNode else { return nil }
+        let busNumber = delegate.getBusInput(for: inputNode)
+        return busNumber
+    }
 }
 
-protocol ChannelControllerDelegate{
-    func log(_ message: String)
-    var engine : AVAudioEngine { get }
-    func getSendOutput(for node: AVAudioNode) -> Int?
-    func setSendOutput(for node: AVAudioNode, to busNumber: Int)
-    func getBusInput(for node: AVAudioNode) -> Int?
-    func connectBusInput(to node: AVAudioNode, busNumber: Int)
-}
+
 
 public enum PluginType{
     case instrument
