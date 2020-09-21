@@ -13,7 +13,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Foundation
 import Cocoa
 
-public protocol AudioServiceDelegate{
+public protocol AudioControllerDelegate{
     func load(viewController: NSViewController)
     func log(_ message : String)
+    func displayInterface(audioUnit: AudioUnit)    
 }

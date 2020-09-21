@@ -16,7 +16,7 @@ import AVFoundation
 public class MixerViewController: NSViewController {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
-    
+    private var interfaceInstance : InterfaceInstance? = nil
     override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -26,6 +26,8 @@ public class MixerViewController: NSViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
+        print("hi")
+        refresh()
     }
     
     override public func updateViewConstraints() {
@@ -40,7 +42,7 @@ public class MixerViewController: NSViewController {
         let styleMask = NSWindow.StyleMask.init(rawValue: styles)
         let window = NSWindow(contentRect: contentRect, styleMask: styleMask, backing: NSWindow.BackingStoreType.buffered, defer: false)
         instrumentWindowController = NSWindowController(window: window)
-        guard let interfaceInstance = PluginInterfaceModel.shared.pluginInterfaceInstance  else { return }
+        guard let interfaceInstance = self.interfaceInstance  else { return }
         switch(interfaceInstance) {            
         case .view(let view):
             guard let window = instrumentWindowController!.window else { break }
@@ -102,7 +104,7 @@ extension MixerViewController : PluginSelectionDelegate{
         DispatchQueue.main.async {
             AudioController.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
                 guard let interface = maybeInterface else { return }
-                PluginInterfaceModel.shared.pluginInterfaceInstance = interface
+                self.interfaceInstance = interface
                 DispatchQueue.main.async {                        
                     [weak self] in guard let _ = self else { return }
                     self?.loadVC()
@@ -115,7 +117,7 @@ extension MixerViewController : PluginSelectionDelegate{
             guard let audioEffect = AudioController.shared.getAudioEffect(channel: channel, number: number, type: type) else { return }
             let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
             let interfaceInstance = view.map(InterfaceInstance.view)
-            PluginInterfaceModel.shared.pluginInterfaceInstance = interfaceInstance
+            self.interfaceInstance = interfaceInstance
             DispatchQueue.main.async {                        
                 [weak self] in guard let _ = self else { return }
                 self?.loadVC()
@@ -128,7 +130,7 @@ extension MixerViewController : PluginSelectionDelegate{
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////
-    //TODO: Pass through functions. These just get infro from the AudioController.
+    //TODO: Pass through functions. These just get info from the AudioController.
     //////////////////////////////////////////////////////////////////////////////////////
     func numBusses() -> Int{
         let busses = AudioController.shared.numBusses()

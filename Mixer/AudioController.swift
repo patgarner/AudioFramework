@@ -18,16 +18,17 @@ public class AudioController: NSObject {
     public static var shared = AudioController()
     var recordingUrl : URL?
     public let engine = AVAudioEngine()
-    public var delegate : AudioServiceDelegate!
+    public var delegate : AudioControllerDelegate!
     private var instrumentControllers : [InstrumentChannelController] = []
     private var auxControllers : [ChannelController] = []
     private var masterController : ChannelController!
     private var busses : [AVAudioNode] = []
     private override init (){
         super.init()
+        initialize()
     }
     public func initialize(){
-        createChannels(numInstChannels: 1, numAuxChannels: 1, numBusses: 4)
+        createChannels(numInstChannels: 16, numAuxChannels: 1, numBusses: 4)
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
@@ -325,6 +326,10 @@ extension AudioController : ChannelControllerDelegate {
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
+    func displayInterface(audioUnit: AudioUnit) {
+        print("")
+    }
+    
 }
 
 

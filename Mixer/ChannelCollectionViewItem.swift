@@ -216,8 +216,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let index = inputPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
         if let virtualInstrument = channelViewDelegate2.getPluginSelection(pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
-        component.name == virtualInstrument.name {
+            component.name == virtualInstrument.name {
             pluginSelectionDelegate.displayInstrumentInterface(channel: channelNumber)
+            //channelViewDelegate2.displayInterface(type: .instrument, number: 0)
             return
         } else {
             pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)

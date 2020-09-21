@@ -261,9 +261,14 @@ class ChannelController : ChannelViewDelegate2 {
         let busNumber = delegate.getBusInput(for: inputNode)
         return busNumber
     }
+    func displayInterface(type: PluginType, number: Int = 0){
+        if type != .effect { return }
+        if let effect = getEffect(number: number){
+            delegate.displayInterface(audioUnit: effect.audioUnit)
+        }
+    }
+
 }
-
-
 
 public enum PluginType{
     case instrument
