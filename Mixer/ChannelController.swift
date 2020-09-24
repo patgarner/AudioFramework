@@ -204,6 +204,9 @@ class ChannelController : ChannelViewDelegate2 {
             delegate.engine.detach(node)
         }
     }
+    var midiIn : AVAudioUnit?{
+        return nil
+    }
     ///////////////////////////////////////////////////////////////////////////////
     // ChannelViewDelegate2
     ///////////////////////////////////////////////////////////////////////////////
@@ -267,6 +270,7 @@ class ChannelController : ChannelViewDelegate2 {
             delegate.displayInterface(audioUnit: effect.audioUnit)
         }
     }
+    ////////////////////////////////////
 
 }
 

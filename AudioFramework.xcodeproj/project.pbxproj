@@ -48,6 +48,15 @@
 		8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 		8487F51925111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
 		8487F51A25111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
+		8490E8B3251BBDC000F471EE /* Rhythm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8490E8B2251BBDC000F471EE /* Rhythm.caf */; };
+		8490E8B4251BBDC000F471EE /* Rhythm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8490E8B2251BBDC000F471EE /* Rhythm.caf */; };
+		849C6B89251A653300164DE1 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B88251A653300164DE1 /* Demo.swift */; };
+		849C6B8A251A653300164DE1 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B88251A653300164DE1 /* Demo.swift */; };
+		849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
+		849C6B8D251A66FF00164DE1 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
+		849C6B90251A712800164DE1 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = 849C6B8F251A712800164DE1 /* test.mid */; };
+		849C6B91251A712800164DE1 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = 849C6B8F251A712800164DE1 /* test.mid */; };
+		849C6B94251A9A6E00164DE1 /* test.mid in Resources */ = {isa = PBXBuildFile; fileRef = 849C6B8F251A712800164DE1 /* test.mid */; };
 		84A9AFDF25101ED500816F7F /* ChannelCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */; };
 		84A9AFE025101ED500816F7F /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
 		84A9AFE125101ED500816F7F /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
@@ -150,6 +159,10 @@
 		8460307A250803FA00CB9844 /* ChannelPluginData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPluginData.swift; sourceTree = "<group>"; };
 		8479715524FFE66600AAC4A3 /* MixerFillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerFillView.swift; sourceTree = "<group>"; };
 		8487F51825111FC1003DC1D6 /* AuxChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxChannelController.swift; sourceTree = "<group>"; };
+		8490E8B2251BBDC000F471EE /* Rhythm.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Rhythm.caf; sourceTree = "<group>"; };
+		849C6B88251A653300164DE1 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
+		849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationExtension.swift; sourceTree = "<group>"; };
+		849C6B8F251A712800164DE1 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
 		84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioUnitPassthrough.swift; path = AudioUnit/AudioUnitPassthrough.swift; sourceTree = SOURCE_ROOT; };
 		84A9CF22250D35F70065A7CC /* MasterChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterChannelController.swift; sourceTree = "<group>"; };
 		84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentChannelController.swift; sourceTree = "<group>"; };
@@ -228,6 +241,7 @@
 		841D0A7624FED209008F6305 /* AudioUtilities */ = {
 			isa = PBXGroup;
 			children = (
+				8490E8B2251BBDC000F471EE /* Rhythm.caf */,
 				841D0A7824FED209008F6305 /* AudioFileConverter.swift */,
 				841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */,
 				84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */,
@@ -330,9 +344,20 @@
 			path = AUv2;
 			sourceTree = "<group>";
 		};
+		849C6B8E251A70FD00164DE1 /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				849C6B8F251A712800164DE1 /* test.mid */,
+				849C6B88251A653300164DE1 /* Demo.swift */,
+				849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */,
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
 		84ACE02625191008003963FD /* AudioFrameworkDemo */ = {
 			isa = PBXGroup;
 			children = (
+				849C6B8E251A70FD00164DE1 /* Demo */,
 				84ACE02725191008003963FD /* AppDelegate.swift */,
 				84ACE02925191008003963FD /* ViewController.swift */,
 				84ACE02E2519100B003963FD /* Assets.xcassets */,
@@ -499,6 +524,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849C6B94251A9A6E00164DE1 /* test.mid in Resources */,
 				84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -515,7 +541,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849C6B90251A712800164DE1 /* test.mid in Resources */,
 				84ACE02F2519100B003963FD /* Assets.xcassets in Resources */,
+				8490E8B3251BBDC000F471EE /* Rhythm.caf in Resources */,
 				84ACE0322519100B003963FD /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -524,6 +552,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8490E8B4251BBDC000F471EE /* Rhythm.caf in Resources */,
+				849C6B91251A712800164DE1 /* test.mid in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -605,8 +635,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
 				84ACE02D25191008003963FD /* AudioFrameworkDemo.xcdatamodeld in Sources */,
 				84ACE02A25191008003963FD /* ViewController.swift in Sources */,
+				849C6B89251A653300164DE1 /* Demo.swift in Sources */,
 				84ACE02825191008003963FD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -615,6 +647,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				849C6B8D251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
+				849C6B8A251A653300164DE1 /* Demo.swift in Sources */,
 				84ACE03E2519100B003963FD /* AudioFrameworkDemoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -865,6 +899,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AudioFrameworkDemo/AudioFrameworkDemo.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = NL76446BRD;
@@ -885,6 +920,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AudioFrameworkDemo/AudioFrameworkDemo.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = NL76446BRD;

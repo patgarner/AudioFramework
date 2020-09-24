@@ -7,14 +7,16 @@
 //
 
 import Cocoa
+import AudioFramework
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
-
+class AppDelegate: NSObject, NSApplicationDelegate, AudioControllerDelegate {
+    let demo = Demo()
 
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
+        AudioController.shared.delegate = self
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
@@ -118,5 +120,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return .terminateNow
     }
 
+    @IBAction func exportMIDISequence(_ sender: Any) {
+        demo.exportMIDI()
+    }
+    /////////////////////////////////////////////////////////
+    // AudioControllerDelegate
+    /////////////////////////////////////////////////////////
+    func load(viewController: NSViewController) {
+        
+    }
+    
+    func log(_ message: String) {
+        let alert = NSAlert()
+        alert.informativeText = message
+        alert.runModal()
+    }
+    
+    func displayInterface(audioUnit: AudioUnit) {
+        
+    }
+    
 }
 

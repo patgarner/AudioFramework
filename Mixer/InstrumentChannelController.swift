@@ -97,4 +97,15 @@ class InstrumentChannelController : ChannelController{
         }
  
     }
+    override var midiIn : AVAudioUnit?{
+        guard let avAudioUnit = instrumentHost.audioUnit else { return nil }
+        return avAudioUnit
+//        let audioUnit = avAudioUnit.audioUnit
+//        let auAudioUnit = avAudioUnit.auAudioUnit
+//        for i in 0..<MIDIGetNumberOfDestinations(){
+//            let source = MIDIGetDestination(i)
+//            print(source)
+//        }
+//        return nil
+    }
 }

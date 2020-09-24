@@ -15,10 +15,11 @@ import AVFoundation
 import Cocoa
 
 public class AudioController: NSObject {
+    var timer = Timer()
     public static var shared = AudioController()
     var recordingUrl : URL?
     public let engine = AVAudioEngine()
-    public var delegate : AudioControllerDelegate!
+    public var delegate : AudioControllerDelegate?
     private var instrumentControllers : [InstrumentChannelController] = []
     private var auxControllers : [ChannelController] = []
     private var masterController : ChannelController!
@@ -79,7 +80,7 @@ public class AudioController: NSObject {
         removeAll()
         createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
         masterController.set(channelPluginData: audioModel.masterChannel)
-
+        
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
@@ -240,7 +241,7 @@ public class AudioController: NSObject {
         return 0
     }
     func load(viewController: NSViewController){
-        delegate.load(viewController: viewController)
+        delegate?.load(viewController: viewController)
     }
     /////////////////////////////////////////////////////////////
     //
@@ -256,7 +257,101 @@ public class AudioController: NSObject {
             }
         }
     }
-    public func render(musicSequence: MusicSequence, url: URL){}
+    public func render(musicSequence: MusicSequence, url: URL){
+        exportMIDI(url: url)
+        //        test()
+    }
+    func exportMIDI(url: URL){
+        let sequencer = AVAudioSequencer(audioEngine: engine)
+        do {
+            try sequencer.load(from: url)
+            for i in 0..<sequencer.tracks.count{
+                let track = sequencer.tracks[i]
+                guard let channel = getChannelController(type: .midiInstrument, channel: i) else { continue }
+                let destination = channel.midiIn
+                track.destinationAudioUnit = destination
+                if let destinationFormat = destination?.outputFormat(forBus: 0){
+                    print("==================================\ndestination node format = \(destinationFormat)")
+                }
+            }
+            //sequencer.prepareToPlay()
+            //try sequencer.start()
+            test(sequencer: sequencer)
+        } catch {
+            print("Render MIDI failed. Error: \(error)")
+            return
+        }
+        
+    }
+    public func test(sequencer: AVAudioSequencer){
+        engine.stop()
+        let format: AVAudioFormat = engine.mainMixerNode.outputFormat(forBus: 0)
+        print("Format (from Engine main mixer node: \(format)")
+        let maxFrames: AVAudioFrameCount = 1024
+        do {
+            try engine.enableManualRenderingMode(.offline, format: format,
+                                                 maximumFrameCount: maxFrames)
+        } catch {
+            fatalError("Enabling manual rendering mode failed: \(error).")
+        }
+        do {
+            try engine.start()
+            sequencer.prepareToPlay()
+            try sequencer.start()
+        } catch {
+            fatalError("Unable to start audio engine: \(error).")
+        }
+        guard let outputFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: format.sampleRate, channels: 2, interleaved: false) else { return }
+        let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat,
+                                      frameCapacity: engine.manualRenderingMaximumFrameCount)!
+
+
+        let outputFile: AVAudioFile
+        do {
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            let outputURL = documentsURL.appendingPathComponent("Rhythm-processed.caf")
+            let settings : [String : Any] = ["AVLinearPCMIsNonInterleaved": 0, "AVLinearPCMIsBigEndianKey": 1, "AVNumberOfChannelsKey": format.channelCount, "AVFormatIDKey": 1819304813, "AVLinearPCMBitDepthKey": 32, "AVSampleRateKey": outputFormat.sampleRate, "AVLinearPCMIsFloatKey": 1]
+            outputFile = try AVAudioFile(forWriting: outputURL, settings: buffer.format.settings)
+            print("OutputFile format: \(outputFile.fileFormat)")
+            print("Output file processing format: \(outputFile.processingFormat)")
+        } catch {
+            fatalError("Unable to open output audio file: \(error).")
+        }
+        let sourceFileLength : AVAudioFramePosition = 441000 //10 seconds
+        while engine.manualRenderingSampleTime < sourceFileLength {
+            do {
+                let frameCount = sourceFileLength - engine.manualRenderingSampleTime
+                let framesToRender = min(AVAudioFrameCount(frameCount), buffer.frameCapacity)
+                let status = try engine.renderOffline(framesToRender, to: buffer)
+                
+                switch status {
+                case .success:
+                    print("buffer.frameLength = \(buffer.frameLength)")
+                      print("buffer format: \(buffer.format)")
+                      print("buffer frame capacity: \(buffer.frameCapacity)")
+                      print("buffer floats: \(buffer.floatChannelData)")
+                      print("buffer int32: \(buffer.int32ChannelData)")
+                      print("buffer int16: \(buffer.int16ChannelData)")
+                    print("buffer settings: \(buffer.format.settings)")
+                    try outputFile.write(from: buffer)
+                case .insufficientDataFromInputNode:
+                    break
+                case .cannotDoInCurrentContext:
+                    break
+                case .error:
+                    fatalError("The manual rendering failed.")
+                @unknown default:
+                    print("Unknown error.")
+                }
+            } catch {
+                fatalError("The manual rendering failed: \(error).")
+                print("===================================")
+            }
+        }
+        engine.stop()
+        print("AVAudioEngine offline rendering finished.")
+        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
+    }
 }
 
 extension AudioController : PluginSelectionDelegate{
@@ -305,7 +400,7 @@ extension AudioController : ChannelControllerDelegate {
     }
     
     func log(_ message: String) {
-        delegate.log(message)
+        delegate?.log(message)
     }
     func getBusInput(for node: AVAudioNode) -> Int? {
         guard let inputConnection = engine.inputConnectionPoint(for: node, inputBus: 0) else { return nil }
@@ -326,10 +421,23 @@ extension AudioController : ChannelControllerDelegate {
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
+    func connectMultipleNodes(){
+        let engine = AVAudioEngine()
+        let node1 = AVAudioNode()
+        let node2 = AVAudioNode()
+        let node3 = AVAudioNode()
+        engine.attach(node1)
+        engine.attach(node2)
+        engine.attach(node3)
+        let format = node1.outputFormat(forBus: 0)
+        let connection1 = AVAudioConnectionPoint(node: node2, bus: 0)
+        let connection2 = AVAudioConnectionPoint(node: node3, bus: 0)
+        let connections = [connection1, connection2]
+        engine.connect(node1, to: connections, fromBus: 0, format: format)
+    }
     func displayInterface(audioUnit: AudioUnit) {
         print("")
     }
-    
 }
 
 
