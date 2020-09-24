@@ -11,7 +11,7 @@ import AVFoundation
 import Cocoa
 
 class AudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine){
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL){
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
@@ -33,13 +33,10 @@ class AudioExporter{
         } catch {
             fatalError("Unable to start audio engine: \(error).")
         }
-        let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat,
-                                      frameCapacity: engine.manualRenderingMaximumFrameCount)!
+        let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: engine.manualRenderingMaximumFrameCount)!
         let outputFile: AVAudioFile
         do {
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let outputURL = documentsURL.appendingPathComponent("Rhythm-processed.caf")
-            outputFile = try AVAudioFile(forWriting: outputURL, settings: buffer.format.settings)
+            outputFile = try AVAudioFile(forWriting: audioDestinationURL, settings: buffer.format.settings)
         } catch {
             fatalError("Unable to open output audio file: \(error).")
         }
@@ -66,6 +63,7 @@ class AudioExporter{
             }
         }
         engine.stop()
+        engine.disableManualRenderingMode()
         print("AVAudioEngine offline rendering finished.")
         NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
     }

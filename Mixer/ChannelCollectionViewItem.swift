@@ -126,7 +126,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc private func sendChanged(){
         let index = sendPopup.indexOfSelectedItem
-       // pluginSelectionDelegate.select(sendNumber: 0, busNumber: index, channel: channelNumber, channelType: type)
         channelViewDelegate2.select(sendNumber: 0, busNumber: index, channel: channelNumber, channelType: type)
     }
     @objc func volumeSliderMoved(){
@@ -171,8 +170,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     // Instruments
     /////////////////////////////////////////////////////////
     private func reloadInstruments() {
-        //let instruments = channelViewDelegate2.getListOfInstruments()
-        //instrumentsFlat = instruments
         instrumentsFlat = getAudioComponentList(type: .instrument)
         fillInputPopup()
     }
@@ -218,7 +215,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         if let virtualInstrument = channelViewDelegate2.getPluginSelection(pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
             component.name == virtualInstrument.name {
             pluginSelectionDelegate.displayInstrumentInterface(channel: channelNumber)
-            //channelViewDelegate2.displayInterface(type: .instrument, number: 0)
             return
         } else {
             pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)
@@ -258,7 +254,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         sendPopup.removeAllItems()
         let busList = getBusList()
         sendPopup.addItems(withTitles: busList)
-        //if let busNumber = pluginSelectionDelegate.getSendOutput(sendNumber: 0, channelNumber: channelNumber, channelType: type) {
         if let busNumber = channelViewDelegate2.getSendOutput(sendNumber: 0){
             sendPopup.selectItem(at: busNumber)
         } else {

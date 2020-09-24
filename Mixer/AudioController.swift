@@ -257,10 +257,9 @@ public class AudioController: NSObject {
             }
         }
     }
-    public func render(musicSequence: MusicSequence, url: URL){
-        guard let sequencer = createMidiSequencer(url: url) else { return }
-        //exportMIDI(sequencer: sequencer)
-        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine)
+    public func renderAudio(midiSourceURL: URL, audioDestinationURL: URL){
+        guard let sequencer = createMidiSequencer(url: midiSourceURL) else { return }
+        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL)
     }
     func createMidiSequencer(url: URL) ->AVAudioSequencer?{
         let sequencer = AVAudioSequencer(audioEngine: engine)
@@ -278,65 +277,6 @@ public class AudioController: NSObject {
         }
         return sequencer
     }
-//    func exportMIDI(sequencer: AVAudioSequencer){
-//        var lengthInSeconds = 0.0
-//        for track in sequencer.tracks{
-//            lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
-//        }
-//        lengthInSeconds += 4.0
-//        engine.stop()
-//        let format: AVAudioFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-//        let maxFrames: AVAudioFrameCount = 1024
-//        do {
-//            try engine.enableManualRenderingMode(.offline, format: format,
-//                                                 maximumFrameCount: maxFrames)
-//        } catch {
-//            fatalError("Enabling manual rendering mode failed: \(error).")
-//        }
-//        do {
-//            try engine.start()
-//            sequencer.prepareToPlay()
-//            try sequencer.start()
-//        } catch {
-//            fatalError("Unable to start audio engine: \(error).")
-//        }
-////        guard let outputFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: format.sampleRate, channels: 2, interleaved: false) else { return }
-//        let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat,
-//                                      frameCapacity: engine.manualRenderingMaximumFrameCount)!
-//        let outputFile: AVAudioFile
-//        do {
-//            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-//            let outputURL = documentsURL.appendingPathComponent("Rhythm-processed.caf")
-//            outputFile = try AVAudioFile(forWriting: outputURL, settings: buffer.format.settings)
-//        } catch {
-//            fatalError("Unable to open output audio file: \(error).")
-//        }
-//        let sourceFileLength = AVAudioFramePosition(lengthInSeconds * buffer.format.sampleRate)
-//        while engine.manualRenderingSampleTime < sourceFileLength {
-//            do {
-//                let frameCount = sourceFileLength - engine.manualRenderingSampleTime
-//                let framesToRender = min(AVAudioFrameCount(frameCount), buffer.frameCapacity)
-//                let status = try engine.renderOffline(framesToRender, to: buffer)
-//                switch status {
-//                case .success:
-//                    try outputFile.write(from: buffer)
-//                case .insufficientDataFromInputNode:
-//                    break
-//                case .cannotDoInCurrentContext:
-//                    break
-//                case .error:
-//                    fatalError("The manual rendering failed.")
-//                @unknown default:
-//                    print("Unknown error.")
-//                }
-//            } catch {
-//                fatalError("The manual rendering failed: \(error).")
-//            }
-//        }
-//        engine.stop()
-//        print("AVAudioEngine offline rendering finished.")
-//        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
-//    }
 }
 
 extension AudioController : PluginSelectionDelegate{
