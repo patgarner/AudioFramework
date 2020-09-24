@@ -16,6 +16,10 @@
 		841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
 		841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
 		841D0A8624FED796008F6305 /* AudioControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */; };
+		841E57D3251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
+		841E57D4251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
+		841E57D5251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
+		841E57D6251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
 		842369B224FEC2BC001266BE /* AudioFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 842369A824FEC2BC001266BE /* AudioFramework.framework */; };
 		842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369B624FEC2BC001266BE /* AudioFrameworkTests.swift */; };
 		842369B924FEC2BC001266BE /* AudioFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369AB24FEC2BC001266BE /* AudioFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -135,6 +139,7 @@
 		84070C5624FF5D5900E572E7 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioControllerDelegate.swift; sourceTree = "<group>"; };
+		841E57D2251C262F009B7E7C /* AudioExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioExporter.swift; sourceTree = "<group>"; };
 		842369A824FEC2BC001266BE /* AudioFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		842369AB24FEC2BC001266BE /* AudioFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFramework.h; sourceTree = "<group>"; };
 		842369AC24FEC2BC001266BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -246,6 +251,7 @@
 				841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */,
 				84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */,
 				84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */,
+				841E57D2251C262F009B7E7C /* AudioExporter.swift */,
 			);
 			path = AudioUtilities;
 			sourceTree = "<group>";
@@ -568,6 +574,7 @@
 				845958932513C03B0091A43E /* ChannelSettable.swift in Sources */,
 				84A9CF58250D93D50065A7CC /* AudioNodeFactory.swift in Sources */,
 				84070C5724FF5D5900E572E7 /* ChannelViewDelegate.swift in Sources */,
+				841E57D3251C262F009B7E7C /* AudioExporter.swift in Sources */,
 				84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */,
 				842369FD24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
 				8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */,
@@ -626,6 +633,7 @@
 				842369FA24FEC44C001266BE /* AudioUnitInstance.swift in Sources */,
 				842369EA24FEC44C001266BE /* AudioComponentDescriptionExtension.swift in Sources */,
 				8487F51A25111FC1003DC1D6 /* AuxChannelController.swift in Sources */,
+				841E57D4251C262F009B7E7C /* AudioExporter.swift in Sources */,
 				84A9AFE125101ED500816F7F /* ChannelController.swift in Sources */,
 				8459589C251436F20091A43E /* SendData.swift in Sources */,
 			);
@@ -638,6 +646,7 @@
 				849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
 				84ACE02D25191008003963FD /* AudioFrameworkDemo.xcdatamodeld in Sources */,
 				84ACE02A25191008003963FD /* ViewController.swift in Sources */,
+				841E57D5251C262F009B7E7C /* AudioExporter.swift in Sources */,
 				849C6B89251A653300164DE1 /* Demo.swift in Sources */,
 				84ACE02825191008003963FD /* AppDelegate.swift in Sources */,
 			);
@@ -648,6 +657,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				849C6B8D251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
+				841E57D6251C262F009B7E7C /* AudioExporter.swift in Sources */,
 				849C6B8A251A653300164DE1 /* Demo.swift in Sources */,
 				84ACE03E2519100B003963FD /* AudioFrameworkDemoTests.swift in Sources */,
 			);
