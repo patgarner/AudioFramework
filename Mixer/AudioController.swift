@@ -122,36 +122,6 @@ public class AudioController: NSObject {
         let host = instrumentControllers[channel]
         host.requestInstrumentInterface(completion)
     }
-    public func recordTo(url: URL) { //TODO: Move somewhere else
-        self.recordingUrl = url
-        let format = self.engine.mainMixerNode.outputFormat(forBus: 0)
-        let settings = format.settings
-        do {
-            let audioFile = try AVAudioFile(forWriting: url, settings: settings, commonFormat: .pcmFormatFloat32, interleaved: false)
-            engine.mainMixerNode.removeTap(onBus: 0)
-            engine.mainMixerNode.installTap(onBus: 0, bufferSize: 1024, format: format) { (buffer, when) in
-                do {
-                    try audioFile.write(from: buffer)
-                } catch {
-                    print("Couldn't write to buffer. Error \(error)")
-                }
-            }
-        } catch {
-            print("Couldn't record. Error: \(error)")
-        }
-    }
-    func stopRecording() { //TODO: Move somewhere else
-        engine.mainMixerNode.outputVolume = 0
-        engine.mainMixerNode.removeTap(onBus: 0)
-        engine.mainMixerNode.outputVolume = 1
-        guard let url = self.recordingUrl else { return }
-        let destinationUrl = url.deletingPathExtension().appendingPathExtension("wav")
-        AudioFileConverter.convert(sourceURL: url, destinationURL: destinationUrl)
-        self.recordingUrl = nil
-    }
-    public func stop(){
-        stopRecording()
-    }
     //////////////////////////////////////////////////////////////////
     // MIDI
     //////////////////////////////////////////////////////////////////
@@ -265,9 +235,11 @@ public class AudioController: NSObject {
         let sequencer = AVAudioSequencer(audioEngine: engine)
         do {
             try sequencer.load(from: url)
-            for i in 0..<sequencer.tracks.count{
+            if sequencer.tracks.count < 1 { return sequencer }
+            var tempoTrackOffset = 1 //If no tempo track, set to zero.
+            for i in tempoTrackOffset..<sequencer.tracks.count{
                 let track = sequencer.tracks[i]
-                guard let channel = getChannelController(type: .midiInstrument, channel: i) else { continue }
+                guard let channel = getChannelController(type: .midiInstrument, channel: i - tempoTrackOffset) else { continue }
                 let destination = channel.midiIn
                 track.destinationAudioUnit = destination
             }
