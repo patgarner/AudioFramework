@@ -16,12 +16,13 @@ public class AudioModel : Codable{
     public var instrumentChannels : [ChannelPluginData] = []
     public var auxChannels : [ChannelPluginData] = []
     public var masterChannel = ChannelPluginData()
-
     public var sends : [SendData] = []
+    public var stemCreatorModel = StemCreatorModel()
     enum CodingKeys : CodingKey{
         case instrumentChannels
         case auxChannels
         case masterChannel
+        case stemCreatorModel
     }
     public init(){
         
@@ -43,12 +44,17 @@ public class AudioModel : Codable{
         } catch {
             print("AllPluginData: failed to load master channel: Error: \(error)")
         }
+        do {
+            stemCreatorModel = try container.decode(StemCreatorModel.self, forKey: .stemCreatorModel)
+        } catch {
+            print("AllPluginData: failed to load stemCreatorModel. Error: \(error)")
+        }
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(instrumentChannels, forKey: .instrumentChannels)
         try container.encode(auxChannels, forKey: .auxChannels)
         try container.encode(masterChannel, forKey: .masterChannel)
-
+        try container.encode(stemCreatorModel, forKey: .stemCreatorModel)
     }
 }

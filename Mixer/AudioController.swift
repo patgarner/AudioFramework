@@ -75,6 +75,7 @@ public class AudioController: NSObject {
         }
         let masterChannelData = masterController.getChannelPluginData()
         allData.masterChannel = masterChannelData
+        allData.stemCreatorModel = stemCreatorModel 
         return allData
     }
     public func set(audioModel: AudioModel){
@@ -92,6 +93,7 @@ public class AudioController: NSObject {
             let channelController = auxControllers[i]
             channelController.set(channelPluginData: channelPluginData)
         }
+        stemCreatorModel = audioModel.stemCreatorModel
     }
     private func removeAll(){
         for channelController in allChannelControllers{
@@ -116,7 +118,6 @@ public class AudioController: NSObject {
         if channel >= instrumentControllers.count { return }
         let channelController = instrumentControllers[channel]
         channelController.loadInstrument(fromDescription: desc, completion: completion)
-        print("")
     }
     public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
         if channel >= instrumentControllers.count { completion(nil) }
@@ -230,14 +231,13 @@ public class AudioController: NSObject {
     //
     ///////////////////////////////////////////////////////////////
     fileprivate func startEngineIfNeeded() { //TODO: Move somewhere else
-        if !engine.isRunning {
-            do {
-                if engine.attachedNodes.count > 0 {
-                    try engine.start()
-                }
-            } catch {
-                print("Could not start audio engine. Error: \(error)")
+        if engine.isRunning { return }
+        do {
+            if engine.attachedNodes.count > 0 {
+                try engine.start()
             }
+        } catch {
+            print("Could not start audio engine. Error: \(error)")
         }
     }
     public func renderAudio(midiSourceURL: URL, audioDestinationURL: URL){

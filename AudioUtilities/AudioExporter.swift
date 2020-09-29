@@ -67,14 +67,9 @@ class AudioExporter{
         }
         engine.stop()
         engine.disableManualRenderingMode()
-        print("AVAudioEngine offline rendering finished.")
-//        let absolutePath = audioDestinationURL.absoluteString
-//        let wavString = absolutePath.replacingOccurrences(of: ".caf", with: ".wav")
-        
+        print("AVAudioEngine offline rendering finished.")  
         let wavUrl = audioDestinationURL.appendingPathExtension("wav")
-//        if let wavUrl = URL(string: wavString) {
             AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: true)
-//        }
 //        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
     }
 }
