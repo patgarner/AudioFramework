@@ -10,6 +10,9 @@ import Foundation
 
 public class StemCreator{
     var delegate: StemCreatorDelegate!
+    init(delegate: StemCreatorDelegate){
+        self.delegate = delegate
+    }
     func createStems(model: StemCreatorModel, folder: URL){
         for stem in model.stems{
             createStem(stemModel: stem, prefix: model.namePrefix)

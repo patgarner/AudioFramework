@@ -16,5 +16,6 @@ import Cocoa
 public protocol AudioControllerDelegate{
     func load(viewController: NSViewController)
     func log(_ message : String)
-    func displayInterface(audioUnit: AudioUnit)    
+    func displayInterface(audioUnit: AudioUnit)   
+    func exportMidi(to url: URL)
 }
