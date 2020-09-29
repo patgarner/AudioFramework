@@ -19,7 +19,7 @@ public protocol StemViewDelegate{
     func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String)
     func isSelected(stemNumber: Int, channelId: String) -> Bool
     func delete(stemNumber: Int)
-    func export()
+    func export(url: URL)
     var namePrefix : String { get set }
 }
 

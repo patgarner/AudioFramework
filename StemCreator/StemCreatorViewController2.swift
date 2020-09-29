@@ -94,11 +94,25 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         }
         initialize()
     }
-    @objc private func export(){
-        delegate.export()
-    }
+//    @objc private func export(){
+//        delegate.export()
+//    }
     @objc private func namePrefixChanged(){
         let namePrefix = namePrefixField.stringValue
         delegate.namePrefix = namePrefix
     }
+    @objc func export(_ sender: Any){ //TODO: move to project
+        let fileRect = NSRect(x: 300, y: 300, width: 300, height: 300)
+        let savePanel = NSOpenPanel(contentRect: fileRect, styleMask: NSWindow.StyleMask.docModalWindow, backing: NSWindow.BackingStoreType.buffered, defer: false)
+        savePanel.canChooseFiles = false
+        savePanel.canChooseDirectories = true
+        savePanel.begin { (result) in 
+            if result == NSApplication.ModalResponse.OK {
+                guard let url = savePanel.url else { return }
+                self.delegate.export(url: url)
+            } else {
+                print("Problem exporting stems.")
+            }
+        }
+    }  
 }

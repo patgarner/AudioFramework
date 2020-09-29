@@ -377,7 +377,7 @@ extension AudioController : StemViewDelegate {
     public func delete(stemNumber: Int){
         stemCreatorModel.delete(stemNumber: stemNumber)
     }
-    public func export(){
+    public func export(url: URL){
         print("yay")
     }
     public var namePrefix: String {
