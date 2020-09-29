@@ -28,6 +28,7 @@ class AudioExporter{
         }
         do {
             try engine.start()
+            sequencer.currentPositionInSeconds = 0
             sequencer.prepareToPlay()
             try sequencer.start()
         } catch {
@@ -35,10 +36,12 @@ class AudioExporter{
         }
         let buffer = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: engine.manualRenderingMaximumFrameCount)!
         let outputFile: AVAudioFile
+        let cafURL = audioDestinationURL.appendingPathExtension("caf")
         do {
-            outputFile = try AVAudioFile(forWriting: audioDestinationURL, settings: buffer.format.settings)
+            outputFile = try AVAudioFile(forWriting: cafURL, settings: buffer.format.settings)
         } catch {
-            fatalError("Unable to open output audio file: \(error).")
+            print("Unable to open output audio file: \(error).")
+            return
         }
         let sourceFileLength = AVAudioFramePosition(lengthInSeconds * buffer.format.sampleRate)
         while engine.manualRenderingSampleTime < sourceFileLength {
@@ -65,15 +68,13 @@ class AudioExporter{
         engine.stop()
         engine.disableManualRenderingMode()
         print("AVAudioEngine offline rendering finished.")
-        let absolutePath = audioDestinationURL.absoluteString
-        let wavString = absolutePath.replacingOccurrences(of: ".caf", with: ".wav")
-        if let wavUrl = URL(string: wavString) {
-            AudioFileConverter.convert(sourceURL: audioDestinationURL, destinationURL: wavUrl, deleteSource: false)
-        }
-        let mp3String = absolutePath.replacingOccurrences(of: ".caf", with: ".mp3")
-        if let mp3Url = URL(string: mp3String) {
-            AudioFileConverter.convertToMP3(sourceURL: audioDestinationURL, destinationURL: mp3Url, deleteSource: true)
-        }
+//        let absolutePath = audioDestinationURL.absoluteString
+//        let wavString = absolutePath.replacingOccurrences(of: ".caf", with: ".wav")
+        
+        let wavUrl = audioDestinationURL.appendingPathExtension("wav")
+//        if let wavUrl = URL(string: wavString) {
+            AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: true)
+//        }
 //        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
     }
 }
