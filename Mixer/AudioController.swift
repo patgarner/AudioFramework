@@ -377,9 +377,17 @@ extension AudioController : StemViewDelegate {
     public func delete(stemNumber: Int){
         stemCreatorModel.delete(stemNumber: stemNumber)
     }
-    public func exportStems(destinationFolder: URL){
-        let stemCreator = StemCreator()
-        stemCreator.createStems(model: stemCreatorModel, folder: destinationFolder)
+    public func exportStems(destinationFolder: URL){ //Called from stem gui save panel
+        guard let delegate = delegate else { return }
+        let midiTempURL = destinationFolder.appendingPathComponent("temp.mid")
+        delegate.exportMidi(to: midiTempURL)
+        guard let sequencer = createMidiSequencer(url: midiTempURL) else { return }
+        let stemCreator = StemCreator(delegate: self)
+        stemCreator.createStems(model: stemCreatorModel, folder: destinationFolder, sequencer: sequencer)
+    }
+    public func exportStem(to url: URL, sequencer: AVAudioSequencer){
+        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url)
+
     }
     public var namePrefix: String {
         get {

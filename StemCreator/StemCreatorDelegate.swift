@@ -7,8 +7,10 @@
 //
 
 import Foundation
+import AVFoundation
 
 public protocol StemCreatorDelegate {
     func set(mute: Bool, for channelId: String)
     func muteAllExcept(channelIds: [String])
+    func exportStem(to url: URL, sequencer: AVAudioSequencer)
 }
