@@ -77,7 +77,7 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         self.view.addSubview(namePrefixField)
         
         let exportButtonFrame = CGRect(x: 500, y: yBuffer, width: 100, height: buttonHeight)
-        let exportButton = NSButton(title: "Export", target: self, action: #selector(export))
+        let exportButton = NSButton(title: "Export", target: self, action: #selector(exportStems))
         exportButton.frame = exportButtonFrame
         self.view.addSubview(exportButton)
     }
@@ -94,14 +94,11 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         }
         initialize()
     }
-//    @objc private func export(){
-//        delegate.export()
-//    }
     @objc private func namePrefixChanged(){
         let namePrefix = namePrefixField.stringValue
         delegate.namePrefix = namePrefix
     }
-    @objc func export(_ sender: Any){ //TODO: move to project
+    @objc func exportStems(_ sender: Any){ 
         let fileRect = NSRect(x: 300, y: 300, width: 300, height: 300)
         let savePanel = NSOpenPanel(contentRect: fileRect, styleMask: NSWindow.StyleMask.docModalWindow, backing: NSWindow.BackingStoreType.buffered, defer: false)
         savePanel.canChooseFiles = false
@@ -109,7 +106,7 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         savePanel.begin { (result) in 
             if result == NSApplication.ModalResponse.OK {
                 guard let url = savePanel.url else { return }
-                self.delegate.export(url: url)
+                self.delegate.exportStems(destinationFolder: url)
             } else {
                 print("Problem exporting stems.")
             }

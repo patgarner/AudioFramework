@@ -17,12 +17,11 @@ class ChannelController : ChannelViewDelegate {
     var delegate : ChannelControllerDelegate!
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
-    var preOutputNode : AVAudioNode? = nil
+    var preOutputNode : AVAudioMixerNode? = nil
     var outputNode : AVAudioMixerNode!
     private var sendOutputs : [AVAudioMixerNode] = []
     var solo = false
     var trackName = ""
-    var mute = false
     var id = UUID().uuidString
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
@@ -118,6 +117,24 @@ class ChannelController : ChannelViewDelegate {
         if let audioUnit = audioUnit{
             if delegate.engine.attachedNodes.contains(audioUnit){
                 delegate.engine.disconnectNodeOutput(audioUnit)
+            }
+        }
+    }
+    var mute : Bool {
+        get {
+            if preOutputNode == nil { return false }
+            if preOutputNode!.outputVolume > 0 {
+                return false
+            } else {
+                return true
+            }
+        }
+        set {
+            if preOutputNode == nil { return }
+            if newValue == true {
+                preOutputNode!.outputVolume = 0
+            } else {
+                preOutputNode!.outputVolume = 1
             }
         }
     }
