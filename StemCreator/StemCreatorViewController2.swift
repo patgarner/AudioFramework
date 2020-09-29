@@ -18,7 +18,8 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
     weak var namePrefixField : NSTextField!
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
-        super.init(nibName: nil, bundle: nil)
+        let bundle = Bundle(for: StemCreatorViewController2.self)
+        super.init(nibName: nil, bundle: bundle)
         initialize()
     }
     public override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
