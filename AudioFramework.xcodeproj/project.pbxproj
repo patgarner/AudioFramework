@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		84070C5724FF5D5900E572E7 /* ChannelViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C4F24FF5D5900E572E7 /* ChannelViewDelegate.swift */; };
 		84070C5924FF5D5900E572E7 /* ChannelCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */; };
 		84070C5A24FF5D5900E572E7 /* ChannelRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5224FF5D5900E572E7 /* ChannelRouter.swift */; };
 		84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
@@ -20,6 +19,8 @@
 		841E57D4251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
 		841E57D5251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
 		841E57D6251C262F009B7E7C /* AudioExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57D2251C262F009B7E7C /* AudioExporter.swift */; };
+		841E57FD251D9D11009B7E7C /* StemCreatorViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57FB251D9D11009B7E7C /* StemCreatorViewController2.swift */; };
+		841E57FE251D9D11009B7E7C /* StemCreatorViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841E57FB251D9D11009B7E7C /* StemCreatorViewController2.swift */; };
 		842369B224FEC2BC001266BE /* AudioFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 842369A824FEC2BC001266BE /* AudioFramework.framework */; };
 		842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369B624FEC2BC001266BE /* AudioFrameworkTests.swift */; };
 		842369B924FEC2BC001266BE /* AudioFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369AB24FEC2BC001266BE /* AudioFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -41,6 +42,22 @@
 		842369FF24FEC44C001266BE /* AudioUnitGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369DA24FEC44C001266BE /* AudioUnitGraph.swift */; };
 		84236A0024FEC44C001266BE /* AudioUnitGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842369DA24FEC44C001266BE /* AudioUnitGraph.swift */; };
 		84236A0224FEC44C001266BE /* AudioToolboxHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = 842369DC24FEC44C001266BE /* AudioToolboxHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8429DB65251FAA7600ADE7B0 /* StemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB64251FAA7600ADE7B0 /* StemRowView.swift */; };
+		8429DB66251FAA7600ADE7B0 /* StemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB64251FAA7600ADE7B0 /* StemRowView.swift */; };
+		8429DB6A251FB36600ADE7B0 /* StemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB69251FB36600ADE7B0 /* StemCell.swift */; };
+		8429DB6B251FB36600ADE7B0 /* StemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB69251FB36600ADE7B0 /* StemCell.swift */; };
+		8429DB6F251FCEC700ADE7B0 /* StemCheckboxDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB6E251FCEC700ADE7B0 /* StemCheckboxDelegate.swift */; };
+		8429DB70251FCEC700ADE7B0 /* StemCheckboxDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB6E251FCEC700ADE7B0 /* StemCheckboxDelegate.swift */; };
+		8429DB832520012900ADE7B0 /* StemCreatorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB822520012900ADE7B0 /* StemCreatorDelegate.swift */; };
+		8429DB842520012900ADE7B0 /* StemCreatorDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB822520012900ADE7B0 /* StemCreatorDelegate.swift */; };
+		8429DB8F25200D0700ADE7B0 /* AudioFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 842369A824FEC2BC001266BE /* AudioFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8429DB90252011EA00ADE7B0 /* StemCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB7D2520011B00ADE7B0 /* StemCreator.swift */; };
+		8429DB91252011EC00ADE7B0 /* StemCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB7D2520011B00ADE7B0 /* StemCreator.swift */; };
+		8429DB95252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */; };
+		8429DB96252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */; };
+		8429DB97252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */; };
+		8429DB98252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */; };
+		843D4189251E661200E57CF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ACE02725191008003963FD /* AppDelegate.swift */; };
 		843FD47525068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
 		843FD4822506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
 		843FD4832506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
@@ -68,7 +85,6 @@
 		84A9AFE325101ED500816F7F /* MasterChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF22250D35F70065A7CC /* MasterChannelController.swift */; };
 		84A9AFE425101ED500816F7F /* ChannelPluginData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8460307A250803FA00CB9844 /* ChannelPluginData.swift */; };
 		84A9AFE525101ED500816F7F /* ChannelRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5224FF5D5900E572E7 /* ChannelRouter.swift */; };
-		84A9AFE825101ED500816F7F /* ChannelViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C4F24FF5D5900E572E7 /* ChannelViewDelegate.swift */; };
 		84A9AFE925101ED500816F7F /* ChannelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */; };
 		84A9AFEA25101ED500816F7F /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 		84A9AFEB25101ED500816F7F /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController.swift */; };
@@ -89,7 +105,14 @@
 		84ACE0322519100B003963FD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84ACE0302519100B003963FD /* Main.storyboard */; };
 		84ACE03E2519100B003963FD /* AudioFrameworkDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ACE03D2519100B003963FD /* AudioFrameworkDemoTests.swift */; };
 		84ACE047251910B4003963FD /* AudioFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 842369A824FEC2BC001266BE /* AudioFramework.framework */; };
-		84ACE048251910B4003963FD /* AudioFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 842369A824FEC2BC001266BE /* AudioFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		84D0AB5B251EB8DF0093A081 /* StemCreatorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D0AB5A251EB8DF0093A081 /* StemCreatorModel.swift */; };
+		84D0AB5C251EB8DF0093A081 /* StemCreatorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D0AB5A251EB8DF0093A081 /* StemCreatorModel.swift */; };
+		84D0AB5E251EB9210093A081 /* StemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D0AB5D251EB9210093A081 /* StemModel.swift */; };
+		84D0AB5F251EB9210093A081 /* StemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D0AB5D251EB9210093A081 /* StemModel.swift */; };
+		84D0AB6A251EDAD50093A081 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
+		84D0AB6B251EDAD60093A081 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
+		84ECFA12251E632F007386D1 /* StemViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ECFA11251E632F007386D1 /* StemViewDelegate.swift */; };
+		84ECFA13251E632F007386D1 /* StemViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ECFA11251E632F007386D1 /* StemViewDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,7 +146,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				84ACE048251910B4003963FD /* AudioFramework.framework in Embed Frameworks */,
+				8429DB8F25200D0700ADE7B0 /* AudioFramework.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -131,7 +154,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		84070C4F24FF5D5900E572E7 /* ChannelViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelViewDelegate.swift; sourceTree = "<group>"; };
 		84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCollectionViewItem.swift; sourceTree = "<group>"; };
 		84070C5224FF5D5900E572E7 /* ChannelRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelRouter.swift; sourceTree = "<group>"; };
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
@@ -140,6 +162,12 @@
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioControllerDelegate.swift; sourceTree = "<group>"; };
 		841E57D2251C262F009B7E7C /* AudioExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioExporter.swift; sourceTree = "<group>"; };
+		841E57F1251D8D27009B7E7C /* StemCreatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorViewController.swift; sourceTree = "<group>"; };
+		841E57F2251D8D27009B7E7C /* StemCreatorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StemCreatorViewController.xib; sourceTree = "<group>"; };
+		841E57FB251D9D11009B7E7C /* StemCreatorViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorViewController2.swift; sourceTree = "<group>"; };
+		841E5805251D9D91009B7E7C /* StemItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemItem.swift; sourceTree = "<group>"; };
+		841E5806251D9D91009B7E7C /* StemItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StemItem.xib; sourceTree = "<group>"; };
+		841E580F251E4E68009B7E7C /* StemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemViewController.swift; sourceTree = "<group>"; };
 		842369A824FEC2BC001266BE /* AudioFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		842369AB24FEC2BC001266BE /* AudioFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFramework.h; sourceTree = "<group>"; };
 		842369AC24FEC2BC001266BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -157,6 +185,15 @@
 		842369DA24FEC44C001266BE /* AudioUnitGraph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUnitGraph.swift; sourceTree = "<group>"; };
 		842369DB24FEC44C001266BE /* AudioUnitInstrumentHost-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AudioUnitInstrumentHost-Bridging-Header.h"; sourceTree = "<group>"; };
 		842369DC24FEC44C001266BE /* AudioToolboxHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioToolboxHelpers.h; sourceTree = "<group>"; };
+		8429DB64251FAA7600ADE7B0 /* StemRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemRowView.swift; sourceTree = "<group>"; };
+		8429DB69251FB36600ADE7B0 /* StemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCell.swift; sourceTree = "<group>"; };
+		8429DB6E251FCEC700ADE7B0 /* StemCheckboxDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCheckboxDelegate.swift; sourceTree = "<group>"; };
+		8429DB7D2520011B00ADE7B0 /* StemCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreator.swift; sourceTree = "<group>"; };
+		8429DB822520012900ADE7B0 /* StemCreatorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorDelegate.swift; sourceTree = "<group>"; };
+		8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StemCreatorViewController2.xib; path = StemCreator/StemCreatorViewController2.xib; sourceTree = SOURCE_ROOT; };
+		843D4190251E741200E57CF5 /* StemRowTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemRowTitle.swift; sourceTree = "<group>"; };
+		843D4191251E741200E57CF5 /* StemRowTitle.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StemRowTitle.xib; sourceTree = "<group>"; };
+		843D41A0251E802300E57CF5 /* StemGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemGridView.swift; sourceTree = "<group>"; };
 		843FD47425068E9200189936 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		843FD4812506A3B500189936 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
 		845958922513C03B0091A43E /* ChannelSettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSettable.swift; sourceTree = "<group>"; };
@@ -184,6 +221,9 @@
 		84ACE0392519100B003963FD /* AudioFrameworkDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioFrameworkDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84ACE03D2519100B003963FD /* AudioFrameworkDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFrameworkDemoTests.swift; sourceTree = "<group>"; };
 		84ACE03F2519100B003963FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		84D0AB5A251EB8DF0093A081 /* StemCreatorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorModel.swift; sourceTree = "<group>"; };
+		84D0AB5D251EB9210093A081 /* StemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemModel.swift; sourceTree = "<group>"; };
+		84ECFA11251E632F007386D1 /* StemViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemViewDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,7 +272,6 @@
 				8460307A250803FA00CB9844 /* ChannelPluginData.swift */,
 				84070C5224FF5D5900E572E7 /* ChannelRouter.swift */,
 				845958922513C03B0091A43E /* ChannelSettable.swift */,
-				84070C4F24FF5D5900E572E7 /* ChannelViewDelegate.swift */,
 				84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */,
 				84A9CF22250D35F70065A7CC /* MasterChannelController.swift */,
 				8479715524FFE66600AAC4A3 /* MixerFillView.swift */,
@@ -256,9 +295,28 @@
 			path = AudioUtilities;
 			sourceTree = "<group>";
 		};
+		841E57F0251D8D01009B7E7C /* StemCreator */ = {
+			isa = PBXGroup;
+			children = (
+				8429DB78251FF69D00ADE7B0 /* Deprecated */,
+				8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */,
+				841E57FB251D9D11009B7E7C /* StemCreatorViewController2.swift */,
+				84D0AB5A251EB8DF0093A081 /* StemCreatorModel.swift */,
+				84D0AB5D251EB9210093A081 /* StemModel.swift */,
+				8429DB69251FB36600ADE7B0 /* StemCell.swift */,
+				8429DB6E251FCEC700ADE7B0 /* StemCheckboxDelegate.swift */,
+				8429DB64251FAA7600ADE7B0 /* StemRowView.swift */,
+				84ECFA11251E632F007386D1 /* StemViewDelegate.swift */,
+				8429DB7D2520011B00ADE7B0 /* StemCreator.swift */,
+				8429DB822520012900ADE7B0 /* StemCreatorDelegate.swift */,
+			);
+			path = StemCreator;
+			sourceTree = "<group>";
+		};
 		8423699E24FEC2BC001266BE = {
 			isa = PBXGroup;
 			children = (
+				841E57F0251D8D01009B7E7C /* StemCreator */,
 				841D0A7624FED209008F6305 /* AudioUtilities */,
 				84070C1724FF49BC00E572E7 /* Mixer */,
 				842369C224FEC44C001266BE /* AudioUnitInstrumentHost */,
@@ -348,6 +406,21 @@
 				842369D924FEC44C001266BE /* NSError+OSStatus.swift */,
 			);
 			path = AUv2;
+			sourceTree = "<group>";
+		};
+		8429DB78251FF69D00ADE7B0 /* Deprecated */ = {
+			isa = PBXGroup;
+			children = (
+				843D4190251E741200E57CF5 /* StemRowTitle.swift */,
+				843D4191251E741200E57CF5 /* StemRowTitle.xib */,
+				843D41A0251E802300E57CF5 /* StemGridView.swift */,
+				841E57F1251D8D27009B7E7C /* StemCreatorViewController.swift */,
+				841E57F2251D8D27009B7E7C /* StemCreatorViewController.xib */,
+				841E580F251E4E68009B7E7C /* StemViewController.swift */,
+				841E5805251D9D91009B7E7C /* StemItem.swift */,
+				841E5806251D9D91009B7E7C /* StemItem.xib */,
+			);
+			path = Deprecated;
 			sourceTree = "<group>";
 		};
 		849C6B8E251A70FD00164DE1 /* Demo */ = {
@@ -531,6 +604,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				849C6B94251A9A6E00164DE1 /* test.mid in Resources */,
+				8429DB95252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */,
 				84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -540,6 +614,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84A9AFE025101ED500816F7F /* ChannelCollectionViewItem.xib in Resources */,
+				8429DB96252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,6 +622,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8429DB97252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */,
 				849C6B90251A712800164DE1 /* test.mid in Resources */,
 				84ACE02F2519100B003963FD /* Assets.xcassets in Resources */,
 				8490E8B3251BBDC000F471EE /* Rhythm.caf in Resources */,
@@ -559,6 +635,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8490E8B4251BBDC000F471EE /* Rhythm.caf in Resources */,
+				8429DB98252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */,
 				849C6B91251A712800164DE1 /* test.mid in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -570,13 +647,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8429DB6F251FCEC700ADE7B0 /* StemCheckboxDelegate.swift in Sources */,
 				842369F524FEC44C001266BE /* AudioController.swift in Sources */,
 				845958932513C03B0091A43E /* ChannelSettable.swift in Sources */,
 				84A9CF58250D93D50065A7CC /* AudioNodeFactory.swift in Sources */,
-				84070C5724FF5D5900E572E7 /* ChannelViewDelegate.swift in Sources */,
+				8429DB65251FAA7600ADE7B0 /* StemRowView.swift in Sources */,
 				841E57D3251C262F009B7E7C /* AudioExporter.swift in Sources */,
+				84ECFA12251E632F007386D1 /* StemViewDelegate.swift in Sources */,
 				84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */,
 				842369FD24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
+				84D0AB5E251EB9210093A081 /* StemModel.swift in Sources */,
 				8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */,
 				842369F724FEC44C001266BE /* PluginData.swift in Sources */,
 				84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */,
@@ -585,12 +665,16 @@
 				842369E924FEC44C001266BE /* AudioComponentDescriptionExtension.swift in Sources */,
 				841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */,
 				842369EF24FEC44C001266BE /* AudioUnit3Host.swift in Sources */,
+				8429DB6A251FB36600ADE7B0 /* StemCell.swift in Sources */,
 				842369ED24FEC44C001266BE /* VirtualInstrumentHost.swift in Sources */,
+				84D0AB5B251EB8DF0093A081 /* StemCreatorModel.swift in Sources */,
 				84070C5924FF5D5900E572E7 /* ChannelCollectionViewItem.swift in Sources */,
 				842369FB24FEC44C001266BE /* AudioToolboxHelpers.m in Sources */,
 				841D0A8624FED796008F6305 /* AudioControllerDelegate.swift in Sources */,
 				842369F924FEC44C001266BE /* AudioUnitInstance.swift in Sources */,
+				841E57FD251D9D11009B7E7C /* StemCreatorViewController2.swift in Sources */,
 				84ACDFDE25166219003963FD /* PluginSelection.swift in Sources */,
+				8429DB90252011EA00ADE7B0 /* StemCreator.swift in Sources */,
 				84070C5A24FF5D5900E572E7 /* ChannelRouter.swift in Sources */,
 				8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */,
 				843FD4822506A3B500189936 /* AudioModel.swift in Sources */,
@@ -599,6 +683,7 @@
 				8487F51925111FC1003DC1D6 /* AuxChannelController.swift in Sources */,
 				843FD47525068E9200189936 /* ChannelController.swift in Sources */,
 				8459589B251436F20091A43E /* SendData.swift in Sources */,
+				8429DB832520012900ADE7B0 /* StemCreatorDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -609,31 +694,39 @@
 				842369F024FEC44C001266BE /* AudioUnit3Host.swift in Sources */,
 				845958942513C03B0091A43E /* ChannelSettable.swift in Sources */,
 				84A9AFEB25101ED500816F7F /* MixerViewController.swift in Sources */,
+				8429DB91252011EC00ADE7B0 /* StemCreator.swift in Sources */,
 				84A9AFE325101ED500816F7F /* MasterChannelController.swift in Sources */,
 				842369EE24FEC44C001266BE /* VirtualInstrumentHost.swift in Sources */,
+				84D0AB5F251EB9210093A081 /* StemModel.swift in Sources */,
 				84A9AFE425101ED500816F7F /* ChannelPluginData.swift in Sources */,
 				84236A0024FEC44C001266BE /* AudioUnitGraph.swift in Sources */,
-				84A9AFE825101ED500816F7F /* ChannelViewDelegate.swift in Sources */,
 				842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */,
 				841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */,
 				843FD4832506A3B500189936 /* AudioModel.swift in Sources */,
 				84A9AFE525101ED500816F7F /* ChannelRouter.swift in Sources */,
+				8429DB70251FCEC700ADE7B0 /* StemCheckboxDelegate.swift in Sources */,
+				8429DB6B251FB36600ADE7B0 /* StemCell.swift in Sources */,
 				84A9AFED25101F1C00816F7F /* AudioToolboxHelpers.m in Sources */,
+				8429DB66251FAA7600ADE7B0 /* StemRowView.swift in Sources */,
 				842369F824FEC44C001266BE /* PluginData.swift in Sources */,
 				84A9AFDF25101ED500816F7F /* ChannelCollectionViewItem.swift in Sources */,
 				842369FE24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
 				84A9AFE225101ED500816F7F /* InstrumentChannelController.swift in Sources */,
 				84A9AFEC25101EDB00816F7F /* AudioControllerDelegate.swift in Sources */,
 				84A9AFE925101ED500816F7F /* ChannelDelegates.swift in Sources */,
+				8429DB842520012900ADE7B0 /* StemCreatorDelegate.swift in Sources */,
 				84A9CF59250D93D50065A7CC /* AudioNodeFactory.swift in Sources */,
 				84ACDFDF25166219003963FD /* PluginSelection.swift in Sources */,
 				842369F624FEC44C001266BE /* AudioController.swift in Sources */,
 				84A9CF21250C25680065A7CC /* AudioUnitPassthrough.swift in Sources */,
+				841E57FE251D9D11009B7E7C /* StemCreatorViewController2.swift in Sources */,
+				84ECFA13251E632F007386D1 /* StemViewDelegate.swift in Sources */,
 				84A9AFEA25101ED500816F7F /* MixerFillView.swift in Sources */,
 				842369FA24FEC44C001266BE /* AudioUnitInstance.swift in Sources */,
 				842369EA24FEC44C001266BE /* AudioComponentDescriptionExtension.swift in Sources */,
 				8487F51A25111FC1003DC1D6 /* AuxChannelController.swift in Sources */,
 				841E57D4251C262F009B7E7C /* AudioExporter.swift in Sources */,
+				84D0AB5C251EB8DF0093A081 /* StemCreatorModel.swift in Sources */,
 				84A9AFE125101ED500816F7F /* ChannelController.swift in Sources */,
 				8459589C251436F20091A43E /* SendData.swift in Sources */,
 			);
@@ -645,6 +738,7 @@
 			files = (
 				849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
 				84ACE02D25191008003963FD /* AudioFrameworkDemo.xcdatamodeld in Sources */,
+				84D0AB6A251EDAD50093A081 /* AudioFileConverter.swift in Sources */,
 				84ACE02A25191008003963FD /* ViewController.swift in Sources */,
 				841E57D5251C262F009B7E7C /* AudioExporter.swift in Sources */,
 				849C6B89251A653300164DE1 /* Demo.swift in Sources */,
@@ -656,9 +750,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				843D4189251E661200E57CF5 /* AppDelegate.swift in Sources */,
 				849C6B8D251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
 				841E57D6251C262F009B7E7C /* AudioExporter.swift in Sources */,
 				849C6B8A251A653300164DE1 /* Demo.swift in Sources */,
+				84D0AB6B251EDAD60093A081 /* AudioFileConverter.swift in Sources */,
 				84ACE03E2519100B003963FD /* AudioFrameworkDemoTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

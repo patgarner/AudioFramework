@@ -25,7 +25,7 @@ protocol PluginSelectionDelegate{
     func numBusses() -> Int
 }
 
-public protocol ChannelViewDelegate2 {
+public protocol ChannelViewDelegate {
     var volume : Float { get set }
     var pan : Float { get set }
     var mute : Bool { get set }

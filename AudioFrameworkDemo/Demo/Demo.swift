@@ -12,6 +12,6 @@ import AudioFramework
 
 class Demo{
     func exportMIDI(){
-        AudioController.shared.test()
+        //AudioController.shared.test()
     }
 }

@@ -23,13 +23,10 @@ public class MixerViewController: NSViewController {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
     override public func viewDidLoad() {
         super.viewDidLoad()
-        print("hi")
         refresh()
     }
-    
     override public func updateViewConstraints() {
         super.updateViewConstraints()
     }
@@ -88,7 +85,7 @@ extension MixerViewController : NSCollectionViewDataSource{
             channelView.type = .master
         }
         if let channelController = AudioController.shared.getChannelController(type: channelView.type, channel: channelNumber){
-            channelView.channelViewDelegate2 = channelController
+            channelView.channelViewDelegate = channelController
         }
         return channelView
     }

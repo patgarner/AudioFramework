@@ -24,6 +24,7 @@ public class AudioController: NSObject {
     private var auxControllers : [ChannelController] = []
     private var masterController : ChannelController!
     private var busses : [AVAudioNode] = []
+    private var stemCreatorModel = StemCreatorModel()
     private override init (){
         super.init()
         initialize()
@@ -190,6 +191,18 @@ public class AudioController: NSObject {
         }
         return nil
     }
+    func getChannelControllerWith(id: String) -> ChannelController?{
+        if masterController.id == id { return masterController }
+        for instrumentController in instrumentControllers {
+            if instrumentController.id == id {
+                return instrumentController
+            }
+        }
+        for auxController in auxControllers{
+            if auxController.id == id { return auxController}
+        }
+        return nil
+    }
     public func getTrackName(channel: Int, channelType: ChannelType) -> String?{
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return nil }
         let trackName = channelController.trackName
@@ -236,7 +249,7 @@ public class AudioController: NSObject {
         do {
             try sequencer.load(from: url)
             if sequencer.tracks.count < 1 { return sequencer }
-            var tempoTrackOffset = 1 //If no tempo track, set to zero.
+            let tempoTrackOffset = 1 //If no tempo track, set to zero.
             for i in tempoTrackOffset..<sequencer.tracks.count{
                 let track = sequencer.tracks[i]
                 guard let channel = getChannelController(type: .midiInstrument, channel: i - tempoTrackOffset) else { continue }
@@ -321,6 +334,77 @@ extension AudioController : ChannelControllerDelegate {
     func displayInterface(audioUnit: AudioUnit) {
         print("")
     }
+}
+
+extension AudioController : StemViewDelegate { 
+    //Mark: AudioController
+    public var numChannels: Int {
+        return instrumentControllers.count
+    }
+    public func getNameFor(channelId: String) -> String? {
+        guard let channelController = getChannelControllerWith(id: channelId) else { return nil }
+        let name = channelController.trackName
+        return name
+    }
+    public func getIdFor(channel: Int) -> String?{
+        guard let channelController = getChannelController(type: .midiInstrument, channel: channel) else { return nil }
+        let id = channelController.id
+        return id
+    }
+    
+    //MARK : StemCreatorModel
+    public func setName(stemNumber: Int, name: String){
+        stemCreatorModel.setName(stemNumber: stemNumber, name: name)
+    }
+    public var numStems: Int {
+        let stems = stemCreatorModel.numStems
+        return stems
+    }
+    public func getNameFor(stem: Int) -> String?{
+        let name = stemCreatorModel.getNameFor(stem: stem)
+        return name
+    }
+    public func addStem(){
+        stemCreatorModel.addStem()
+    }
+    public func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String) {
+        stemCreatorModel.selectionChangedTo(selected: selected, stemNumber: stemNumber, channelId: channelId)
+    }
+    public func isSelected(stemNumber: Int, channelId: String) -> Bool {
+        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, channelId: channelId)
+        return selected
+    }
+    public func delete(stemNumber: Int){
+        stemCreatorModel.delete(stemNumber: stemNumber)
+    }
+    public func export(){
+        print("yay")
+    }
+    public var namePrefix: String {
+        get {
+            return stemCreatorModel.namePrefix
+        } 
+        set {
+            stemCreatorModel.namePrefix = newValue
+        }
+    }
+}
+
+extension AudioController : StemCreatorDelegate{
+    public func set(mute: Bool, for channelId: String) {
+        guard let channelController = getChannelControllerWith(id: channelId) else { return }
+        channelController.mute = mute
+    }
+    public func muteAllExcept(channelIds: [String]) {
+        for channelController in instrumentControllers{
+            if channelIds.contains(channelController.id){
+                channelController.mute = false
+            } else {
+                channelController.mute = true
+            }
+        }
+    }
+    
 }
 
 

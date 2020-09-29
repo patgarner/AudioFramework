@@ -128,6 +128,12 @@
                                                 <action selector="exportMIDISequence:" target="Voe-Tx-rLC" id="YEj-Wq-GMB"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Stem Creator" id="eBv-te-ZVM" userLabel="Stem Creator">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="showStemCreator:" target="Voe-Tx-rLC" id="0Rq-zu-o3z"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

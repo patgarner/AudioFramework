@@ -65,7 +65,16 @@ class AudioExporter{
         engine.stop()
         engine.disableManualRenderingMode()
         print("AVAudioEngine offline rendering finished.")
-        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
+        let absolutePath = audioDestinationURL.absoluteString
+        let wavString = absolutePath.replacingOccurrences(of: ".caf", with: ".wav")
+        if let wavUrl = URL(string: wavString) {
+            AudioFileConverter.convert(sourceURL: audioDestinationURL, destinationURL: wavUrl, deleteSource: false)
+        }
+        let mp3String = absolutePath.replacingOccurrences(of: ".caf", with: ".mp3")
+        if let mp3Url = URL(string: mp3String) {
+            AudioFileConverter.convertToMP3(sourceURL: audioDestinationURL, destinationURL: mp3Url, deleteSource: true)
+        }
+//        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
     }
 }
 

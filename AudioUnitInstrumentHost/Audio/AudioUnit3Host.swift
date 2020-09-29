@@ -40,8 +40,8 @@ class AudioUnit3Host : VirtualInstrumentHost{
     func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
         let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
-        let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
-        AVAudioUnitMIDIInstrument.instantiate(with: desc, options: loadOptions) { [weak self] avAudioUnit, error in
+        //let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
+        AVAudioUnitMIDIInstrument.instantiate(with: desc, options: []) { [weak self] avAudioUnit, error in
             if let e = error {
                 print("Failed to load instrument: \(e)")
                 completion(false)

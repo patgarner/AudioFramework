@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="StemItem" customModule="AudioFramework" customModuleProvider="target">
+            <connections>
+                <outlet property="checkbox" destination="Oga-c1-Cji" id="sc6-60-wc1"/>
+                <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView id="Hz6-mo-xeY">
+            <rect key="frame" x="0.0" y="0.0" width="88" height="60"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Oga-c1-Cji">
+                    <rect key="frame" x="33" y="21" width="22" height="18"/>
+                    <buttonCell key="cell" type="check" bezelStyle="regularSquare" imagePosition="left" state="on" transparent="YES" inset="2" id="Fdp-56-F3A">
+                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                        <font key="font" metaFont="system"/>
+                    </buttonCell>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="Oga-c1-Cji" firstAttribute="centerY" secondItem="Hz6-mo-xeY" secondAttribute="centerY" id="FLS-0l-gtP"/>
+                <constraint firstItem="Oga-c1-Cji" firstAttribute="centerX" secondItem="Hz6-mo-xeY" secondAttribute="centerX" id="y6Y-7G-VkS"/>
+            </constraints>
+            <point key="canvasLocation" x="158" y="173"/>
+        </customView>
+    </objects>
+</document>

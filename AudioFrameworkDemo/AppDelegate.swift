@@ -123,6 +123,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, AudioControllerDelegate {
     @IBAction func exportMIDISequence(_ sender: Any) {
         demo.exportMIDI()
     }
+    @IBAction func showStemCreator(_ sender: Any) {
+        let audioController = AudioController.shared
+        let stemCreator = StemCreatorViewController2(delegate: audioController)
+//        let stemCreator = StemViewController()
+//        stemCreator.delegate = audioController
+        stemCreator.presentAsModalWindow(stemCreator)
+    }
     /////////////////////////////////////////////////////////
     // AudioControllerDelegate
     /////////////////////////////////////////////////////////

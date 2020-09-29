@@ -13,7 +13,7 @@
 import Foundation
 import AVFoundation
 
-class ChannelController : ChannelViewDelegate2 {    
+class ChannelController : ChannelViewDelegate {    
     var delegate : ChannelControllerDelegate!
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
@@ -23,6 +23,7 @@ class ChannelController : ChannelViewDelegate2 {
     var solo = false
     var trackName = ""
     var mute = false
+    var id = UUID().uuidString
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -38,18 +39,19 @@ class ChannelController : ChannelViewDelegate2 {
             channelPluginData.effectPlugins.append(effectPluginData)
         }
         for i in 0..<sendOutputs.count{
-            let sendNode = sendOutputs[i]
+            let sendOutput = sendOutputs[i]
             var busNumber = -1
-            if let number = AudioController.shared.getSendOutput(for: sendNode){
+            if let number = AudioController.shared.getSendOutput(for: sendOutput){
                 busNumber = number
             }
-            let sendLevel = sendNode.outputVolume
+            let sendLevel = sendOutput.outputVolume
             let sendData = SendData(busNumber: busNumber, level: sendLevel)
             channelPluginData.sends.append(sendData)
         }
         channelPluginData.volume = outputNode.outputVolume
         channelPluginData.pan = outputNode.pan
         channelPluginData.trackName = trackName
+        channelPluginData.id = id
         return channelPluginData
     }
     func set(channelPluginData: ChannelPluginData){
@@ -67,6 +69,7 @@ class ChannelController : ChannelViewDelegate2 {
         outputNode.outputVolume = channelPluginData.volume
         outputNode.pan = channelPluginData.pan
         trackName = channelPluginData.trackName
+        id = channelPluginData.id
     }
     func reconnectNodes(){
         let audioUnits = allAudioUnits
@@ -132,9 +135,10 @@ class ChannelController : ChannelViewDelegate2 {
     }
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, completion: @escaping (Bool)->()) {
         let flags = AudioComponentFlags(rawValue: desc.componentFlags)
-        let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
-        let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
-        AVAudioUnitEffect.instantiate(with: desc, options: loadOptions) { (avAudioUnit, error) in
+//        let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
+        //let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
+//        let loadOptions : AudioComponentInstantiationOptions = .loadOutOfProcess
+        AVAudioUnitEffect.instantiate(with: desc, options: []) { (avAudioUnit, error) in
             if let e = error {
                 self.delegate?.log("Failed to load effect. Error: \(e)")
                 completion(false)
@@ -191,17 +195,17 @@ class ChannelController : ChannelViewDelegate2 {
         if sendNumber < 0 || sendNumber >= sendOutputs.count {
             return nil
         }
-        let send = sendOutputs[sendNumber]
-        return send
+        let sendOutput = sendOutputs[sendNumber]
+        return sendOutput
     }
     func disconnectAll(){
         for node in allAudioUnits{
             delegate.engine.disconnectNodeOutput(node)
             delegate.engine.detach(node)
         }
-        for node in sendOutputs{
-            delegate.engine.disconnectNodeOutput(node)
-            delegate.engine.detach(node)
+        for sendOutput in sendOutputs{
+            delegate.engine.disconnectNodeOutput(sendOutput)
+            delegate.engine.detach(sendOutput)
         }
     }
     var midiIn : AVAudioUnit?{
@@ -242,8 +246,8 @@ class ChannelController : ChannelViewDelegate2 {
         sendOutput.outputVolume = volume
     }
     func getSendData(sendNumber: Int) -> SendData?{
-        guard let send = get(sendNumber: sendNumber) else { return nil }
-        let sendData = SendData(busNumber: -1, level: send.outputVolume) //TODO: Get actual bus number
+        guard let sendOutput = get(sendNumber: sendNumber) else { return nil }
+        let sendData = SendData(busNumber: -1, level: sendOutput.outputVolume) //TODO: Get actual bus number
         return sendData
     }
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) {
