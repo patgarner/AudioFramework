@@ -25,11 +25,13 @@ public class AudioController: NSObject {
     private var masterController : ChannelController!
     private var busses : [AVAudioNode] = []
     private var stemCreatorModel = StemCreatorModel()
+    private var sequencer : AVAudioSequencer!
     private override init (){
         super.init()
         initialize()
     }
     public func initialize(){
+        sequencer = AVAudioSequencer(audioEngine: engine)
         createChannels(numInstChannels: 16, numAuxChannels: 1, numBusses: 4)
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
@@ -241,7 +243,8 @@ public class AudioController: NSObject {
         }
     }
     public func renderAudio(midiSourceURL: URL, audioDestinationURL: URL){
-        guard let sequencer = createMidiSequencer(url: midiSourceURL) else { return }
+        //guard let sequencer = createMidiSequencer(url: midiSourceURL) else { return }
+        loadMidiSequence(from: midiSourceURL)
         AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL)
     }
     func createMidiSequencer(url: URL) ->AVAudioSequencer?{
@@ -261,6 +264,22 @@ public class AudioController: NSObject {
             return nil
         }
         return sequencer
+    }
+    func loadMidiSequence(from url: URL){
+        do {
+            try sequencer.load(from: url)
+            if sequencer.tracks.count < 1 { return }
+            let tempoTrackOffset = 1 //If no tempo track, set to zero.
+            for i in tempoTrackOffset..<sequencer.tracks.count{
+                let track = sequencer.tracks[i]
+                guard let channel = getChannelController(type: .midiInstrument, channel: i - tempoTrackOffset) else { continue }
+                let destination = channel.midiIn
+                track.destinationAudioUnit = destination
+            }
+        } catch {
+            print("Connecting sequencer tracks to midi instrument channels failed: \(error)")
+            return 
+        }
     }
 }
 
@@ -381,11 +400,11 @@ extension AudioController : StemViewDelegate {
         guard let delegate = delegate else { return }
         let midiTempURL = destinationFolder.appendingPathComponent("temp.mid")
         delegate.exportMidi(to: midiTempURL)
-        guard let sequencer = createMidiSequencer(url: midiTempURL) else { return }
+        loadMidiSequence(from: midiTempURL)
         let stemCreator = StemCreator(delegate: self)
-        stemCreator.createStems(model: stemCreatorModel, folder: destinationFolder, sequencer: sequencer)
+        stemCreator.createStems(model: stemCreatorModel, folder: destinationFolder)
     }
-    public func exportStem(to url: URL, sequencer: AVAudioSequencer){
+    public func exportStem(to url: URL){
         AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url)
 
     }

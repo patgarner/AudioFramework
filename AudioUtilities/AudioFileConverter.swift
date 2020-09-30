@@ -55,7 +55,9 @@ class AudioFileConverter{
             }
             writer.finishWriting { 
                 print("status = \(writer.status)")
-                print("Error = \(writer.error)")
+                if writer.error != nil { 
+                    print("Error = \(writer.error!)")
+                }
                 print("Done!")
             }
             if deleteSource{

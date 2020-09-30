@@ -16,7 +16,7 @@ class AudioExporter{
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
         }
-        lengthInSeconds += 4.0
+        lengthInSeconds += 3.0
         engine.stop()
         let format: AVAudioFormat = engine.mainMixerNode.outputFormat(forBus: 0)
         let maxFrames: AVAudioFrameCount = 1024

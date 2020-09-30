@@ -99,9 +99,10 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         delegate.namePrefix = namePrefix
     }
     @objc func exportStems(_ sender: Any){ 
-        let fileRect = NSRect(x: 300, y: 300, width: 300, height: 300)
-        let style = NSWindow.StyleMask.utilityWindow
-        let savePanel = NSOpenPanel(contentRect: fileRect, styleMask: style, backing: NSWindow.BackingStoreType.buffered, defer: false)
+//        let fileRect = NSRect(x: 300, y: 300, width: 300, height: 300)
+//        let style = NSWindow.StyleMask.utilityWindow
+//        let savePanel = NSOpenPanel(contentRect: fileRect, styleMask: style, backing: NSWindow.BackingStoreType.buffered, defer: false)
+        let savePanel = NSOpenPanel()
         savePanel.canChooseFiles = false
         savePanel.canChooseDirectories = true
         savePanel.title = "Choose Destination Folder"
