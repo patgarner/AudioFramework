@@ -325,7 +325,7 @@
 				84ACE02625191008003963FD /* AudioFrameworkDemo */,
 				84ACE03C2519100B003963FD /* AudioFrameworkDemoTests */,
 				842369A924FEC2BC001266BE /* Products */,
-				84ACE046251910B4003963FD /* Frameworks */,
+				9617728FADD13898116E6918 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -457,11 +457,11 @@
 			path = AudioFrameworkDemoTests;
 			sourceTree = "<group>";
 		};
-		84ACE046251910B4003963FD /* Frameworks */ = {
+		9617728FADD13898116E6918 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			name = Frameworks;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
