@@ -108,6 +108,7 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         savePanel.begin { (result) in 
             if result == NSApplication.ModalResponse.OK {
                 guard let url = savePanel.url else { return }
+                self.view.window?.close()
                 self.delegate.exportStems(destinationFolder: url)
             } else {
                 print("Problem exporting stems.")

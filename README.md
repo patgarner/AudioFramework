@@ -39,5 +39,5 @@ In order to load some plugins, especially those requiring an iLok you need to to
 Add the following:
 Allow unsigned executable memory
 Disable library validation
-Audio Input
-Contacts
+Audio Input -
+
