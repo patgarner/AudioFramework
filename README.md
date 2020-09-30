@@ -34,3 +34,10 @@ To send midi data, call the various functions availabe on AudioService.shared su
     set(pan: UInt8, channel: UInt8){
     set(tempo: UInt8){
     setController(number: UInt8, value: UInt8, channel: UInt8)
+
+In order to load some plugins, especially those requiring an iLok you need to to click on your main target in the xcode project, then "Signing and Capabilites".
+Add the following:
+Allow unsigned executable memory
+Disable library validation
+Audio Input
+Contacts
