@@ -243,9 +243,8 @@ public class AudioController: NSObject {
         }
     }
     public func renderAudio(midiSourceURL: URL, audioDestinationURL: URL){
-        //guard let sequencer = createMidiSequencer(url: midiSourceURL) else { return }
-        loadMidiSequence(from: midiSourceURL)
-        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL)
+        if !loadMidiSequence(from: midiSourceURL) { return }
+        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, includeMP3: true)
     }
     func createMidiSequencer(url: URL) ->AVAudioSequencer?{
         let sequencer = AVAudioSequencer(audioEngine: engine)
@@ -265,10 +264,10 @@ public class AudioController: NSObject {
         }
         return sequencer
     }
-    func loadMidiSequence(from url: URL){
+    func loadMidiSequence(from url: URL) -> Bool{
         do {
             try sequencer.load(from: url)
-            if sequencer.tracks.count < 1 { return }
+            if sequencer.tracks.count < 1 { return false }
             let tempoTrackOffset = 1 //If no tempo track, set to zero.
             for i in tempoTrackOffset..<sequencer.tracks.count{
                 let track = sequencer.tracks[i]
@@ -278,8 +277,9 @@ public class AudioController: NSObject {
             }
         } catch {
             print("Connecting sequencer tracks to midi instrument channels failed: \(error)")
-            return 
+            return  false
         }
+        return true
     }
 }
 
@@ -396,17 +396,13 @@ extension AudioController : StemViewDelegate {
     public func delete(stemNumber: Int){
         stemCreatorModel.delete(stemNumber: stemNumber)
     }
-    public func exportStems(destinationFolder: URL){ //Called from stem gui save panel
+    public func exportStems(destinationFolder: URL){
         guard let delegate = delegate else { return }
         let midiTempURL = destinationFolder.appendingPathComponent("temp.mid")
         delegate.exportMidi(to: midiTempURL)
-        loadMidiSequence(from: midiTempURL)
+        if !loadMidiSequence(from: midiTempURL) { return }
         let stemCreator = StemCreator(delegate: self)
         stemCreator.createStems(model: stemCreatorModel, folder: destinationFolder)
-    }
-    public func exportStem(to url: URL){
-        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url)
-
     }
     public var namePrefix: String {
         get {
@@ -432,7 +428,9 @@ extension AudioController : StemCreatorDelegate{
             }
         }
     }
-    
+    public func exportStem(to url: URL, includeMP3: Bool){
+        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3)
+    }
 }
 
 

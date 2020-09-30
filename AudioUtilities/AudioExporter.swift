@@ -11,7 +11,7 @@ import AVFoundation
 import Cocoa
 
 class AudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL){
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool){
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
@@ -70,15 +70,16 @@ class AudioExporter{
         print("AVAudioEngine offline rendering finished.")  
         let wavUrl = audioDestinationURL.appendingPathExtension("wav")
         AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
-        let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
-        AudioFileConverter.convertToMP3(sourceURL: wavUrl, destinationURL: mp3Url, deleteSource: false)
+        if includeMP3{
+            let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
+            AudioFileConverter.convertToMP3(sourceURL: wavUrl, destinationURL: mp3Url, deleteSource: false)
+        }
         do {
             let fileManager = FileManager()
             try fileManager.removeItem(at: cafURL)
         } catch {
             print(error)
         }
-//        NSWorkspace.shared.activateFileViewerSelecting([outputFile.url])
     }
 }
 

@@ -76,7 +76,7 @@ class AudioFileConverter{
         task.launchPath = "/usr/local/bin/lame"
         let sourcePath = sourceURL.path
         let destPath = destinationURL.path
-        task.arguments = [sourcePath, destPath]
+        task.arguments = [sourcePath, destPath, "-b 192"]
         task.launch()
         let handle = pipe.fileHandleForReading
         let data = handle.readDataToEndOfFile()
