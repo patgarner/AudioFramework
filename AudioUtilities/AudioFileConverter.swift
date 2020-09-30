@@ -73,7 +73,7 @@ class AudioFileConverter{
         let task = Process()
         let pipe = Pipe()
         task.standardOutput = pipe
-        task.launchPath = "/usr/local/bin/lame"
+        task.launchPath = "/usr/local/bin/lame" //The location where the mp3 codec is located
         let sourcePath = sourceURL.path
         let destPath = destinationURL.path
         task.arguments = [sourcePath, destPath, "-b 192"]
