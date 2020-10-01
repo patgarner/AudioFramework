@@ -293,7 +293,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let numBusses = pluginSelectionDelegate.numBusses()
         var busList : [String] = []
         for i in 0..<numBusses{
-            let title = "BusFart " + String(i+1)
+            let title = "Bus " + String(i+1)
             busList.append(title)
         }
         busList.append("")
