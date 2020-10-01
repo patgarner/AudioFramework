@@ -191,11 +191,13 @@ class ChannelController : ChannelViewDelegate {
         self.delegate.engine.attach(mixerOutput)
         self.outputNode = mixerOutput
         
-        let sendOutput = AudioNodeFactory.mixerNode()
-        sendOutput.outputVolume = 0.0
-        self.delegate.engine.attach(sendOutput)
-        sendOutputs.append(sendOutput)
-        
+        let numSends = 2
+        for _ in 0..<numSends{
+            let sendOutput = AudioNodeFactory.mixerNode()
+            sendOutput.outputVolume = 0.0
+            self.delegate.engine.attach(sendOutput)
+            sendOutputs.append(sendOutput)
+        }
         let preOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
