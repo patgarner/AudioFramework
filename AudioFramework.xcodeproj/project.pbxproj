@@ -69,8 +69,6 @@
 		8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 		8487F51925111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
 		8487F51A25111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
-		8490E8B3251BBDC000F471EE /* Rhythm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8490E8B2251BBDC000F471EE /* Rhythm.caf */; };
-		8490E8B4251BBDC000F471EE /* Rhythm.caf in Resources */ = {isa = PBXBuildFile; fileRef = 8490E8B2251BBDC000F471EE /* Rhythm.caf */; };
 		849C6B89251A653300164DE1 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B88251A653300164DE1 /* Demo.swift */; };
 		849C6B8A251A653300164DE1 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B88251A653300164DE1 /* Demo.swift */; };
 		849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
@@ -162,12 +160,7 @@
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioControllerDelegate.swift; sourceTree = "<group>"; };
 		841E57D2251C262F009B7E7C /* AudioExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioExporter.swift; sourceTree = "<group>"; };
-		841E57F1251D8D27009B7E7C /* StemCreatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorViewController.swift; sourceTree = "<group>"; };
-		841E57F2251D8D27009B7E7C /* StemCreatorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StemCreatorViewController.xib; sourceTree = "<group>"; };
 		841E57FB251D9D11009B7E7C /* StemCreatorViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorViewController2.swift; sourceTree = "<group>"; };
-		841E5805251D9D91009B7E7C /* StemItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemItem.swift; sourceTree = "<group>"; };
-		841E5806251D9D91009B7E7C /* StemItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StemItem.xib; sourceTree = "<group>"; };
-		841E580F251E4E68009B7E7C /* StemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemViewController.swift; sourceTree = "<group>"; };
 		842369A824FEC2BC001266BE /* AudioFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		842369AB24FEC2BC001266BE /* AudioFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFramework.h; sourceTree = "<group>"; };
 		842369AC24FEC2BC001266BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -191,9 +184,6 @@
 		8429DB7D2520011B00ADE7B0 /* StemCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreator.swift; sourceTree = "<group>"; };
 		8429DB822520012900ADE7B0 /* StemCreatorDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorDelegate.swift; sourceTree = "<group>"; };
 		8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StemCreatorViewController2.xib; path = StemCreator/StemCreatorViewController2.xib; sourceTree = SOURCE_ROOT; };
-		843D4190251E741200E57CF5 /* StemRowTitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemRowTitle.swift; sourceTree = "<group>"; };
-		843D4191251E741200E57CF5 /* StemRowTitle.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StemRowTitle.xib; sourceTree = "<group>"; };
-		843D41A0251E802300E57CF5 /* StemGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemGridView.swift; sourceTree = "<group>"; };
 		843FD47425068E9200189936 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		843FD4812506A3B500189936 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
 		845958922513C03B0091A43E /* ChannelSettable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelSettable.swift; sourceTree = "<group>"; };
@@ -201,7 +191,6 @@
 		8460307A250803FA00CB9844 /* ChannelPluginData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPluginData.swift; sourceTree = "<group>"; };
 		8479715524FFE66600AAC4A3 /* MixerFillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerFillView.swift; sourceTree = "<group>"; };
 		8487F51825111FC1003DC1D6 /* AuxChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxChannelController.swift; sourceTree = "<group>"; };
-		8490E8B2251BBDC000F471EE /* Rhythm.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Rhythm.caf; sourceTree = "<group>"; };
 		849C6B88251A653300164DE1 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationExtension.swift; sourceTree = "<group>"; };
 		849C6B8F251A712800164DE1 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
@@ -285,7 +274,6 @@
 		841D0A7624FED209008F6305 /* AudioUtilities */ = {
 			isa = PBXGroup;
 			children = (
-				8490E8B2251BBDC000F471EE /* Rhythm.caf */,
 				841D0A7824FED209008F6305 /* AudioFileConverter.swift */,
 				841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */,
 				84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */,
@@ -298,7 +286,6 @@
 		841E57F0251D8D01009B7E7C /* StemCreator */ = {
 			isa = PBXGroup;
 			children = (
-				8429DB78251FF69D00ADE7B0 /* Deprecated */,
 				8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */,
 				841E57FB251D9D11009B7E7C /* StemCreatorViewController2.swift */,
 				84D0AB5A251EB8DF0093A081 /* StemCreatorModel.swift */,
@@ -406,21 +393,6 @@
 				842369D924FEC44C001266BE /* NSError+OSStatus.swift */,
 			);
 			path = AUv2;
-			sourceTree = "<group>";
-		};
-		8429DB78251FF69D00ADE7B0 /* Deprecated */ = {
-			isa = PBXGroup;
-			children = (
-				843D4190251E741200E57CF5 /* StemRowTitle.swift */,
-				843D4191251E741200E57CF5 /* StemRowTitle.xib */,
-				843D41A0251E802300E57CF5 /* StemGridView.swift */,
-				841E57F1251D8D27009B7E7C /* StemCreatorViewController.swift */,
-				841E57F2251D8D27009B7E7C /* StemCreatorViewController.xib */,
-				841E580F251E4E68009B7E7C /* StemViewController.swift */,
-				841E5805251D9D91009B7E7C /* StemItem.swift */,
-				841E5806251D9D91009B7E7C /* StemItem.xib */,
-			);
-			path = Deprecated;
 			sourceTree = "<group>";
 		};
 		849C6B8E251A70FD00164DE1 /* Demo */ = {
@@ -625,7 +597,6 @@
 				8429DB97252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */,
 				849C6B90251A712800164DE1 /* test.mid in Resources */,
 				84ACE02F2519100B003963FD /* Assets.xcassets in Resources */,
-				8490E8B3251BBDC000F471EE /* Rhythm.caf in Resources */,
 				84ACE0322519100B003963FD /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -634,7 +605,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8490E8B4251BBDC000F471EE /* Rhythm.caf in Resources */,
 				8429DB98252017AD00ADE7B0 /* StemCreatorViewController2.xib in Resources */,
 				849C6B91251A712800164DE1 /* test.mid in Resources */,
 			);
