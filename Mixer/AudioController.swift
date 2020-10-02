@@ -32,7 +32,7 @@ public class AudioController: NSObject {
     }
     public func initialize(){
         sequencer = AVAudioSequencer(audioEngine: engine)
-        createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 10)
+        createChannels(numInstChannels: 2, numAuxChannels: 4, numBusses: 10)
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)

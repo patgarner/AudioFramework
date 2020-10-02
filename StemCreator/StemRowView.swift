@@ -69,7 +69,7 @@ public class StemRowView: NSView {
     }
 }
 
-extension StemRowView : StemCheckboxDelegate{ 
+extension StemRowView : StemCheckboxDelegate{  
     public func getNameFor(channelId : String) -> String?{
         let name = delegate.getNameFor(channelId: channelId)
         return name
@@ -81,6 +81,17 @@ extension StemRowView : StemCheckboxDelegate{
         let selected = delegate.isSelected(stemNumber: number, channelId: channelId)
         return selected
     }
+    public func changeMultiple(to selected: Bool, location: NSPoint) {
+        for subview in subviews{
+            guard let cell = subview as? StemCell else { continue }
+            let cellStart = cell.frame.origin.x
+            let cellEnd = cell.frame.origin.x + cell.frame.size.width
+            if location.x >= cellStart, location.x < cellEnd{
+                cell.changeSelection(to: selected)
+            }
+        }
+    }
+    
 }
 
 enum RowType {

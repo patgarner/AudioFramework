@@ -12,4 +12,5 @@ public protocol StemCheckboxDelegate{
     func getNameFor(channelId : String) -> String?
     func checkboxChangedTo(selected: Bool, channelId: String)
     func isSelected(channelId: String) -> Bool
+    func changeMultiple(to selected: Bool, location: NSPoint)
 }
