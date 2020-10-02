@@ -13,7 +13,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Cocoa
 import AVFoundation
 
-public class ChannelCollectionViewItem: NSCollectionViewItem {
+public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
     @IBOutlet weak var inputPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup2: NSPopUpButton!
@@ -33,8 +33,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
-    var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
-    var instrumentsFlat : [AVAudioUnitComponent] = []
+    private var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
+    private var instrumentsFlat : [AVAudioUnitComponent] = []
+    
+    @IBOutlet weak var vuMeterView: VUMeterView!
     override public func viewDidLoad() {
         super.viewDidLoad()
         inputPopup.target = self
@@ -334,6 +336,13 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let newPositionRotated = (newPosition + 0.5).truncatingRemainder(dividingBy: 1.0)
         popupButton.floatValue = newPositionRotated
         popupButton.needsDisplay = true
+    }
+    func updateVUMeter(level: Float) {
+        guard let view = vuMeterView else { return }
+        view.level = level
+        DispatchQueue.main.async {
+            view.needsDisplay = true
+        }
     }
 }
 

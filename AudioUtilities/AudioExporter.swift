@@ -19,7 +19,7 @@ class AudioExporter{
         lengthInSeconds += 3.0
         engine.stop()
         let format: AVAudioFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-        let maxFrames: AVAudioFrameCount = 1024
+        let maxFrames: AVAudioFrameCount = 2048
         do {
             try engine.enableManualRenderingMode(.offline, format: format,
                                                  maximumFrameCount: maxFrames)

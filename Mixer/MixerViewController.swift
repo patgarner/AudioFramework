@@ -86,6 +86,7 @@ extension MixerViewController : NSCollectionViewDataSource{
         }
         if let channelController = AudioController.shared.getChannelController(type: channelView.type, channel: channelNumber){
             channelView.channelViewDelegate = channelController
+            channelController.vuMeterDelegate = channelView
         }
         return channelView
     }

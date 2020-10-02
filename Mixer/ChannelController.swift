@@ -23,6 +23,7 @@ class ChannelController : ChannelViewDelegate {
     var solo = false
     var trackName = ""
     var id = UUID().uuidString
+    var vuMeterDelegate : VUMeterDelegate?
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -201,6 +202,20 @@ class ChannelController : ChannelViewDelegate {
         let preOutput = AudioNodeFactory.mixerNode()
         self.delegate.engine.attach(preOutput)
         preOutputNode = preOutput
+        
+        let format = outputNode.outputFormat(forBus: 0)
+        outputNode.installTap(onBus: 0, bufferSize: 2048, format: format) { (buffer, time) in
+            let stereoDataUnsafePointer = buffer.floatChannelData!
+            let monoPointer = stereoDataUnsafePointer.pointee
+            let count = buffer.frameLength
+            let bufferPointer = UnsafeBufferPointer(start: monoPointer, count: Int(count))
+            let array = Array(bufferPointer)
+            var peak : Float = 0
+            for element in array { //We can probably just do every 10 samples or so
+                peak = max(element, peak)
+            }
+            self.vuMeterDelegate?.updateVUMeter(level: peak)
+        }
     }
     var pan : Float {
         get {
