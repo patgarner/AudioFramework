@@ -12,7 +12,6 @@ import AVFoundation
 class MasterChannelController : ChannelController{
     override init(delegate: ChannelControllerDelegate){
         super.init(delegate: delegate)
-       // type = .master
     }
     override var allAudioUnits : [AVAudioNode] {
         var audioUnits : [AVAudioNode] = []
@@ -20,8 +19,8 @@ class MasterChannelController : ChannelController{
             audioUnits.append(inputNode!)
         }
         audioUnits.append(contentsOf: effects)
-        if preOutputNode != nil {
-            audioUnits.append(preOutputNode!)
+        if sendSplitterNode != nil {
+            audioUnits.append(sendSplitterNode!)
         }
         if outputNode != nil {
             audioUnits.append(outputNode!)

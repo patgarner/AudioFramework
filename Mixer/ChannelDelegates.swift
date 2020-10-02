@@ -50,4 +50,5 @@ protocol ChannelControllerDelegate{
     func getBusInput(for node: AVAudioNode) -> Int?
     func connectBusInput(to node: AVAudioNode, busNumber: Int)
     func displayInterface(audioUnit: AudioUnit) //TODO: WIP
+    func soloDidChange()
 }

@@ -353,6 +353,21 @@ extension AudioController : ChannelControllerDelegate {
     func displayInterface(audioUnit: AudioUnit) {
         print("")
     }
+    func soloDidChange() {
+        var soloMode = false
+        for channelController in allChannelControllers{
+            if channelController.solo {
+                soloMode = true
+            }
+        }
+        for channelController in allChannelControllers{
+            if soloMode{
+                channelController.setSoloVolume(on: channelController.solo)
+            }  else {
+                channelController.setSoloVolume(on: true)
+            }
+        }
+    }
 }
 
 extension AudioController : StemViewDelegate { 

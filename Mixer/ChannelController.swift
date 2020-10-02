@@ -17,10 +17,10 @@ class ChannelController : ChannelViewDelegate {
     var delegate : ChannelControllerDelegate!
     public var effects : [AVAudioUnit] = []
     var inputNode : AVAudioNode? = nil
-    var preOutputNode : AVAudioMixerNode? = nil
+    var sendSplitterNode : AVAudioMixerNode? = nil
+    var soloNode : AVAudioMixerNode? = nil
     var outputNode : AVAudioMixerNode!
     private var sendOutputs : [AVAudioMixerNode] = []
-    var solo = false
     var trackName = ""
     var id = UUID().uuidString
     var vuMeterDelegate : VUMeterDelegate?
@@ -86,17 +86,18 @@ class ChannelController : ChannelViewDelegate {
                 print("Sorry, engine needs to contain BOTH nodes it is connecting.")
             }
         }
-        guard let preOutputNode = preOutputNode else { return }
-        let format = preOutputNode.outputFormat(forBus: 0)
-        var connectionPoints : [AVAudioConnectionPoint] = []
-        let connectionPoint = AVAudioConnectionPoint(node: outputNode, bus: 0)
-        connectionPoints.append(connectionPoint)
+        guard let sendSplitterNode = sendSplitterNode else { return }
+        let format = sendSplitterNode.outputFormat(forBus: 0)
+        //var connectionPoints : [AVAudioConnectionPoint] = []
+        //let connectionPoint = AVAudioConnectionPoint(node: outputNode, bus: 0)
+        //connectionPoints.append(connectionPoint)
+        var connectionPoints = delegate.engine.outputConnectionPoints(for: sendSplitterNode, outputBus: 0)
         for i in 0..<sendOutputs.count{
             let sendOutput = sendOutputs[i]
             let connectionPoint = AVAudioConnectionPoint(node: sendOutput, bus: 0)
             connectionPoints.append(connectionPoint)
         }
-        delegate.engine.connect(preOutputNode, to: connectionPoints, fromBus: 0, format: format)
+        delegate.engine.connect(sendSplitterNode, to: connectionPoints, fromBus: 0, format: format)
     }
     func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits
@@ -123,22 +124,36 @@ class ChannelController : ChannelViewDelegate {
     }
     var mute : Bool {
         get {
-            if preOutputNode == nil { return false }
-            if preOutputNode!.outputVolume > 0 {
+            if sendSplitterNode == nil { return false }
+            if sendSplitterNode!.outputVolume > 0 {
                 return false
             } else {
                 return true
             }
         }
         set {
-            if preOutputNode == nil { return }
+            if sendSplitterNode == nil { return }
             if newValue == true {
-                preOutputNode!.outputVolume = 0
+                sendSplitterNode!.outputVolume = 0
             } else {
-                preOutputNode!.outputVolume = 1
+                sendSplitterNode!.outputVolume = 1
             }
         }
     }
+    var solo : Bool = false {
+        didSet {
+            delegate.soloDidChange()
+        }
+    }
+    func setSoloVolume(on: Bool){
+        guard let soloNode = soloNode else { return }
+        if on {
+            soloNode.outputVolume = 1.0
+        } else {
+            soloNode.outputVolume = 0.0
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,10 +203,6 @@ class ChannelController : ChannelViewDelegate {
         return effects[number]
     }
     func createIONodes() {
-        let mixerOutput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(mixerOutput)
-        self.outputNode = mixerOutput
-        
         let numSends = 2
         for _ in 0..<numSends{
             let sendOutput = AudioNodeFactory.mixerNode()
@@ -199,9 +210,17 @@ class ChannelController : ChannelViewDelegate {
             sendOutputs.append(sendOutput)
             sendOutput.outputVolume = 0.0
         }
-        let preOutput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(preOutput)
-        preOutputNode = preOutput
+        let sendSplitterNode = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(sendSplitterNode)
+        self.sendSplitterNode = sendSplitterNode
+        
+        let soloNode = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(soloNode)
+        self.soloNode = soloNode
+        
+        let mixerOutput = AudioNodeFactory.mixerNode()
+        self.delegate.engine.attach(mixerOutput)
+        self.outputNode = mixerOutput
         
         let format = outputNode.outputFormat(forBus: 0)
         outputNode.installTap(onBus: 0, bufferSize: 2048, format: format) { (buffer, time) in

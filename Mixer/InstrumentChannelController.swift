@@ -65,11 +65,14 @@ class InstrumentChannelController : ChannelController{
             audioUnits.append(instrumentAU)
         }
         audioUnits.append(contentsOf: effects)
-        if let preOutput = preOutputNode{
-            audioUnits.append(preOutput)
+        if let sendSplitter = sendSplitterNode{
+            audioUnits.append(sendSplitter)
         }
-        if let output = outputNode {
-            audioUnits.append(output)
+        if soloNode != nil{
+            audioUnits.append(soloNode!)
+        }
+        if outputNode != nil {
+            audioUnits.append(outputNode)
         }
         return audioUnits
     }

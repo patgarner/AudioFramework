@@ -23,8 +23,11 @@ class AuxChannelController : ChannelController{
             audioUnits.append(inputNode!)
         }
         audioUnits.append(contentsOf: effects)
-        if let preOutput = preOutputNode{
-            audioUnits.append(preOutput)
+        if sendSplitterNode != nil{
+            audioUnits.append(sendSplitterNode!)
+        }
+        if soloNode != nil {
+            audioUnits.append(soloNode!)
         }
         if outputNode != nil {
             audioUnits.append(outputNode!)

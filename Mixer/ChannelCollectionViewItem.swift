@@ -81,7 +81,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
         } else {
             muteButton.state = .off
         }
-        
         if channelViewDelegate.solo{
             soloButton.state = .on
         } else {
@@ -96,6 +95,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
             self.trackNameField.stringValue = "Master"
             self.trackNameField.isEditable = false
             inputPopup.isHidden = true
+            self.soloButton.isHidden = true
         }  else if type == .aux {
             labelView.color = NSColor(calibratedRed: 0.68, green: 0.75, blue: 0.85, alpha: 1.0)
             self.trackNameField.stringValue = "Aux " + String(channelNumber + 1)
