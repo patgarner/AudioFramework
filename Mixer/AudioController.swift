@@ -32,7 +32,7 @@ public class AudioController: NSObject {
     }
     public func initialize(){
         sequencer = AVAudioSequencer(audioEngine: engine)
-        createChannels(numInstChannels: 2, numAuxChannels: 4, numBusses: 10)
+        createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 10)
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
@@ -346,6 +346,9 @@ extension AudioController : ChannelControllerDelegate {
         let bus = busses[busNumber]
         let format = bus.outputFormat(forBus: 0)
         var connections = engine.outputConnectionPoints(for: bus, outputBus: 0)
+        for connection in connections{
+            if let existingNode = connection.node, existingNode === node { return } //This connection already exists. Exit.
+        }
         let newConnection = AVAudioConnectionPoint(node: node, bus: 0)
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)

@@ -48,6 +48,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
         for sendPopup in sendPopups{
             sendPopup.target = self
             sendPopup.action = #selector(sendDestinationChanged)
+            sendPopup.font = NSFont(name: "Helvetica", size: 10)
         }
         for sendLevelKnob in sendLevelKnobs{
             sendLevelKnob.target = self
@@ -162,7 +163,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
         guard let popupButton = sender as? NSPopUpButton else { return }
         let number = popupButton.tag
         let index = popupButton.indexOfSelectedItem
-        let effects = getAudioComponentList(type: .effect)//getListOfEffects()
+        let effects = getAudioComponentList(type: .effect)
         if index >= effects.count {
             channelViewDelegate.deselectEffect(number: number)
             return
@@ -343,6 +344,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
         DispatchQueue.main.async {
             view.needsDisplay = true
         }
+    }
+    override public func mouseDragged(with event: NSEvent) {
+        print("Channel controller mouse dragged")
     }
 }
 

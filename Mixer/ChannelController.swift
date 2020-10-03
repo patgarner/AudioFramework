@@ -15,15 +15,23 @@ import AVFoundation
 
 class ChannelController : ChannelViewDelegate {    
     var delegate : ChannelControllerDelegate!
-    public var effects : [AVAudioUnit] = []
+    var vuMeterDelegate : VUMeterDelegate?
     var inputNode : AVAudioNode? = nil
+    public var effects : [AVAudioUnit] = []
     var sendSplitterNode : AVAudioMixerNode? = nil
+    private var sendOutputs : [AVAudioMixerNode] = []
     var soloNode : AVAudioMixerNode? = nil
     var outputNode : AVAudioMixerNode!
-    private var sendOutputs : [AVAudioMixerNode] = []
+    //Model
     var trackName = ""
     var id = UUID().uuidString
-    var vuMeterDelegate : VUMeterDelegate?
+    var selected = false
+    var solo : Bool = false {
+        didSet {
+            delegate.soloDidChange()
+        }
+    }
+    //
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -140,11 +148,7 @@ class ChannelController : ChannelViewDelegate {
             }
         }
     }
-    var solo : Bool = false {
-        didSet {
-            delegate.soloDidChange()
-        }
-    }
+
     func setSoloVolume(on: Bool){
         guard let soloNode = soloNode else { return }
         if on {

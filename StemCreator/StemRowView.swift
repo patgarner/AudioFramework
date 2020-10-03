@@ -91,7 +91,6 @@ extension StemRowView : StemCheckboxDelegate{
             }
         }
     }
-    
 }
 
 enum RowType {
