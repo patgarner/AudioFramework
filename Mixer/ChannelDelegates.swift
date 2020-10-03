@@ -40,6 +40,7 @@ public protocol ChannelViewDelegate {
     func selectInput(busNumber: Int)
     func getBusInputNumber() -> Int?
     func displayInterface(type: PluginType, number: Int)
+    func didSelect(channel: Int)
 }
 
 protocol ChannelControllerDelegate{
@@ -51,4 +52,5 @@ protocol ChannelControllerDelegate{
     func connectBusInput(to node: AVAudioNode, busNumber: Int)
     func displayInterface(audioUnit: AudioUnit) //TODO: WIP
     func soloDidChange()
+    func didSelect(channel: Int)
 }

@@ -50,7 +50,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         for sendPopup in sendPopups{
             sendPopup.target = self
             sendPopup.action = #selector(sendDestinationChanged)
-            sendPopup.font = NSFont(name: "Helvetica", size: 11)
+            sendPopup.font = NSFont(name: "Helvetica", size: 12)
         }
         for sendLevelKnob in sendLevelKnobs{
             sendLevelKnob.target = self
@@ -331,7 +331,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         return finalValue
     }
     func set(popupButton: NSSlider, value: Float, blackoutRegion: Float, minValue: Float, maxValue: Float){
-        //We'll just assume buttonSpread is always 1 and make our live easier.
         let inputValueSpread = maxValue - minValue
         let completeness = (value - minValue) / inputValueSpread
         let whiteoutRegion = 1.0 - blackoutRegion
@@ -348,12 +347,27 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }
     }
     override public func mouseDown(with event: NSEvent) {
-        isSelected = !isSelected
-        if isSelected{
-            self.view.layer?.borderWidth = 2.0
-            self.view.layer?.borderColor = NSColor.green.cgColor
+        if event.modifierFlags.contains(NSEvent.ModifierFlags.command){
+            //Toggle selection on this channel. Ignore other channels
+            isSelected = !isSelected
+        } else if event.modifierFlags.contains(NSEvent.ModifierFlags.shift){
+            //Ignore this case for now
         } else {
-            self.view.layer?.borderColor = CGColor.clear
+            //Toggle selection on this channel. Deselect other channels
+            let newValue = !isSelected
+            channelViewDelegate.didSelect(channel: channelNumber)
+            isSelected = newValue
+        }
+
+    }
+    public override var isSelected: Bool {
+        didSet{
+            if isSelected{
+                self.view.layer?.borderWidth = 2.0
+                self.view.layer?.borderColor = NSColor.green.cgColor
+            } else {
+                self.view.layer?.borderColor = CGColor.clear
+            }
         }
     }
 }

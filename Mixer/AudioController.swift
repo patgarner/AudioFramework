@@ -396,6 +396,12 @@ extension AudioController : ChannelControllerDelegate {
             }
         }
     }
+    func didSelect(channel: Int){
+        for channel in allChannelControllers{
+            channel.isSelected = false
+        }
+    }
+
 }
 
 extension AudioController : StemViewDelegate { 

@@ -13,7 +13,7 @@
 import Foundation
 import AVFoundation
 
-class ChannelController : ChannelViewDelegate {    
+class ChannelController : ChannelViewDelegate {
     var delegate : ChannelControllerDelegate!
     weak var channelView : ChannelCollectionViewItem?
     var inputNode : AVAudioNode? = nil
@@ -31,10 +31,17 @@ class ChannelController : ChannelViewDelegate {
         }
     }
     var isSelected : Bool {
-        if let channelView = channelView{
-            return channelView.isSelected
-        } else {
-            return false
+        get {
+            if let channelView = channelView{
+                return channelView.isSelected
+            } else {
+                return false
+            }
+        }
+        set {
+            if let channelView = channelView{
+                channelView.isSelected = newValue
+            }
         }
     }
 
@@ -316,7 +323,10 @@ class ChannelController : ChannelViewDelegate {
         return sendData
     }
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) {
-        guard let sendNode = get(sendNumber: sendNumber) else { return }
+        guard let sendNode = get(sendNumber: sendNumber) else {
+            print("ChannelController.select(sendNumber...) failed because send \(sendNumber) could not be fetched.")
+            return 
+        }
         delegate.setSendOutput(for: sendNode, to: busNumber)
     }
     func getSendOutput(sendNumber: Int) -> Int? {
@@ -325,7 +335,10 @@ class ChannelController : ChannelViewDelegate {
         return sendOutput
     }
     func selectInput(busNumber: Int){ //Only Aux nodes need this
-        guard let inputNode = inputNode else { return }
+        guard let inputNode = inputNode else {
+            print("ChannelController could not set input bus because input node is empty")
+            return
+        }
         delegate.connectBusInput(to: inputNode, busNumber: busNumber)
     }
     func getBusInputNumber() -> Int?{
@@ -339,6 +352,10 @@ class ChannelController : ChannelViewDelegate {
             delegate.displayInterface(audioUnit: effect.audioUnit)
         }
     }
+    func didSelect(channel: Int) {
+        delegate.didSelect(channel: channel)
+    }
+    
     ////////////////////////////////////
 
 }
