@@ -15,7 +15,7 @@ import AVFoundation
 
 class ChannelController : ChannelViewDelegate {    
     var delegate : ChannelControllerDelegate!
-    var vuMeterDelegate : VUMeterDelegate?
+    weak var channelView : ChannelCollectionViewItem?
     var inputNode : AVAudioNode? = nil
     public var effects : [AVAudioUnit] = []
     var sendSplitterNode : AVAudioMixerNode? = nil
@@ -25,12 +25,19 @@ class ChannelController : ChannelViewDelegate {
     //Model
     var trackName = ""
     var id = UUID().uuidString
-    var selected = false
     var solo : Bool = false {
         didSet {
             delegate.soloDidChange()
         }
     }
+    var isSelected : Bool {
+        if let channelView = channelView{
+            return channelView.isSelected
+        } else {
+            return false
+        }
+    }
+
     //
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
@@ -237,7 +244,8 @@ class ChannelController : ChannelViewDelegate {
             for element in array { //We can probably just do every 10 samples or so
                 peak = max(element, peak)
             }
-            self.vuMeterDelegate?.updateVUMeter(level: peak)
+            //self.vuMeterDelegate?.updateVUMeter(level: peak)
+            self.channelView?.updateVUMeter(level: peak)
         }
     }
     var pan : Float {

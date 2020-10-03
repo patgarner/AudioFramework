@@ -65,6 +65,18 @@ public class AudioController: NSObject {
             engine.connect(channelOutput, to: masterInput, format: format)
         }
     }
+    func add(channelType: ChannelType){
+        if channelType == .master { return }
+        if channelType == .midiInstrument{
+            let channelController = InstrumentChannelController(delegate: self)
+            instrumentControllers.append(channelController)
+            connectToMaster(channelController: channelController)
+        } else if channelType == .aux{
+            let channelController = AuxChannelController(delegate: self)
+            auxControllers.append(channelController)
+            connectToMaster(channelController: channelController)
+        }
+    }
     public func getAudioModel() -> AudioModel{
         let allData = AudioModel()
         for channelController in instrumentControllers{
@@ -281,6 +293,20 @@ public class AudioController: NSObject {
         }
         return true
     }
+    func deleteSelectedChannels(){
+        for i in stride(from: instrumentControllers.count-1, through: 0, by: -1){
+            let channelController = instrumentControllers[i]
+            if channelController.isSelected{
+                instrumentControllers.remove(at: i)
+            }
+        }
+        for i in stride(from: auxControllers.count-1, through: 0, by: -1){
+            let channelController = auxControllers[i]
+            if channelController.isSelected{
+                auxControllers.remove(at: i)
+            }
+        }
+    }
 }
 
 extension AudioController : PluginSelectionDelegate{
@@ -288,7 +314,6 @@ extension AudioController : PluginSelectionDelegate{
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){}
     func displayInstrumentInterface(channel: Int){}
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType){}
-    
     func numBusses() -> Int{
         return busses.count
     }

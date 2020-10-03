@@ -12,6 +12,7 @@
                 <outlet property="inputPopup" destination="CY1-Lc-T62" id="PGY-Pu-SaA"/>
                 <outlet property="labelView" destination="hRq-QI-WuQ" id="G6O-K7-vte"/>
                 <outlet property="labelViewTrailingConstraint" destination="7oZ-fm-66n" id="e90-5d-kb5"/>
+                <outlet property="mixerFillView" destination="rba-UR-U1f" id="Uve-KQ-JtG"/>
                 <outlet property="muteButton" destination="TKq-fY-h6f" id="DsD-cO-PXw"/>
                 <outlet property="panKnob" destination="Ar8-yd-M5r" id="IYY-RK-ouU"/>
                 <outlet property="sendLevelKnob1" destination="RXO-TX-0OP" id="B21-bh-38f"/>
@@ -81,10 +82,7 @@
                             <rect key="frame" x="0.0" y="27" width="187" height="23"/>
                             <subviews>
                                 <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Joq-kQ-cdh" userLabel="Send Destination 1">
-                                    <rect key="frame" x="-2" y="-2" width="45" height="25"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="40" id="Zqf-rF-BsI"/>
-                                    </constraints>
+                                    <rect key="frame" x="-2" y="-2" width="168" height="25"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" arrowPosition="noArrow" selectedItem="mlM-9N-d2z" id="nRs-6Z-2Gq">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -109,6 +107,7 @@
                                 <constraint firstItem="RXO-TX-0OP" firstAttribute="centerY" secondItem="odn-hD-0Rn" secondAttribute="centerY" id="BRW-Tt-1UK"/>
                                 <constraint firstItem="Joq-kQ-cdh" firstAttribute="centerY" secondItem="odn-hD-0Rn" secondAttribute="centerY" id="DP7-br-JfQ"/>
                                 <constraint firstAttribute="height" constant="23" id="U4G-dN-E8Z"/>
+                                <constraint firstItem="RXO-TX-0OP" firstAttribute="leading" secondItem="Joq-kQ-cdh" secondAttribute="trailing" constant="-1" id="XAX-ZS-YqQ"/>
                                 <constraint firstItem="Joq-kQ-cdh" firstAttribute="leading" secondItem="odn-hD-0Rn" secondAttribute="leading" id="pdf-0B-xbX"/>
                             </constraints>
                         </customView>
@@ -116,10 +115,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="169" height="23"/>
                             <subviews>
                                 <popUpButton verticalHuggingPriority="750" tag="1" translatesAutoresizingMaskIntoConstraints="NO" id="M2Y-xQ-tcg" userLabel="Send Destination 2">
-                                    <rect key="frame" x="-2" y="-2" width="45" height="25"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="40" id="vwN-0g-aoG"/>
-                                    </constraints>
+                                    <rect key="frame" x="-2" y="-2" width="150" height="25"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" arrowPosition="noArrow" selectedItem="7V9-1V-H3R" id="OwW-M8-H9G">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -140,6 +136,7 @@
                                 </slider>
                             </subviews>
                             <constraints>
+                                <constraint firstItem="t4H-eo-5Am" firstAttribute="leading" secondItem="M2Y-xQ-tcg" secondAttribute="trailing" constant="-1" id="921-Ci-e8K"/>
                                 <constraint firstItem="M2Y-xQ-tcg" firstAttribute="leading" secondItem="a0b-YO-fN5" secondAttribute="leading" id="Kxa-ta-ajO"/>
                                 <constraint firstItem="M2Y-xQ-tcg" firstAttribute="centerY" secondItem="a0b-YO-fN5" secondAttribute="centerY" id="Zbc-Ga-djM"/>
                                 <constraint firstAttribute="trailing" secondItem="t4H-eo-5Am" secondAttribute="trailing" constant="1" id="axB-vA-k3E"/>

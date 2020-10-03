@@ -13,7 +13,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Cocoa
 import AVFoundation
 
-public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
+public class ChannelCollectionViewItem: NSCollectionViewItem {
+    @IBOutlet weak var mixerFillView: MixerFillView!
     @IBOutlet weak var inputPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup: NSPopUpButton!
     @IBOutlet weak var audioFXPopup2: NSPopUpButton!
@@ -33,6 +34,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
+    //var selected = false
     private var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
     private var instrumentsFlat : [AVAudioUnitComponent] = []
     
@@ -48,7 +50,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
         for sendPopup in sendPopups{
             sendPopup.target = self
             sendPopup.action = #selector(sendDestinationChanged)
-            sendPopup.font = NSFont(name: "Helvetica", size: 10)
+            sendPopup.font = NSFont(name: "Helvetica", size: 11)
         }
         for sendLevelKnob in sendLevelKnobs{
             sendLevelKnob.target = self
@@ -345,8 +347,14 @@ public class ChannelCollectionViewItem: NSCollectionViewItem, VUMeterDelegate {
             view.needsDisplay = true
         }
     }
-    override public func mouseDragged(with event: NSEvent) {
-        print("Channel controller mouse dragged")
+    override public func mouseDown(with event: NSEvent) {
+        isSelected = !isSelected
+        if isSelected{
+            self.view.layer?.borderWidth = 2.0
+            self.view.layer?.borderColor = NSColor.green.cgColor
+        } else {
+            self.view.layer?.borderColor = CGColor.clear
+        }
     }
 }
 

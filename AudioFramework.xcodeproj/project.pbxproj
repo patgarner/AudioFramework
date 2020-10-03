@@ -12,8 +12,6 @@
 		84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
 		84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */; };
 		84070C5E24FF5D5900E572E7 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController.swift */; };
-		841BFE6A2526B66900FA0276 /* VUMeterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE692526B66900FA0276 /* VUMeterDelegate.swift */; };
-		841BFE6B2526B66900FA0276 /* VUMeterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE692526B66900FA0276 /* VUMeterDelegate.swift */; };
 		841BFE6D2526B8A000FA0276 /* VUMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE6C2526B8A000FA0276 /* VUMeterView.swift */; };
 		841BFE6E2526B8A000FA0276 /* VUMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE6C2526B8A000FA0276 /* VUMeterView.swift */; };
 		841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
@@ -167,7 +165,6 @@
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
 		84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelDelegates.swift; sourceTree = "<group>"; };
 		84070C5624FF5D5900E572E7 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
-		841BFE692526B66900FA0276 /* VUMeterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VUMeterDelegate.swift; sourceTree = "<group>"; };
 		841BFE6C2526B8A000FA0276 /* VUMeterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VUMeterView.swift; sourceTree = "<group>"; };
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioControllerDelegate.swift; sourceTree = "<group>"; };
@@ -283,7 +280,6 @@
 				84789A522527F8C30012B8FD /* MixerViewController.xib */,
 				84ACDFDD25166219003963FD /* PluginSelection.swift */,
 				8459589A251436F20091A43E /* SendData.swift */,
-				841BFE692526B66900FA0276 /* VUMeterDelegate.swift */,
 				841BFE6C2526B8A000FA0276 /* VUMeterView.swift */,
 				84789A2C2527B73C0012B8FD /* ButtonExtension.swift */,
 				84789A342527B8AA0012B8FD /* DraggableButton.swift */,
@@ -649,7 +645,6 @@
 				84ECFA12251E632F007386D1 /* StemViewDelegate.swift in Sources */,
 				84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */,
 				842369FD24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
-				841BFE6A2526B66900FA0276 /* VUMeterDelegate.swift in Sources */,
 				84D0AB5E251EB9210093A081 /* StemModel.swift in Sources */,
 				8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */,
 				842369F724FEC44C001266BE /* PluginData.swift in Sources */,
@@ -701,7 +696,6 @@
 				842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */,
 				841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */,
 				843FD4832506A3B500189936 /* AudioModel.swift in Sources */,
-				841BFE6B2526B66900FA0276 /* VUMeterDelegate.swift in Sources */,
 				84A9AFE525101ED500816F7F /* ChannelRouter.swift in Sources */,
 				8429DB70251FCEC700ADE7B0 /* StemCheckboxDelegate.swift in Sources */,
 				8429DB6B251FB36600ADE7B0 /* StemCell.swift in Sources */,

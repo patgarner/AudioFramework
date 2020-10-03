@@ -31,7 +31,6 @@ public protocol ChannelViewDelegate {
     var mute : Bool { get set }
     var solo : Bool { get set }
     var trackName: String { get set }
-    var selected : Bool { get set }
     func deselectEffect(number: Int)
     func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection?
     func setSend(volume: Float, sendNumber: Int)

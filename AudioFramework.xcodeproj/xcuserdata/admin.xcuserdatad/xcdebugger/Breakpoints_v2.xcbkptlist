@@ -48,8 +48,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "14"
             endingLineNumber = "14"
-            landmarkName = "AppDelegate"
-            landmarkType = "3">
+            landmarkName = "exportMidi(to:)"
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "C05C9043-D8D3-4FB6-AD63-9B3B94BA3CEB - 223d0f48adcaf223"
@@ -144,8 +144,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "244"
             endingLineNumber = "244"
-            landmarkName = "startEngineIfNeeded()"
-            landmarkType = "7">
+            landmarkName = "AudioController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -158,8 +158,8 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "201"
-            endingLineNumber = "201"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
             landmarkName = "set(effect:number:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +174,8 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "getChannelPluginData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -192,7 +192,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "128"
             endingLineNumber = "128"
-            landmarkName = "showStemCreator(_:)"
+            landmarkName = "exportMIDISequence(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -254,9 +254,9 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
-            landmarkName = "loadEffect(pluginData:number:)"
+            startingLineNumber = "171"
+            endingLineNumber = "171"
+            landmarkName = "setSoloVolume(on:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -478,8 +478,8 @@
             filePath = "Mixer/ChannelCollectionViewItem.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
             landmarkName = "inputChanged()"
             landmarkType = "7">
          </BreakpointContent>
@@ -510,9 +510,9 @@
             filePath = "Mixer/AudioController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "399"
-            endingLineNumber = "399"
-            landmarkName = "numStems"
+            startingLineNumber = "412"
+            endingLineNumber = "412"
+            landmarkName = "numChannels"
             landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
@@ -526,10 +526,10 @@
             filePath = "Mixer/AudioController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "401"
-            endingLineNumber = "401"
-            landmarkName = "getNameFor(stem:)"
-            landmarkType = "7">
+            startingLineNumber = "414"
+            endingLineNumber = "414"
+            landmarkName = "numChannels"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -542,9 +542,9 @@
             filePath = "Mixer/AudioController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "407"
-            endingLineNumber = "407"
-            landmarkName = "selectionChangedTo(selected:stemNumber:channelId:)"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
+            landmarkName = "getIdFor(channel:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -558,8 +558,8 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "getChannelPluginData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -574,8 +574,8 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
             landmarkName = "getChannelPluginData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -631,22 +631,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F704A7A2-4E4F-43C4-8474-4A4A4916DD4B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mixer/AudioController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "69"
-            endingLineNumber = "69"
-            landmarkName = "getAudioModel()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "FA53701E-926D-4F70-86BB-4E2011A17350"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -656,7 +640,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "84"
             endingLineNumber = "84"
-            landmarkName = "set(audioModel:)"
+            landmarkName = "getAudioModel()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -670,9 +654,9 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "set(channelPluginData:)"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
+            landmarkName = "getChannelPluginData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -686,8 +670,8 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
             landmarkName = "getChannelPluginData()"
             landmarkType = "7">
          </BreakpointContent>
@@ -702,9 +686,9 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "set(channelPluginData:)"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "getChannelPluginData()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -718,8 +702,8 @@
             filePath = "Mixer/ChannelCollectionViewItem.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "296"
-            endingLineNumber = "296"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
             landmarkName = "getBusList()"
             landmarkType = "7">
          </BreakpointContent>
@@ -734,8 +718,8 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "set(channelPluginData:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -750,10 +734,10 @@
             filePath = "Mixer/ChannelController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
-            landmarkName = "init(delegate:)"
-            landmarkType = "7">
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "isSelected"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -798,8 +782,8 @@
             filePath = "Mixer/MixerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "21"
-            endingLineNumber = "21"
+            startingLineNumber = "32"
+            endingLineNumber = "32"
             landmarkName = "init()"
             landmarkType = "7">
          </BreakpointContent>
@@ -814,8 +798,8 @@
             filePath = "../Composer Bot Desktop/Composer Bot Desktop/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "843"
-            endingLineNumber = "843"
+            startingLineNumber = "833"
+            endingLineNumber = "833"
             landmarkName = "showMixer()"
             landmarkType = "7">
          </BreakpointContent>
@@ -823,47 +807,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "AFE4658E-8CDF-4A0A-88D1-5096BD75B2C9"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mixer/MixerViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "collectionView(_:itemForRepresentedObjectAt:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4FB06EAC-C2D5-4B9C-9A3F-A91E4D8FD88B"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mixer/MixerViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "collectionView(_:numberOfItemsInSection:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "BE28D550-06BB-4FEA-BBE8-F20F91A6AD2D"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mixer/MixerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
+            startingLineNumber = "60"
+            endingLineNumber = "60"
             landmarkName = "loadVC()"
             landmarkType = "7">
          </BreakpointContent>
@@ -878,8 +830,8 @@
             filePath = "Mixer/MixerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "42"
+            endingLineNumber = "42"
             landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
@@ -888,14 +840,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "9ECF1F44-9A34-4F40-BAD5-D34AAB71FEB4"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mixer/MixerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "refresh()"
             landmarkType = "7">
          </BreakpointContent>
@@ -903,16 +855,48 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C02457C4-1E2D-4ACB-BE9F-3B51411722AB"
+            uuid = "C9A2A3E6-0EEA-42B8-BD8C-21E82A7EBC26"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mixer/MixerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "numberOfSections(in:)"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "viewDidAppear()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D567C230-761F-46D6-AD6B-69B2578802DA"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Mixer/MixerViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "14"
+            endingLineNumber = "14"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "33766151-19BB-4555-9665-12C92449C234"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Mixer/MixerViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "addTrack(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

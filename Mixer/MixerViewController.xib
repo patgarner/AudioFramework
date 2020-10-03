@@ -13,31 +13,76 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView id="c22-O7-iKe">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+        <customView id="c22-O7-iKe" customClass="MixerView" customModule="AudioFramework" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="1000" height="425"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <customView translatesAutoresizingMaskIntoConstraints="NO" id="gYV-dm-xgY" userLabel="Toolbar">
+                    <rect key="frame" x="0.0" y="395" width="1000" height="30"/>
+                    <subviews>
+                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="tiM-hi-acl">
+                            <rect key="frame" x="20" y="7" width="31" height="16"/>
+                            <textFieldCell key="cell" lineBreakMode="clipping" title="New" id="Zio-if-TEr">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </textFieldCell>
+                        </textField>
+                        <popUpButton verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="2K6-FO-icg">
+                            <rect key="frame" x="57" y="2" width="95" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="21" id="Dop-xG-Hal"/>
+                                <constraint firstAttribute="width" constant="90" id="YPe-oG-6Wn"/>
+                            </constraints>
+                            <popUpButtonCell key="cell" type="push" title="Inst Track" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="BTT-uh-Kaq" id="VXd-bS-g01">
+                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                                <menu key="menu" id="D3o-t5-5hQ">
+                                    <items>
+                                        <menuItem title="Inst Track" state="on" id="BTT-uh-Kaq" userLabel="Inst Track">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                        <menuItem title="Aux Track" id="kEq-XF-QMy" userLabel="Aux Track">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </popUpButtonCell>
+                            <connections>
+                                <action selector="addTrack:" target="-2" id="Hld-8t-eYB"/>
+                            </connections>
+                        </popUpButton>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="5CD-p4-0o1"/>
+                        <constraint firstItem="tiM-hi-acl" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="EDE-S5-s5w"/>
+                        <constraint firstItem="2K6-FO-icg" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="RHl-6B-Axz"/>
+                        <constraint firstItem="2K6-FO-icg" firstAttribute="leading" secondItem="tiM-hi-acl" secondAttribute="trailing" constant="10" id="YDu-p5-LFE"/>
+                        <constraint firstItem="tiM-hi-acl" firstAttribute="leading" secondItem="gYV-dm-xgY" secondAttribute="leading" constant="22" id="uck-lV-dgE"/>
+                    </constraints>
+                </customView>
                 <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ck-gp-cpX">
-                    <rect key="frame" x="0.0" y="0.0" width="480" height="272"/>
-                    <clipView key="contentView" id="1sw-qb-1Hq">
-                        <rect key="frame" x="1" y="1" width="478" height="270"/>
+                    <rect key="frame" x="0.0" y="0.0" width="1000" height="395"/>
+                    <clipView key="contentView" drawsBackground="NO" id="1sw-qb-1Hq">
+                        <rect key="frame" x="1" y="1" width="998" height="393"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView id="2IY-X6-Wd3">
-                                <rect key="frame" x="0.0" y="0.0" width="478" height="158"/>
+                                <rect key="frame" x="0.0" y="0.0" width="998" height="158"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" id="BgX-yr-hwT">
                                     <size key="itemSize" width="65" height="395"/>
                                 </collectionViewFlowLayout>
-                                <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                <color key="primaryBackgroundColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                 <connections>
                                     <outlet property="dataSource" destination="-2" id="RHx-mN-d0Z"/>
                                 </connections>
                             </collectionView>
                         </subviews>
+                        <color key="backgroundColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                     </clipView>
                     <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="SzI-d1-wp7">
-                        <rect key="frame" x="1" y="144" width="233" height="15"/>
+                        <rect key="frame" x="1" y="378" width="48" height="16"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="hpL-ga-T1c">
@@ -47,12 +92,77 @@
                 </scrollView>
             </subviews>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="7Ck-gp-cpX" secondAttribute="bottom" id="Jhg-g3-vZB"/>
-                <constraint firstAttribute="trailing" secondItem="7Ck-gp-cpX" secondAttribute="trailing" id="dKH-BW-bHM"/>
-                <constraint firstItem="7Ck-gp-cpX" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="n0h-sS-tvC"/>
+                <constraint firstAttribute="trailing" secondItem="gYV-dm-xgY" secondAttribute="trailing" id="38g-bc-1p2"/>
+                <constraint firstItem="7Ck-gp-cpX" firstAttribute="top" secondItem="gYV-dm-xgY" secondAttribute="bottom" id="4le-Ge-wwf"/>
+                <constraint firstAttribute="trailing" secondItem="7Ck-gp-cpX" secondAttribute="trailing" id="aMP-in-scS"/>
+                <constraint firstItem="gYV-dm-xgY" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="cSM-5Q-1yK"/>
+                <constraint firstItem="gYV-dm-xgY" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="cg0-fa-9mp"/>
+                <constraint firstAttribute="bottom" secondItem="7Ck-gp-cpX" secondAttribute="bottom" id="jUg-Mp-9wc"/>
                 <constraint firstItem="7Ck-gp-cpX" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" id="stn-xA-ybd"/>
             </constraints>
             <point key="canvasLocation" x="139" y="154"/>
         </customView>
+        <menuItem title="File" id="KO3-ep-RQn">
+            <modifierMask key="keyEquivalentModifierMask"/>
+            <menu key="submenu" title="File" id="ziN-8f-py5">
+                <items>
+                    <menuItem title="New" keyEquivalent="n" id="tZJ-Zo-etK">
+                        <connections>
+                            <action selector="newDocument:" target="-1" id="SIz-5Y-2k1"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Open…" keyEquivalent="o" id="MwL-tB-PVv">
+                        <connections>
+                            <action selector="openDocument:" target="-1" id="6XX-Eq-MI5"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Open Recent" id="kk3-W7-pg4">
+                        <modifierMask key="keyEquivalentModifierMask"/>
+                        <menu key="submenu" title="Open Recent" systemMenu="recentDocuments" id="lA2-k4-Yjn">
+                            <items>
+                                <menuItem title="Clear Menu" id="GkV-ku-XGe">
+                                    <connections>
+                                        <action selector="clearRecentDocuments:" target="-1" id="eQ5-Nb-AuB"/>
+                                    </connections>
+                                </menuItem>
+                            </items>
+                        </menu>
+                    </menuItem>
+                    <menuItem isSeparatorItem="YES" id="tm4-ye-PnE"/>
+                    <menuItem title="Close" keyEquivalent="w" id="B3D-PS-SCI">
+                        <connections>
+                            <action selector="performClose:" target="-1" id="Eqn-iC-BW1"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Save" keyEquivalent="s" id="JEV-4n-WcQ">
+                        <connections>
+                            <action selector="saveDocument:" target="-1" id="pTa-MY-T0J"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Save As…" keyEquivalent="S" id="Icj-OB-YF2">
+                        <connections>
+                            <action selector="saveDocumentAs:" target="-1" id="XnX-8t-gpw"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Revert to Saved" id="ghH-q0-F9a">
+                        <modifierMask key="keyEquivalentModifierMask"/>
+                        <connections>
+                            <action selector="revertDocumentToSaved:" target="-1" id="Fzl-bS-dOy"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem isSeparatorItem="YES" id="0yH-dm-dbz"/>
+                    <menuItem title="Page Setup…" keyEquivalent="P" id="CvU-Vu-Gr0">
+                        <connections>
+                            <action selector="runPageLayout:" target="-1" id="QWs-W8-vXt"/>
+                        </connections>
+                    </menuItem>
+                    <menuItem title="Print…" keyEquivalent="p" id="Msa-OX-H4H">
+                        <connections>
+                            <action selector="print:" target="-1" id="Yns-Kg-nf5"/>
+                        </connections>
+                    </menuItem>
+                </items>
+            </menu>
+        </menuItem>
     </objects>
 </document>

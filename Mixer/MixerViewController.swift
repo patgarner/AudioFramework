@@ -13,7 +13,18 @@
 import Cocoa
 import AVFoundation
 
-public class MixerViewController: NSViewController {
+class MixerView : NSView {
+    var delegate : keyDelegate? = nil
+    override func keyDown(with event: NSEvent) {
+        delegate?.keyDown(Int(event.keyCode))
+    }
+}
+
+protocol keyDelegate{
+    func keyDown(_ number: Int)
+}
+
+public class MixerViewController: NSViewController, keyDelegate {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     private var interfaceInstance : InterfaceInstance? = nil
@@ -29,15 +40,21 @@ public class MixerViewController: NSViewController {
     }
     override public func viewDidLoad() {
         super.viewDidLoad()
+        if let view = self.view as? MixerView{
+            view.delegate = self
+        }
+        refresh()
+    }
+    public override func viewDidAppear() {
         refresh()
     }
     override public func updateViewConstraints() {
         super.updateViewConstraints()
     }
     public func refresh(){
-        channelCollectionView.dataSource = self
-
         channelCollectionView.reloadData()
+        channelCollectionView.needsLayout = true
+        channelCollectionView.needsDisplay = true
     }
     func loadVC(){
         let contentRect = NSMakeRect(100, 100, 1000, 1000)
@@ -56,6 +73,30 @@ public class MixerViewController: NSViewController {
             instrumentWindowController!.contentViewController = vc
         }
         instrumentWindowController!.showWindow(self)
+    }
+    @IBAction func addTrack(_ sender: Any) {
+        guard let button = sender as? NSPopUpButton else { return }
+        let index = button.indexOfSelectedItem
+        if index == 0{
+            add(channelType: .midiInstrument)
+        } else if index == 1{
+            add(channelType: .aux)
+        }
+    }
+    private func add(channelType: ChannelType){
+        AudioController.shared.add(channelType: channelType)
+        channelCollectionView.reloadData()
+        channelCollectionView.needsLayout = true
+        channelCollectionView.needsDisplay = true
+    }
+    func keyDown(_ number: Int) {
+        if number == 51 {
+            delete()
+        }
+    }
+    func delete(){
+        AudioController.shared.deleteSelectedChannels()
+        channelCollectionView.reloadData()
     }
 }
 
@@ -92,7 +133,7 @@ extension MixerViewController : NSCollectionViewDataSource{
         }
         if let channelController = AudioController.shared.getChannelController(type: channelView.type, channel: channelNumber){
             channelView.channelViewDelegate = channelController
-            channelController.vuMeterDelegate = channelView
+            channelController.channelView = channelView
         }
         return channelView
     }
