@@ -17,6 +17,10 @@ public class MixerViewController: NSViewController {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     private var interfaceInstance : InterfaceInstance? = nil
+    init(){
+        let bundle = Bundle(for: MixerViewController.self)
+        super.init(nibName: nil, bundle: bundle)
+    }
     override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -31,6 +35,8 @@ public class MixerViewController: NSViewController {
         super.updateViewConstraints()
     }
     public func refresh(){
+        channelCollectionView.dataSource = self
+
         channelCollectionView.reloadData()
     }
     func loadVC(){
