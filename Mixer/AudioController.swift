@@ -47,8 +47,9 @@ public class AudioController: NSObject {
             connectToMaster(channelController: channelController)
         }
         //Aux Channels
-        for _ in 0..<numAuxChannels{
+        for i in 0..<numAuxChannels{
             let auxController = AuxChannelController(delegate: self)
+            auxController.trackName = "Aux " + String(i + 1)
             auxControllers.append(auxController)
             connectToMaster(channelController: auxController)
         }

@@ -76,6 +76,22 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             labelViewTrailingConstraint.constant = 0
             labelView.isHidden = false
             labelView.needsLayout = true
+            
+            inputPopup.isEnabled = false
+            audioFXPopup.isEnabled = false
+            audioFXPopup2.isEnabled = false
+            for send in sendPopups{
+                send.isEnabled = false
+            }
+            for send in sendLevelKnobs{
+                send.isEnabled = false
+            }
+            panKnob.isEnabled = false
+            volumeValueTextField.isEnabled = false
+            volumeSlider.isEnabled = false
+            soloButton.isEnabled = false
+            muteButton.isEnabled = false
+            trackNameField.isEnabled = false            
             return
         }
         trackNameField.stringValue = channelViewDelegate.trackName
@@ -95,14 +111,13 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         set(popupButton: panKnob, value: panValue, blackoutRegion: 0.2, minValue: -1.0, maxValue: 1.0)
         labelView.isHidden = true
         if type == .master {
+            mixerFillView.color = NSColor(calibratedRed: 0.6, green: 0.7, blue: 0.8, alpha: 1)
             self.trackNameField.stringValue = "Master"
             self.trackNameField.isEditable = false
             inputPopup.isHidden = true
             self.soloButton.isHidden = true
         }  else if type == .aux {
-            labelView.color = NSColor(calibratedRed: 0.68, green: 0.75, blue: 0.85, alpha: 1.0)
-            self.trackNameField.stringValue = "Aux " + String(channelNumber + 1)
-            self.trackNameField.isEditable = false
+            mixerFillView.color = NSColor(calibratedRed: 0.6, green: 0.6, blue: 0.6, alpha: 1)
             reloadInstruments()
         } else if type == .midiInstrument{
             reloadInstruments()
@@ -248,8 +263,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             inputPopup.selectItem(at: inputPopup.numberOfItems - 1)
         }
     }
-
-
     /////////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////////
@@ -347,6 +360,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }
     }
     override public func mouseDown(with event: NSEvent) {
+        if type == .labels { return }
         if event.modifierFlags.contains(NSEvent.ModifierFlags.command){
             //Toggle selection on this channel. Ignore other channels
             isSelected = !isSelected

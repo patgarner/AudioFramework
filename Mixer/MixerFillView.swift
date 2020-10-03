@@ -21,4 +21,8 @@ class MixerFillView: NSView {
         color.setFill()
         NSBezierPath.fill(self.bounds)
     }
+    override func mouseDragged(with event: NSEvent) {
+        
+    }
 }
+
