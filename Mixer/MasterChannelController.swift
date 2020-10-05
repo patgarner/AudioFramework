@@ -13,7 +13,7 @@ class MasterChannelController : ChannelController{
     override init(delegate: ChannelControllerDelegate){
         super.init(delegate: delegate)
     }
-    override var allAudioUnits : [AVAudioNode] {
+    override func allAudioUnits(includeSends: Bool) -> [AVAudioNode] {
         var audioUnits : [AVAudioNode] = []
         if inputNode != nil {
             audioUnits.append(inputNode!)
@@ -22,6 +22,9 @@ class MasterChannelController : ChannelController{
         if sendSplitterNode != nil {
             audioUnits.append(sendSplitterNode!)
         }
+        if includeSends{
+            audioUnits.append(contentsOf: sendOutputs)
+        }
         if outputNode != nil {
             audioUnits.append(outputNode!)
         }
@@ -29,7 +32,7 @@ class MasterChannelController : ChannelController{
     }
     override func createIONodes() {
         super.createIONodes()
-        self.inputNode = AudioNodeFactory.mixerNode()
+        self.inputNode = AudioNodeFactory.mixerNode(name: "MasterInput")
         self.delegate.engine.attach(inputNode!)
         let format = inputNode!.outputFormat(forBus: 0)
         self.delegate.engine.connect(inputNode!, to: outputNode!, format: format)

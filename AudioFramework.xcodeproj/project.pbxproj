@@ -77,6 +77,8 @@
 		8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 		8487F51925111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
 		8487F51A25111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
+		8496444F252B86AE00C9802E /* UltraMixerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496444E252B86AE00C9802E /* UltraMixerNode.swift */; };
+		84964450252B86AE00C9802E /* UltraMixerNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8496444E252B86AE00C9802E /* UltraMixerNode.swift */; };
 		849C6B89251A653300164DE1 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B88251A653300164DE1 /* Demo.swift */; };
 		849C6B8A251A653300164DE1 /* Demo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B88251A653300164DE1 /* Demo.swift */; };
 		849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
@@ -203,6 +205,7 @@
 		84789A522527F8C30012B8FD /* MixerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MixerViewController.xib; sourceTree = "<group>"; };
 		8479715524FFE66600AAC4A3 /* MixerFillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MixerFillView.swift; sourceTree = "<group>"; };
 		8487F51825111FC1003DC1D6 /* AuxChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxChannelController.swift; sourceTree = "<group>"; };
+		8496444E252B86AE00C9802E /* UltraMixerNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UltraMixerNode.swift; sourceTree = "<group>"; };
 		849C6B88251A653300164DE1 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationExtension.swift; sourceTree = "<group>"; };
 		849C6B8F251A712800164DE1 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
@@ -280,9 +283,9 @@
 				84789A522527F8C30012B8FD /* MixerViewController.xib */,
 				84ACDFDD25166219003963FD /* PluginSelection.swift */,
 				8459589A251436F20091A43E /* SendData.swift */,
+				8496444E252B86AE00C9802E /* UltraMixerNode.swift */,
 				841BFE6C2526B8A000FA0276 /* VUMeterView.swift */,
-				84789A2C2527B73C0012B8FD /* ButtonExtension.swift */,
-				84789A342527B8AA0012B8FD /* DraggableButton.swift */,
+				84964448252B853500C9802E /* WIP */,
 			);
 			path = Mixer;
 			sourceTree = SOURCE_ROOT;
@@ -409,6 +412,15 @@
 				842369D924FEC44C001266BE /* NSError+OSStatus.swift */,
 			);
 			path = AUv2;
+			sourceTree = "<group>";
+		};
+		84964448252B853500C9802E /* WIP */ = {
+			isa = PBXGroup;
+			children = (
+				84789A342527B8AA0012B8FD /* DraggableButton.swift */,
+				84789A2C2527B73C0012B8FD /* ButtonExtension.swift */,
+			);
+			path = WIP;
 			sourceTree = "<group>";
 		};
 		849C6B8E251A70FD00164DE1 /* Demo */ = {
@@ -654,6 +666,7 @@
 				84789A2D2527B73C0012B8FD /* ButtonExtension.swift in Sources */,
 				842369E924FEC44C001266BE /* AudioComponentDescriptionExtension.swift in Sources */,
 				841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */,
+				8496444F252B86AE00C9802E /* UltraMixerNode.swift in Sources */,
 				84789A352527B8AA0012B8FD /* DraggableButton.swift in Sources */,
 				842369EF24FEC44C001266BE /* AudioUnit3Host.swift in Sources */,
 				8429DB6A251FB36600ADE7B0 /* StemCell.swift in Sources */,
@@ -682,6 +695,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84964450252B86AE00C9802E /* UltraMixerNode.swift in Sources */,
 				842369F024FEC44C001266BE /* AudioUnit3Host.swift in Sources */,
 				845958942513C03B0091A43E /* ChannelSettable.swift in Sources */,
 				84A9AFEB25101ED500816F7F /* MixerViewController.swift in Sources */,

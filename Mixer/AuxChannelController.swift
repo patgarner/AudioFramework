@@ -12,12 +12,11 @@ import AVFoundation
 class AuxChannelController : ChannelController{
     override func createIONodes() {
         super.createIONodes()
-      
-        let mixerIntput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(mixerIntput)
-        self.inputNode = mixerIntput
+        let inputNode = AudioNodeFactory.mixerNode(name: "AuxInput")
+        self.delegate.engine.attach(inputNode)
+        self.inputNode = inputNode
     }
-    override var allAudioUnits : [AVAudioNode] {
+    override func allAudioUnits(includeSends: Bool) -> [AVAudioNode] {
         var audioUnits : [AVAudioNode] = []
         if inputNode != nil {
             audioUnits.append(inputNode!)
@@ -25,6 +24,9 @@ class AuxChannelController : ChannelController{
         audioUnits.append(contentsOf: effects)
         if sendSplitterNode != nil{
             audioUnits.append(sendSplitterNode!)
+        }
+        if includeSends{
+            audioUnits.append(contentsOf: sendOutputs)
         }
         if soloNode != nil {
             audioUnits.append(soloNode!)

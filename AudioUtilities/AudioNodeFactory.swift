@@ -12,8 +12,9 @@ import AudioToolbox
 import CoreAudioKit
 
 class AudioNodeFactory{
-    class func mixerNode() -> AVAudioMixerNode{
-        let mixerNode = AVAudioMixerNode()
+    class func mixerNode(name: String) -> UltraMixerNode{
+        let mixerNode = UltraMixerNode()
+        mixerNode.name = name
         return mixerNode
     }
 }

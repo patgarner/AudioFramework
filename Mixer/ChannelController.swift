@@ -18,10 +18,10 @@ class ChannelController : ChannelViewDelegate {
     weak var channelView : ChannelCollectionViewItem?
     var inputNode : AVAudioNode? = nil
     public var effects : [AVAudioUnit] = []
-    var sendSplitterNode : AVAudioMixerNode? = nil
-    private var sendOutputs : [AVAudioMixerNode] = []
-    var soloNode : AVAudioMixerNode? = nil
-    var outputNode : AVAudioMixerNode!
+    var sendSplitterNode : UltraMixerNode? = nil
+    var sendOutputs : [UltraMixerNode] = []
+    var soloNode : UltraMixerNode? = nil
+    var outputNode : UltraMixerNode!
     //Model
     var trackName = ""
     var id = UUID().uuidString
@@ -49,6 +49,7 @@ class ChannelController : ChannelViewDelegate {
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
+        reconnectNodes()
     }
     public init(){
     }
@@ -94,7 +95,7 @@ class ChannelController : ChannelViewDelegate {
         id = channelPluginData.id
     }
     func reconnectNodes(){
-        let audioUnits = allAudioUnits
+        let audioUnits = allAudioUnits()
         if audioUnits.count == 0 { return }
         disconnectNodes()
         let nodes = delegate.engine.attachedNodes
@@ -110,9 +111,6 @@ class ChannelController : ChannelViewDelegate {
         }
         guard let sendSplitterNode = sendSplitterNode else { return }
         let format = sendSplitterNode.outputFormat(forBus: 0)
-        //var connectionPoints : [AVAudioConnectionPoint] = []
-        //let connectionPoint = AVAudioConnectionPoint(node: outputNode, bus: 0)
-        //connectionPoints.append(connectionPoint)
         var connectionPoints = delegate.engine.outputConnectionPoints(for: sendSplitterNode, outputBus: 0)
         for i in 0..<sendOutputs.count{
             let sendOutput = sendOutputs[i]
@@ -122,7 +120,7 @@ class ChannelController : ChannelViewDelegate {
         delegate.engine.connect(sendSplitterNode, to: connectionPoints, fromBus: 0, format: format)
     }
     func disconnectNodes(includeLast: Bool = false){
-        let nodes = allAudioUnits
+        let nodes = allAudioUnits()
         if nodes.count == 0 { return }
         var lastIndex = nodes.count
         if !includeLast {
@@ -133,7 +131,7 @@ class ChannelController : ChannelViewDelegate {
             disconnectOutput(audioUnit: node)
         }
     }
-    var allAudioUnits : [AVAudioNode] {
+    func allAudioUnits(includeSends: Bool = false) -> [AVAudioNode] {
         assertionFailure("ChannelController.allAudioUnits() child class must override")
         return []
     }
@@ -222,23 +220,24 @@ class ChannelController : ChannelViewDelegate {
     }
     func createIONodes() {
         let numSends = 2
-        for _ in 0..<numSends{
-            let sendOutput = AudioNodeFactory.mixerNode()
+        for i in 0..<numSends{
+            let name = "Send Output \(i + 1)"
+            let sendOutput = AudioNodeFactory.mixerNode(name: name)
             self.delegate.engine.attach(sendOutput)
             sendOutputs.append(sendOutput)
             sendOutput.outputVolume = 0.0
         }
-        let sendSplitterNode = AudioNodeFactory.mixerNode()
+        let sendSplitterNode = AudioNodeFactory.mixerNode(name: "SendSplitter")
         self.delegate.engine.attach(sendSplitterNode)
         self.sendSplitterNode = sendSplitterNode
         
-        let soloNode = AudioNodeFactory.mixerNode()
+        let soloNode = AudioNodeFactory.mixerNode(name: "SoloNode")
         self.delegate.engine.attach(soloNode)
         self.soloNode = soloNode
         
-        let mixerOutput = AudioNodeFactory.mixerNode()
-        self.delegate.engine.attach(mixerOutput)
-        self.outputNode = mixerOutput
+        let channelOutput = AudioNodeFactory.mixerNode(name: "ChannelOutput")
+        self.delegate.engine.attach(channelOutput)
+        self.outputNode = channelOutput
         
         let format = outputNode.outputFormat(forBus: 0)
         outputNode.installTap(onBus: 0, bufferSize: 2048, format: format) { (buffer, time) in
@@ -248,10 +247,10 @@ class ChannelController : ChannelViewDelegate {
             let bufferPointer = UnsafeBufferPointer(start: monoPointer, count: Int(count))
             let array = Array(bufferPointer)
             var peak : Float = 0
-            for element in array { //We can probably just do every 10 samples or so
+            for i in stride(from: 0, to: array.count, by: 10){
+                let element = array[i]
                 peak = max(element, peak)
             }
-            //self.vuMeterDelegate?.updateVUMeter(level: peak)
             self.channelView?.updateVUMeter(level: peak)
         }
     }
@@ -271,13 +270,9 @@ class ChannelController : ChannelViewDelegate {
         return sendOutput
     }
     func disconnectAll(){
-        for node in allAudioUnits{
+        for node in allAudioUnits(includeSends: true){
             delegate.engine.disconnectNodeOutput(node)
             delegate.engine.detach(node)
-        }
-        for sendOutput in sendOutputs{
-            delegate.engine.disconnectNodeOutput(sendOutput)
-            delegate.engine.detach(sendOutput)
         }
     }
     var midiIn : AVAudioUnit?{
@@ -336,7 +331,7 @@ class ChannelController : ChannelViewDelegate {
     }
     func selectInput(busNumber: Int){ //Only Aux nodes need this
         guard let inputNode = inputNode else {
-            print("ChannelController could not set input bus because input node is empty")
+            delegate.log("ChannelController could not set input bus because input node is empty")
             return
         }
         delegate.connectBusInput(to: inputNode, busNumber: busNumber)
@@ -355,9 +350,49 @@ class ChannelController : ChannelViewDelegate {
     func didSelect(channel: Int) {
         delegate.didSelect(channel: channel)
     }
-    
-    ////////////////////////////////////
-
+    func visualize(){
+        var string = ""
+        for audioUnit in allAudioUnits(includeSends: true){
+            let sourceIdentity = identify(node: audioUnit)
+            let connections = delegate.engine.outputConnectionPoints(for: audioUnit, outputBus: 0)
+            for connection in connections {
+                guard let destNode = connection.node else { continue }
+                let destIdentity = identify(node: destNode)
+                let thisConnection = sourceIdentity + " -> " + destIdentity + "\n"
+                string += thisConnection
+            }
+            if connections.count == 0{
+                let thisConnection = sourceIdentity + " -> NIL\n"
+                string += thisConnection
+            }
+        }
+        delegate.log(string)
+    }
+    func identify(node : AVAudioNode) -> String {
+        if let ultraMixer = node as? UltraMixerNode {
+            return ultraMixer.name
+        }
+        if let midiInstrument = node as? AVAudioUnitMIDIInstrument{
+            let string = midiInstrument.manufacturerName
+            return string
+        }
+        if node === inputNode { return "InputNode" }
+        for i in 0..<effects.count{
+            let effect = effects[i]
+            if node === effect {
+                let string = "Audio Effect \(i)"
+                return string
+            }
+        }
+        for i in 0..<sendOutputs.count{
+               let sendOutput = sendOutputs[i]
+               if node === sendOutput {
+                   let string = "Send Output \(i)"
+                   return string
+               }
+           }
+        return "Unidentified \(node.debugDescription)"
+    }
 }
 
 public enum PluginType{

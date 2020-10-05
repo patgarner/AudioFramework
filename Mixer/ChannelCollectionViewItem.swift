@@ -193,7 +193,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }
     }
     @objc private func sendDestinationChanged(sender: Any){
-        guard let popup = sender as? NSPopUpButton else { return }
+        let popup = sender as! NSPopUpButton
         let index = popup.indexOfSelectedItem
         let sendNumber = popup.tag
         channelViewDelegate.select(sendNumber: sendNumber, busNumber: index, channel: channelNumber, channelType: type)

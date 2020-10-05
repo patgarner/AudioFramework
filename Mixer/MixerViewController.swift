@@ -16,7 +16,8 @@ import AVFoundation
 class MixerView : NSView {
     var delegate : keyDelegate? = nil
     override func keyDown(with event: NSEvent) {
-        delegate?.keyDown(Int(event.keyCode))
+        let keycode = Int(event.keyCode)
+        delegate?.keyDown(keycode)
     }
 }
 
@@ -90,13 +91,20 @@ public class MixerViewController: NSViewController, keyDelegate {
         channelCollectionView.needsDisplay = true
     }
     func keyDown(_ number: Int) {
+        print(number)
         if number == 51 {
             delete()
+        } else if number == 48 {
+            visualizeAudioGraph()
         }
+        
     }
     func delete(){
         AudioController.shared.deleteSelectedChannels()
         channelCollectionView.reloadData()
+    }
+    func visualizeAudioGraph(){
+        AudioController.shared.visualizeAudioGraph()
     }
 }
 

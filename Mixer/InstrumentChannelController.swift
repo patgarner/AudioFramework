@@ -59,7 +59,7 @@ class InstrumentChannelController : ChannelController{
         channelPluginData.instrumentPlugin = instrumentPluginData
         return channelPluginData
     }
-    override var allAudioUnits : [AVAudioNode] {
+    override func allAudioUnits(includeSends: Bool = false) -> [AVAudioNode] {
         var audioUnits : [AVAudioNode] = []
         if let instrumentAU = instrumentHost.audioUnit {
             audioUnits.append(instrumentAU)
@@ -67,6 +67,9 @@ class InstrumentChannelController : ChannelController{
         audioUnits.append(contentsOf: effects)
         if let sendSplitter = sendSplitterNode{
             audioUnits.append(sendSplitter)
+        }
+        if includeSends{
+            audioUnits.append(contentsOf: sendOutputs)
         }
         if soloNode != nil{
             audioUnits.append(soloNode!)

@@ -54,8 +54,9 @@ public class AudioController: NSObject {
             connectToMaster(channelController: auxController)
         }
         //Busses
-        for _ in 0..<numBusses{
-            let bus = AudioNodeFactory.mixerNode()
+        for i in 0..<numBusses{
+            let name = "Bus \(i + 1)"
+            let bus = AudioNodeFactory.mixerNode(name: name)
             engine.attach(bus)
             busses.append(bus)
         }
@@ -298,13 +299,22 @@ public class AudioController: NSObject {
         for i in stride(from: instrumentControllers.count-1, through: 0, by: -1){
             let channelController = instrumentControllers[i]
             if channelController.isSelected{
+                channelController.disconnectAll()
                 instrumentControllers.remove(at: i)
             }
         }
         for i in stride(from: auxControllers.count-1, through: 0, by: -1){
             let channelController = auxControllers[i]
             if channelController.isSelected{
+                channelController.disconnectAll()
                 auxControllers.remove(at: i)
+            }
+        }
+    }
+    func visualizeAudioGraph(){
+        for channelController in allChannelControllers{
+            if channelController.isSelected {
+                channelController.visualize()
             }
         }
     }
@@ -379,7 +389,7 @@ extension AudioController : ChannelControllerDelegate {
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
-    func displayInterface(audioUnit: AudioUnit) {
+    func displayInterface(audioUnit: AudioUnit) { //TODO: Remove
         print("")
     }
     func soloDidChange() {
