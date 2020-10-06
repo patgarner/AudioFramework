@@ -111,7 +111,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         set(popupButton: panKnob, value: panValue, blackoutRegion: 0.2, minValue: -1.0, maxValue: 1.0)
         labelView.isHidden = true
         if type == .master {
-            mixerFillView.color = NSColor(calibratedRed: 0.6, green: 0.7, blue: 0.8, alpha: 1)
+            mixerFillView.color = NSColor(calibratedRed: 0.7, green: 0.75, blue: 0.8, alpha: 1)
             self.trackNameField.stringValue = "Master"
             self.trackNameField.isEditable = false
             inputPopup.isHidden = true
@@ -214,9 +214,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         volumeValueTextField.needsDisplay = true
         channelViewDelegate.volume = sliderValue
     }
-    @objc func trackNameChanged(){
+    @objc func trackNameChanged(sender: Any){
         let trackName = trackNameField.stringValue
         channelViewDelegate.trackName = trackName
+        //view.window?.makeFirstResponder(nil)
+        let fieldEditor = view.window?.fieldEditor(false, for: trackNameField)
+        fieldEditor?.resignFirstResponder()
     }
 
     @objc func muteChanged(){

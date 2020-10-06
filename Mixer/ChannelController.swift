@@ -183,20 +183,10 @@ class ChannelController : ChannelViewDelegate {
         }
     }
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, completion: @escaping (Bool)->()) {
-        let flags = AudioComponentFlags(rawValue: desc.componentFlags)
-//        let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
-        //let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
-//        let loadOptions : AudioComponentInstantiationOptions = .loadOutOfProcess
-        AVAudioUnitEffect.instantiate(with: desc, options: []) { (avAudioUnit, error) in
-            if let e = error {
-                self.delegate?.log("Failed to load effect. Error: \(e)")
-                completion(false)
-            }
-            guard let audioUnitEffect = avAudioUnit else { return }
-            self.set(effect: audioUnitEffect, number: number)
-            self.reconnectNodes()
-            completion(true)
-        }
+        let audioUnitEffect = AVAudioUnitEffect(audioComponentDescription: desc)
+        self.set(effect: audioUnitEffect, number: number)
+        self.reconnectNodes()
+        completion(true)
     }
     func set(effect: AVAudioUnit, number: Int){
         if number < effects.count { //There is already an effect there

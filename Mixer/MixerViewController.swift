@@ -15,10 +15,13 @@ import AVFoundation
 
 class MixerView : NSView {
     var delegate : keyDelegate? = nil
-    override func keyDown(with event: NSEvent) {
-        let keycode = Int(event.keyCode)
-        delegate?.keyDown(keycode)
-    }
+//    override func keyDown(with event: NSEvent) {
+//        let keycode = Int(event.keyCode)
+//        delegate?.keyDown(keycode)
+//    }
+//    override func mouseDown(with event: NSEvent) {
+//        //self.becomeFirstResponder()
+//    }
 }
 
 protocol keyDelegate{
@@ -58,12 +61,13 @@ public class MixerViewController: NSViewController, keyDelegate {
         channelCollectionView.needsDisplay = true
     }
     func loadVC(){
-        let contentRect = NSMakeRect(100, 100, 1000, 1000)
+        guard let interfaceInstance = self.interfaceInstance  else { return }
+        //let contentRect = NSMakeRect(100, 100, 1000, 1000)
+        let contentRect = (NSMakeRect(100, 100, 710, 438))
         let styles = NSWindow.StyleMask.resizable.rawValue | NSWindow.StyleMask.titled.rawValue | NSWindow.StyleMask.closable.rawValue
         let styleMask = NSWindow.StyleMask.init(rawValue: styles)
-        let window = NSWindow(contentRect: contentRect, styleMask: styleMask, backing: NSWindow.BackingStoreType.buffered, defer: false)
+        let window = NSWindow(contentRect: contentRect, styleMask: styleMask, backing: NSWindow.BackingStoreType.buffered, defer: true)
         instrumentWindowController = NSWindowController(window: window)
-        guard let interfaceInstance = self.interfaceInstance  else { return }
         switch(interfaceInstance) {            
         case .view(let view):
             guard let window = instrumentWindowController!.window else { break }
@@ -71,9 +75,16 @@ public class MixerViewController: NSViewController, keyDelegate {
             window.setFrame(frame, display: true)
             window.contentView = view
         case .viewController(let vc):
+            let view = vc.view
+            let size = view.frame.size
+            print("size = \(size)")
+            let bundle = Bundle(for: PluginVC.self)
+            let newVC = PluginVC(nibName: nil, bundle: bundle)
+            newVC.subview = view
             instrumentWindowController!.contentViewController = vc
         }
-        instrumentWindowController!.showWindow(self)
+        instrumentWindowController!.showWindow(self)  
+        print("")
     }
     @IBAction func addTrack(_ sender: Any) {
         guard let button = sender as? NSPopUpButton else { return }
@@ -168,13 +179,19 @@ extension MixerViewController : PluginSelectionDelegate{
     func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
         DispatchQueue.main.async {
             guard let audioEffect = AudioController.shared.getAudioEffect(channel: channel, number: number, type: type) else { return }
-            let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
-            let interfaceInstance = view.map(InterfaceInstance.view)
-            self.interfaceInstance = interfaceInstance
-            DispatchQueue.main.async {                        
-                [weak self] in guard let _ = self else { return }
-                self?.loadVC()
-            }           
+            audioEffect.auAudioUnit.requestViewController { (viewController) in
+                if viewController == nil { return }
+                let interfaceInstance = viewController.map(InterfaceInstance.viewController)
+                self.interfaceInstance = interfaceInstance
+                self.loadVC()
+            }
+//            let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
+//            let interfaceInstance = view.map(InterfaceInstance.view)
+//            self.interfaceInstance = interfaceInstance
+//            DispatchQueue.main.async {                        
+//                [weak self] in guard let _ = self else { return }
+//                self?.loadVC()
+//            }           
         }
     }
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType) { 
