@@ -26,13 +26,31 @@ public class AudioController: NSObject {
     private var busses : [AVAudioNode] = []
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
+    private var musicalContextBlock : AUHostMusicalContextBlock!
     private override init (){
         super.init()
         initialize()
     }
     public func initialize(){
+        musicalContextBlock = getMusicalContext
         sequencer = AVAudioSequencer(audioEngine: engine)
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 10)
+    }
+    func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
+                           timeSignatureNumerator : UnsafeMutablePointer<Double>?,
+                           timeSignatureDenominator : UnsafeMutablePointer<Int>?,
+                           currentBeatPosition: UnsafeMutablePointer<Double>?,
+                           sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
+                           currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
+        if delegate == nil { return false }
+        let context = delegate!.musicalContext
+        currentTempo?.pointee = context.currentTempo
+        timeSignatureNumerator?.pointee = context.timeSignatureNumerator
+        timeSignatureDenominator?.pointee = context.timeSignatureDenominator
+        currentBeatPosition?.pointee = context.currentBeatPosition
+        sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
+        currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
+        return true
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
@@ -97,17 +115,17 @@ public class AudioController: NSObject {
     public func set(audioModel: AudioModel){
         removeAll()
         createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
-        masterController.set(channelPluginData: audioModel.masterChannel)
+        masterController.set(channelPluginData: audioModel.masterChannel, contextBlock: musicalContextBlock)
         
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
-            channelController.set(channelPluginData: channelPluginData)
+            channelController.set(channelPluginData: channelPluginData, contextBlock: musicalContextBlock)
         }
         for i in 0..<audioModel.auxChannels.count{
             let channelPluginData = audioModel.auxChannels[i]
             let channelController = auxControllers[i]
-            channelController.set(channelPluginData: channelPluginData)
+            channelController.set(channelPluginData: channelPluginData, contextBlock: musicalContextBlock)
         }
         stemCreatorModel = audioModel.stemCreatorModel
     }
@@ -181,7 +199,7 @@ public class AudioController: NSObject {
     /////////////////////////////////////////////////////////////
     public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType, completion: @escaping (Bool)->()) {
         if let channelController = getChannelController(type: type, channel: channel) {
-            channelController.loadEffect(fromDescription: desc, number: number, completion: completion)
+            channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock, completion: completion)
         }
     }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
@@ -321,14 +339,14 @@ public class AudioController: NSObject {
 }
 
 extension AudioController : PluginSelectionDelegate{
-    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){}
-    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){}
-    func displayInstrumentInterface(channel: Int){}
-    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){}
+    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){} //TODO: Remove
+    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){} //TODO: Remove
+    func displayInstrumentInterface(channel: Int){} //TODO: Remove
+    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){} //TODO: Remove
     func numBusses() -> Int{
         return busses.count
     }
-    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? { //TODO: Remove
+    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? { 
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
         guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
         let sendOutput = getSendOutput(for: sendNode)

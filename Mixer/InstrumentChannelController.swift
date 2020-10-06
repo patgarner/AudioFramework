@@ -28,8 +28,8 @@ class InstrumentChannelController : ChannelController{
             completion(success)
         }
     }
-    override func set(channelPluginData: ChannelPluginData){
-        super.set(channelPluginData: channelPluginData)
+    override func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock){
+        super.set(channelPluginData: channelPluginData, contextBlock: contextBlock)
         loadInstrument(pluginData: channelPluginData.instrumentPlugin)
     }
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {

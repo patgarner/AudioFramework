@@ -77,10 +77,10 @@ class ChannelController : ChannelViewDelegate {
         channelPluginData.id = id
         return channelPluginData
     }
-    func set(channelPluginData: ChannelPluginData){
+    func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock){
         for effectNumber in 0..<channelPluginData.effectPlugins.count{
             let pluginData = channelPluginData.effectPlugins[effectNumber]
-            loadEffect(pluginData: pluginData, number: effectNumber)
+            loadEffect(pluginData: pluginData, number: effectNumber, contextBlock: contextBlock)
         }
         for i in 0..<channelPluginData.sends.count{
             let sendData = channelPluginData.sends[i]
@@ -173,17 +173,18 @@ class ChannelController : ChannelViewDelegate {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    func loadEffect(pluginData: PluginData, number: Int){
+    func loadEffect(pluginData: PluginData, number: Int, contextBlock: @escaping AUHostMusicalContextBlock){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
-        loadEffect(fromDescription: audioComponentDescription, number: number) { (success) in
+        loadEffect(fromDescription: audioComponentDescription, number: number, contextBlock: contextBlock) { (success) in
             if !success { return }
             let effect = self.effects[number]
             let au = effect.auAudioUnit
             au.fullState = pluginData.state
         }
     }
-    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, completion: @escaping (Bool)->()) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, contextBlock: @escaping AUHostMusicalContextBlock, completion: @escaping (Bool)->()) {
         let audioUnitEffect = AVAudioUnitEffect(audioComponentDescription: desc)
+        audioUnitEffect.auAudioUnit.musicalContextBlock = contextBlock
         self.set(effect: audioUnitEffect, number: number)
         self.reconnectNodes()
         completion(true)
