@@ -48,8 +48,12 @@ public class AudioController: NSObject {
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
         timeSignatureDenominator?.pointee = context.timeSignatureDenominator
         currentBeatPosition?.pointee = context.currentBeatPosition
+//        print("-------------\ncurrentBeatPos: \(context.currentBeatPosition)")
         sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
+//        print("sampleOffsetToNextBeat: \(context.sampleOffsetToNextBeat)")
+
         currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
+//        print("currentMeasureDownbeatPosition: \(context.currentMeasureDownbeatPosition)")
         return true
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
@@ -335,6 +339,10 @@ public class AudioController: NSObject {
                 channelController.visualize()
             }
         }
+    }
+    public var sampleRate : Double {
+        let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
+        return sr
     }
 }
 

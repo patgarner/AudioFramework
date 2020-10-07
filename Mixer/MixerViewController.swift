@@ -75,12 +75,12 @@ public class MixerViewController: NSViewController, keyDelegate {
             window.setFrame(frame, display: true)
             window.contentView = view
         case .viewController(let vc):
-            let view = vc.view
-            let size = view.frame.size
-            print("size = \(size)")
-            let bundle = Bundle(for: PluginVC.self)
-            let newVC = PluginVC(nibName: nil, bundle: bundle)
-            newVC.subview = view
+//            let view = vc.view
+//            let size = view.frame.size
+//            print("size = \(size)")
+//            let bundle = Bundle(for: PluginVC.self)
+//            let newVC = PluginVC(nibName: nil, bundle: bundle)
+//            newVC.subview = view
             instrumentWindowController!.contentViewController = vc
         }
         instrumentWindowController!.showWindow(self)  
@@ -185,7 +185,8 @@ extension MixerViewController : PluginSelectionDelegate{
                 self.interfaceInstance = interfaceInstance
                 self.loadVC()
             }
-//            let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 0, height: 0))
+            
+//            let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 1000, height: 1000))
 //            let interfaceInstance = view.map(InterfaceInstance.view)
 //            self.interfaceInstance = interfaceInstance
 //            DispatchQueue.main.async {                        
