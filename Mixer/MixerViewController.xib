@@ -52,12 +52,23 @@
                                 <action selector="addTrack:" target="-2" id="Hld-8t-eYB"/>
                             </connections>
                         </popUpButton>
+                        <button verticalHuggingPriority="750" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oR8-gQ-xDP">
+                            <rect key="frame" x="171" y="-3" width="80" height="32"/>
+                            <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1o9-nj-ndI">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="delete:" target="-2" id="9iD-Iz-Nc3"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="5CD-p4-0o1"/>
                         <constraint firstItem="tiM-hi-acl" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="EDE-S5-s5w"/>
                         <constraint firstItem="2K6-FO-icg" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="RHl-6B-Axz"/>
                         <constraint firstItem="2K6-FO-icg" firstAttribute="leading" secondItem="tiM-hi-acl" secondAttribute="trailing" constant="10" id="YDu-p5-LFE"/>
+                        <constraint firstItem="oR8-gQ-xDP" firstAttribute="leading" secondItem="2K6-FO-icg" secondAttribute="trailing" constant="28" id="qaj-OX-gph"/>
                         <constraint firstItem="tiM-hi-acl" firstAttribute="leading" secondItem="gYV-dm-xgY" secondAttribute="leading" constant="22" id="uck-lV-dgE"/>
                     </constraints>
                 </customView>
@@ -69,7 +80,7 @@
                         <subviews>
                             <collectionView id="2IY-X6-Wd3">
                                 <rect key="frame" x="0.0" y="0.0" width="998" height="158"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" id="BgX-yr-hwT">
                                     <size key="itemSize" width="65" height="395"/>
                                 </collectionViewFlowLayout>

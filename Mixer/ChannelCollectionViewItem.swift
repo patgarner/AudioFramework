@@ -218,8 +218,11 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let trackName = trackNameField.stringValue
         channelViewDelegate.trackName = trackName
         //view.window?.makeFirstResponder(nil)
-        let fieldEditor = view.window?.fieldEditor(false, for: trackNameField)
-        fieldEditor?.resignFirstResponder()
+        //@IBAction func endEditing(_ sender: NSTextField) {
+            DispatchQueue.main.async { //omg
+                self.trackNameField.window?.makeFirstResponder(nil)
+            }
+       // }
     }
 
     @objc func muteChanged(){
