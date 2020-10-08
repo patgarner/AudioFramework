@@ -129,6 +129,8 @@
 		84D0AB5F251EB9210093A081 /* StemModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D0AB5D251EB9210093A081 /* StemModel.swift */; };
 		84D0AB6A251EDAD50093A081 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
 		84D0AB6B251EDAD60093A081 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
+		84DF4105252FBC8E0084AE61 /* PluginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DF4104252FBC8E0084AE61 /* PluginFactory.swift */; };
+		84DF4106252FBC8E0084AE61 /* PluginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DF4104252FBC8E0084AE61 /* PluginFactory.swift */; };
 		84ECFA12251E632F007386D1 /* StemViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ECFA11251E632F007386D1 /* StemViewDelegate.swift */; };
 		84ECFA13251E632F007386D1 /* StemViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ECFA11251E632F007386D1 /* StemViewDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -242,6 +244,7 @@
 		84ACE03F2519100B003963FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		84D0AB5A251EB8DF0093A081 /* StemCreatorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorModel.swift; sourceTree = "<group>"; };
 		84D0AB5D251EB9210093A081 /* StemModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemModel.swift; sourceTree = "<group>"; };
+		84DF4104252FBC8E0084AE61 /* PluginFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginFactory.swift; sourceTree = "<group>"; };
 		84ECFA11251E632F007386D1 /* StemViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemViewDelegate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -284,6 +287,7 @@
 			children = (
 				84951275252CC8D5008C5C47 /* Waves */,
 				842369D224FEC44C001266BE /* AudioController.swift */,
+				84DF4104252FBC8E0084AE61 /* PluginFactory.swift */,
 				8487F51825111FC1003DC1D6 /* AuxChannelController.swift */,
 				84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */,
 				84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */,
@@ -690,6 +694,7 @@
 				842369FD24FEC44C001266BE /* NSError+OSStatus.swift in Sources */,
 				84D0AB5E251EB9210093A081 /* StemModel.swift in Sources */,
 				8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */,
+				84DF4105252FBC8E0084AE61 /* PluginFactory.swift in Sources */,
 				842369F724FEC44C001266BE /* PluginData.swift in Sources */,
 				8461C119252EA72400147933 /* AudioUnitGenericView.swift in Sources */,
 				84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */,
@@ -742,6 +747,7 @@
 				841BFE6E2526B8A000FA0276 /* VUMeterView.swift in Sources */,
 				84A9AFE425101ED500816F7F /* ChannelPluginData.swift in Sources */,
 				84236A0024FEC44C001266BE /* AudioUnitGraph.swift in Sources */,
+				84DF4106252FBC8E0084AE61 /* PluginFactory.swift in Sources */,
 				842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */,
 				841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */,
 				843FD4832506A3B500189936 /* AudioModel.swift in Sources */,

@@ -37,23 +37,25 @@ class AudioUnit3Host : VirtualInstrumentHost{
     var auAudioUnit: AUAudioUnit? {
         return self.instrumentAU?.auAudioUnit
     }
-    func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()) {
-        //let flags = AudioComponentFlags(rawValue: desc.componentFlags)
-        //let canLoadInProcess = flags.contains(AudioComponentFlags.canLoadInProcess)
-        //let loadOptions: AudioComponentInstantiationOptions = canLoadInProcess ? .loadInProcess : .loadOutOfProcess
-        AVAudioUnitMIDIInstrument.instantiate(with: desc, options: []) { [weak self] avAudioUnit, error in
-            if let e = error {
-                print("Failed to load instrument: \(e)")
-                completion(false)
-            } else if let unit = avAudioUnit as? AVAudioUnitMIDIInstrument {
-                DispatchQueue.main.async {
-                    self?.set(instrument: unit)
-                    completion(true)
-                }
-            } else {
-                fatalError()
-            }
-        }
+    func loadInstrument(fromDescription desc: AudioComponentDescription, context: @escaping AUHostMusicalContextBlock/*, completion: @escaping (Bool)->()*/) {
+//        AVAudioUnitMIDIInstrument.instantiate(with: desc, options: []) { [weak self] avAudioUnit, error in
+//            if let e = error {
+//                print("Failed to load instrument: \(e)")
+//                completion(false)
+//            } else if let unit = avAudioUnit as? AVAudioUnitMIDIInstrument {
+//                DispatchQueue.main.async {
+//                    self?.set(instrument: unit)
+//                    completion(true)
+//                }
+//            } else {
+//                fatalError()
+//            }
+//        }
+        let unit = PluginFactory.instrument(description: desc, context: context)
+       // DispatchQueue.main.async {
+            self.set(instrument: unit)
+            //completion(true)
+        //}
     }
     func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
         guard let inst = self.instrumentAU else { return }

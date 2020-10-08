@@ -170,9 +170,8 @@ extension MixerViewController : NSCollectionViewDataSource{
 
 extension MixerViewController : PluginSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0, type: ChannelType) { //TODO: This absolutely should NOT be here.
-        AudioController.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel) { [weak self] (successful) in
-            self?.displayInstrumentInterface(channel: channel)
-        }
+        AudioController.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel)
+        displayInstrumentInterface(channel: channel)
     }
     func displayInstrumentInterface(channel: Int) {
         DispatchQueue.main.async {
@@ -206,9 +205,9 @@ extension MixerViewController : PluginSelectionDelegate{
         }
     }
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType) { 
-        AudioController.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) { [weak self] (successful) in
-            self?.displayEffectInterface(channel: channel, number: number, type: type)
-        }
+        AudioController.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) //{ [weak self] (successful) in
+            displayEffectInterface(channel: channel, number: number, type: type)
+        //}
     }
     //////////////////////////////////////////////////////////////////////////////////////
     //TODO: Pass through functions. These just get info from the AudioController.

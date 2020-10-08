@@ -155,10 +155,10 @@ public class AudioController: NSObject {
         allControllers.append(masterController)
         return allControllers
     }
-    public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int, completion: @escaping (Bool)->()) {
+    public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int) {
         if channel >= instrumentControllers.count { return }
         let channelController = instrumentControllers[channel]
-        channelController.loadInstrument(fromDescription: desc, completion: completion)
+        channelController.loadInstrument(fromDescription: desc, context: musicalContextBlock)
     }
     public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
         if channel >= instrumentControllers.count { completion(nil) }
@@ -206,9 +206,9 @@ public class AudioController: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType, completion: @escaping (Bool)->()) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType/*, completion: @escaping (Bool)->()*/) {
         if let channelController = getChannelController(type: type, channel: channel) {
-            channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock, completion: completion)
+            channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock/*, completion: completion*/)
         }
     }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
@@ -351,11 +351,7 @@ public class AudioController: NSObject {
     }
 }
 
-extension AudioController : PluginSelectionDelegate{
-    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType){} //TODO: Remove
-    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType){} //TODO: Remove
-    func displayInstrumentInterface(channel: Int){} //TODO: Remove
-    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){} //TODO: Remove
+extension AudioController {
     func numBusses() -> Int{
         return busses.count
     }
@@ -371,7 +367,6 @@ extension AudioController : PluginSelectionDelegate{
         setSendOutput(for: sendOutput, to: busNumber)
     }
 }
-
 extension AudioController : ChannelControllerDelegate {
     func getSendOutput(for node: AVAudioNode) -> Int?{
         let connections = engine.outputConnectionPoints(for: node, outputBus: 0)

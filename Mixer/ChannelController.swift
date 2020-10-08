@@ -175,19 +175,18 @@ class ChannelController : ChannelViewDelegate {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     func loadEffect(pluginData: PluginData, number: Int, contextBlock: @escaping AUHostMusicalContextBlock){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
-        loadEffect(fromDescription: audioComponentDescription, number: number, contextBlock: contextBlock) { (success) in
-            if !success { return }
+//        loadEffect(fromDescription: audioComponentDescription, number: number, contextBlock: contextBlock)// { (success) in
+           // if !success { return }
             let effect = self.effects[number]
             let au = effect.auAudioUnit
             au.fullState = pluginData.state
-        }
+//        }
     }
-    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, contextBlock: @escaping AUHostMusicalContextBlock, completion: @escaping (Bool)->()) {
-        let audioUnitEffect = AVAudioUnitEffect(audioComponentDescription: desc)
-        audioUnitEffect.auAudioUnit.musicalContextBlock = contextBlock
+    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, contextBlock: @escaping AUHostMusicalContextBlock/*, completion: @escaping (Bool)->()*/) {
+        let audioUnitEffect = PluginFactory.effect(description: desc, context: contextBlock) 
         self.set(effect: audioUnitEffect, number: number)
         self.reconnectNodes()
-        completion(true)
+//        completion(true)
     }
     func set(effect: AVAudioUnit, number: Int){
         if number < effects.count { //There is already an effect there
@@ -378,7 +377,7 @@ class ChannelController : ChannelViewDelegate {
         for i in 0..<sendOutputs.count{
                let sendOutput = sendOutputs[i]
                if node === sendOutput {
-                   let string = "Send Output \(i)"
+                   let string = "\tSend Output \(i)"
                    return string
                }
            }

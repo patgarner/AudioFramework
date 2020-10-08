@@ -217,14 +217,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @objc func trackNameChanged(sender: Any){
         let trackName = trackNameField.stringValue
         channelViewDelegate.trackName = trackName
-        //view.window?.makeFirstResponder(nil)
-        //@IBAction func endEditing(_ sender: NSTextField) {
-            DispatchQueue.main.async { //omg
-                self.trackNameField.window?.makeFirstResponder(nil)
-            }
-       // }
+        DispatchQueue.main.async {
+            self.trackNameField.window?.makeFirstResponder(nil)
+        }
     }
-
     @objc func muteChanged(){
         let mute = muteButton.state
         channelViewDelegate.mute = (mute == .on)
@@ -233,7 +229,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let solo = soloButton.state
         channelViewDelegate.solo = (solo == .on)
     }
-
     ////////////////////////////////////////////////////////
     // Instruments
     /////////////////////////////////////////////////////////

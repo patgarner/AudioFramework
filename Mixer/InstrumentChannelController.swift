@@ -11,26 +11,21 @@ import AVFoundation
 
 class InstrumentChannelController : ChannelController{
     var instrumentHost : VirtualInstrumentHost = AudioUnit3Host()
-    func loadInstrument(pluginData: PluginData){
+    func loadInstrument(pluginData: PluginData, context: @escaping AUHostMusicalContextBlock){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
-        self.loadInstrument(fromDescription: audioComponentDescription) { (success) in
-            self.instrumentHost.fullState = pluginData.state
-        }
+        loadInstrument(fromDescription: audioComponentDescription, context: context)
+        instrumentHost.fullState = pluginData.state
     }
     func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
         instrumentHost.requestInstrumentInterface(completion)
     }
-    func loadInstrument(fromDescription desc: AudioComponentDescription, completion: @escaping (Bool)->()){
-        instrumentHost.loadInstrument(fromDescription: desc){(success) in
-            if success {
-                self.reconnectNodes()
-            }
-            completion(success)
-        }
+    func loadInstrument(fromDescription desc: AudioComponentDescription, context: @escaping AUHostMusicalContextBlock){
+        instrumentHost.loadInstrument(fromDescription: desc, context: context)
+        reconnectNodes()
     }
     override func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock){
         super.set(channelPluginData: channelPluginData, contextBlock: contextBlock)
-        loadInstrument(pluginData: channelPluginData.instrumentPlugin)
+        loadInstrument(pluginData: channelPluginData.instrumentPlugin, context: contextBlock)
     }
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
         instrumentHost.noteOn(note, withVelocity: velocity, channel: channel)
