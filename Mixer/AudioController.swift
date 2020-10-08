@@ -35,6 +35,7 @@ public class AudioController: NSObject {
         musicalContextBlock = getMusicalContext
         sequencer = AVAudioSequencer(audioEngine: engine)
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 10)
+        engine.prepare()
     }
     func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
                            timeSignatureNumerator : UnsafeMutablePointer<Double>?,
@@ -48,12 +49,14 @@ public class AudioController: NSObject {
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
         timeSignatureDenominator?.pointee = context.timeSignatureDenominator
         currentBeatPosition?.pointee = context.currentBeatPosition
-//        print("-------------\ncurrentBeatPos: \(context.currentBeatPosition)")
         sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
-//        print("sampleOffsetToNextBeat: \(context.sampleOffsetToNextBeat)")
-
         currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
-//        print("currentMeasureDownbeatPosition: \(context.currentMeasureDownbeatPosition)")
+//        print("currentTempo = \(currentTempo?.pointee)")
+//        print( "timeSignatureNumerator \(timeSignatureNumerator?.pointee)")
+//        print("timeSignatureDenominator = \(timeSignatureDenominator?.pointee)")
+//        print("currentBeatPosition = \(currentBeatPosition?.pointee)")
+//        print("sampleOffsetToNextBeat = \(sampleOffsetToNextBeat?.pointee)")
+//        print("currentMeasureDownbeatPosition = \(currentMeasureDownbeatPosition?.pointee)")
         return true
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
@@ -197,7 +200,9 @@ public class AudioController: NSObject {
     public func set(timeStamp: UInt64){ //We don't actually know yet the right way to implement this.
         
     }
-    
+    public func reset(){
+        engine.reset()
+    }
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////

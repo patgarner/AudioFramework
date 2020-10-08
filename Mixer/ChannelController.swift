@@ -353,7 +353,7 @@ class ChannelController : ChannelViewDelegate {
                 string += thisConnection
             }
             if connections.count == 0{
-                let thisConnection = sourceIdentity + " -> NIL\n"
+                let thisConnection = sourceIdentity + " -> nil\n"
                 string += thisConnection
             }
         }
