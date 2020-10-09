@@ -18,6 +18,9 @@ class MasterChannelController : ChannelController{
         if inputNode != nil {
             audioUnits.append(inputNode!)
         }
+        if soloNode != nil {
+            audioUnits.append(soloNode!)
+        }
         audioUnits.append(contentsOf: effects)
         if sendSplitterNode != nil {
             audioUnits.append(sendSplitterNode!)

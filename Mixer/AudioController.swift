@@ -120,10 +120,13 @@ public class AudioController: NSObject {
         return allData
     }
     public func set(audioModel: AudioModel){
-        removeAll()
+        engine.stop()
+        removeAll()        
         createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
+        masterController.visualize()
         masterController.set(channelPluginData: audioModel.masterChannel, contextBlock: musicalContextBlock)
-        
+        masterController.visualize()
+
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
@@ -135,6 +138,7 @@ public class AudioController: NSObject {
             channelController.set(channelPluginData: channelPluginData, contextBlock: musicalContextBlock)
         }
         stemCreatorModel = audioModel.stemCreatorModel
+        engine.prepare()
     }
     private func removeAll(){
         for channelController in allChannelControllers{
@@ -142,6 +146,7 @@ public class AudioController: NSObject {
         }
         instrumentControllers.removeAll()
         auxControllers.removeAll()
+        masterController = nil
         for bus in busses {
             engine.disconnectNodeOutput(bus)
             engine.detach(bus)
@@ -206,9 +211,9 @@ public class AudioController: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType/*, completion: @escaping (Bool)->()*/) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType) {
         if let channelController = getChannelController(type: type, channel: channel) {
-            channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock/*, completion: completion*/)
+            channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock)
         }
     }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
