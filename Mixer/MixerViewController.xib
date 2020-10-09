@@ -72,17 +72,17 @@
                         <constraint firstItem="tiM-hi-acl" firstAttribute="leading" secondItem="gYV-dm-xgY" secondAttribute="leading" constant="22" id="uck-lV-dgE"/>
                     </constraints>
                 </customView>
-                <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ck-gp-cpX">
-                    <rect key="frame" x="0.0" y="0.0" width="1000" height="395"/>
+                <scrollView wantsLayer="YES" misplaced="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ck-gp-cpX">
+                    <rect key="frame" x="0.0" y="0.0" width="1000" height="410"/>
                     <clipView key="contentView" drawsBackground="NO" id="1sw-qb-1Hq">
-                        <rect key="frame" x="1" y="1" width="998" height="393"/>
+                        <rect key="frame" x="1" y="1" width="998" height="408"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView id="2IY-X6-Wd3">
-                                <rect key="frame" x="0.0" y="0.0" width="998" height="158"/>
+                                <rect key="frame" x="0.0" y="0.0" width="998" height="408"/>
                                 <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" id="BgX-yr-hwT">
-                                    <size key="itemSize" width="65" height="395"/>
+                                    <size key="itemSize" width="65" height="410"/>
                                 </collectionViewFlowLayout>
                                 <color key="primaryBackgroundColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
                                 <connections>
@@ -97,7 +97,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="hpL-ga-T1c">
-                        <rect key="frame" x="234" y="1" width="15" height="143"/>
+                        <rect key="frame" x="-100" y="-100" width="15" height="143"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                 </scrollView>

@@ -344,6 +344,9 @@ class ChannelController : ChannelViewDelegate {
     func didSelect(channel: Int) {
         delegate.didSelect(channel: channel)
     }
+    func set(outputNumber: Int, for channel: Int) {
+//        delegate.set(outputNumber: outputNumber, channel: channel)
+    }
     func visualize(){
         var string = ""
         for audioUnit in allAudioUnits(includeSends: true){

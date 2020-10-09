@@ -22,6 +22,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var sendLevelKnob1: NSSlider!
     @IBOutlet weak var sendPopup2: NSPopUpButton!
     @IBOutlet weak var sendLevelKnob2: NSSlider!
+    @IBOutlet weak var outputPopup: NSPopUpButton!
     @IBOutlet weak var panKnob: NSSlider!
     @IBOutlet weak var volumeValueTextField: NSTextField!
     @IBOutlet weak var volumeSlider: NSSlider!
@@ -34,7 +35,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
-    //var selected = false
     private var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
     private var instrumentsFlat : [AVAudioUnitComponent] = []
     
@@ -56,6 +56,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             sendLevelKnob.target = self
             sendLevelKnob.action = #selector(sendLevelChanged)
         }
+        outputPopup.target = self
+        outputPopup.action = #selector(outputChanged)
         panKnob.target = self
         panKnob.action = #selector(panChanged)        
         volumeValueTextField.target = self
@@ -139,6 +141,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             let effectList = getAudioComponentList(type: .effect)
             select(popup: popup, list: effectList, pluginSelection: pluginSelection)
         }
+        outputPopup.removeAllItems()
+        for i in 0..<pluginSelectionDelegate.numBusses(){
+            let outputName = "Bus \(i+1)"
+            outputPopup.addItem(withTitle: outputName)
+        }
+        outputPopup.addItem(withTitle: "Main")
     }
     private func select(popup: NSPopUpButton, list: [AVAudioUnitComponent], pluginSelection: PluginSelection?){
         guard let pluginSelection = pluginSelection else { return }
@@ -318,7 +326,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         busList.append("")
         return busList
     }
-
+    @objc func outputChanged(){
+        let outputIndex = outputPopup.indexOfSelectedItem
+        channelViewDelegate.set(outputNumber: outputIndex, for: channelNumber)
+    }
     @objc func panChanged(){
         let value = getKnobLevel(blackoutRegion: 0.2, popupButton: panKnob, minValue: -1.0, maxValue: 1.0)
         channelViewDelegate.pan = value

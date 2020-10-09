@@ -41,6 +41,7 @@ public protocol ChannelViewDelegate {
     func getBusInputNumber() -> Int?
     func displayInterface(type: PluginType, number: Int)
     func didSelect(channel: Int)
+    func set(outputNumber: Int, for channel: Int)
 }
 
 protocol ChannelControllerDelegate{
