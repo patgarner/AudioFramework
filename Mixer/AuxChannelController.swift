@@ -22,14 +22,17 @@ class AuxChannelController : ChannelController{
             audioUnits.append(inputNode!)
         }
         audioUnits.append(contentsOf: effects)
+        if muteNode != nil{
+            audioUnits.append(muteNode!)
+        }
+        if soloNode != nil {
+            audioUnits.append(soloNode!)
+        }
         if sendSplitterNode != nil{
             audioUnits.append(sendSplitterNode!)
         }
         if includeSends{
             audioUnits.append(contentsOf: sendOutputs)
-        }
-        if soloNode != nil {
-            audioUnits.append(soloNode!)
         }
         if outputNode != nil {
             audioUnits.append(outputNode!)

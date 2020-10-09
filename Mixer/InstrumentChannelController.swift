@@ -60,14 +60,17 @@ class InstrumentChannelController : ChannelController{
             audioUnits.append(instrumentAU)
         }
         audioUnits.append(contentsOf: effects)
+        if muteNode != nil {
+             audioUnits.append(muteNode!)
+         }
+         if soloNode != nil{
+             audioUnits.append(soloNode!)
+         }
         if let sendSplitter = sendSplitterNode{
             audioUnits.append(sendSplitter)
         }
         if includeSends{
             audioUnits.append(contentsOf: sendOutputs)
-        }
-        if soloNode != nil{
-            audioUnits.append(soloNode!)
         }
         if outputNode != nil {
             audioUnits.append(outputNode)

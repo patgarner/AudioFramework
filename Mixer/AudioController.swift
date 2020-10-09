@@ -123,10 +123,7 @@ public class AudioController: NSObject {
         engine.stop()
         removeAll()        
         createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
-        masterController.visualize()
         masterController.set(channelPluginData: audioModel.masterChannel, contextBlock: musicalContextBlock)
-        masterController.visualize()
-
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
@@ -428,9 +425,13 @@ extension AudioController : ChannelControllerDelegate {
         for channelController in allChannelControllers{
             if channelController.solo {
                 soloMode = true
+                break
             }
         }
-        for channelController in allChannelControllers{
+        var channelControllers : [ChannelController] = []
+        channelControllers.append(contentsOf: instrumentControllers)
+        channelControllers.append(contentsOf: auxControllers)
+        for channelController in channelControllers {
             if soloMode{
                 channelController.setSoloVolume(on: channelController.solo)
             }  else {

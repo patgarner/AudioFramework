@@ -22,6 +22,7 @@ class ChannelController : ChannelViewDelegate {
     var sendOutputs : [UltraMixerNode] = []
     var soloNode : UltraMixerNode? = nil
     var outputNode : UltraMixerNode!
+    var muteNode : UltraMixerNode!
     //Model
     var trackName = ""
     var id = UUID().uuidString
@@ -144,19 +145,19 @@ class ChannelController : ChannelViewDelegate {
     }
     var mute : Bool {
         get {
-            if sendSplitterNode == nil { return false }
-            if sendSplitterNode!.outputVolume > 0 {
+            if muteNode == nil { return false }
+            if muteNode!.outputVolume > 0 {
                 return false
             } else {
                 return true
             }
         }
         set {
-            if sendSplitterNode == nil { return }
+            if muteNode == nil { return }
             if newValue == true {
-                sendSplitterNode!.outputVolume = 0
+                muteNode!.outputVolume = 0
             } else {
-                sendSplitterNode!.outputVolume = 1
+                muteNode!.outputVolume = 1
             }
         }
     }
@@ -215,16 +216,21 @@ class ChannelController : ChannelViewDelegate {
             sendOutputs.append(sendOutput)
             sendOutput.outputVolume = 0.0
         }
+        
+        let muteNode = AudioNodeFactory.mixerNode(name: "MuteNode")
+        delegate.engine.attach(muteNode)
+        self.muteNode = muteNode
+        
         let sendSplitterNode = AudioNodeFactory.mixerNode(name: "SendSplitter")
-        self.delegate.engine.attach(sendSplitterNode)
+        delegate.engine.attach(sendSplitterNode)
         self.sendSplitterNode = sendSplitterNode
         
         let soloNode = AudioNodeFactory.mixerNode(name: "SoloNode")
-        self.delegate.engine.attach(soloNode)
+        delegate.engine.attach(soloNode)
         self.soloNode = soloNode
         
         let channelOutput = AudioNodeFactory.mixerNode(name: "ChannelOutput")
-        self.delegate.engine.attach(channelOutput)
+        delegate.engine.attach(channelOutput)
         self.outputNode = channelOutput
         
         let format = outputNode.outputFormat(forBus: 0)

@@ -18,10 +18,13 @@ class MasterChannelController : ChannelController{
         if inputNode != nil {
             audioUnits.append(inputNode!)
         }
+        audioUnits.append(contentsOf: effects)
+        if muteNode != nil {
+            audioUnits.append(muteNode!)
+        }
         if soloNode != nil {
             audioUnits.append(soloNode!)
         }
-        audioUnits.append(contentsOf: effects)
         if sendSplitterNode != nil {
             audioUnits.append(sendSplitterNode!)
         }
@@ -39,5 +42,8 @@ class MasterChannelController : ChannelController{
         self.delegate.engine.attach(inputNode!)
         let format = inputNode!.outputFormat(forBus: 0)
         self.delegate.engine.connect(inputNode!, to: outputNode!, format: format)
+    }
+    override func setSoloVolume(on: Bool) {
+        //Do nothing
     }
 }
