@@ -26,6 +26,18 @@ class InstrumentChannelController : ChannelController{
             delegate.displayInterface(audioUnit: audioUnit)
         }
     }
+    override func select(description: AudioComponentDescription, type: PluginType, number: Int) {
+        if type == .instrument {
+            let contextBlock = delegate.contextBlock
+            instrumentHost.loadInstrument(fromDescription: description, context: contextBlock)
+            reconnectNodes()
+            if let audioUnit = instrumentHost.audioUnit{
+                delegate.displayInterface(audioUnit: audioUnit)
+            }
+        } else {
+            super.select(description: description, type: type, number: number)
+        }
+    }
     override func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock){
         super.set(channelPluginData: channelPluginData, contextBlock: contextBlock)
         loadInstrument(pluginData: channelPluginData.instrumentPlugin, context: contextBlock)

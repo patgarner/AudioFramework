@@ -369,6 +369,15 @@ class ChannelController : ChannelViewDelegate {
     var numBusses : Int { //Pass through
         return delegate.numBusses
     }
+    func select(description: AudioComponentDescription, type: PluginType, number: Int) {
+        if type == .effect {
+            let contextBlock = delegate.contextBlock
+            let audioUnit = PluginFactory.effect(description: description, context: contextBlock) 
+            set(effect: audioUnit, number: number)
+            reconnectNodes()
+            delegate.displayInterface(audioUnit: audioUnit)
+        }
+    }
     func visualize(){
         var string = ""
         for audioUnit in allAudioUnits(includeSends: true){

@@ -31,7 +31,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var trackNameField: NSTextField!
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
-    var pluginSelectionDelegate : PluginSelectionDelegate!
+    //var pluginSelectionDelegate : PluginSelectionDelegate!
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
@@ -185,7 +185,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             channelViewDelegate.displayInterface(type: .instrument, number: 0)
             return
         } else {
-            pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)
+            //pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)
+            channelViewDelegate.select(description: component.audioComponentDescription, type: .instrument, number: 0)
             return
         }
     }
@@ -207,7 +208,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             //pluginSelectionDelegate.displayEffectInterface(channel: channelNumber, number: number, type: type)
             channelViewDelegate.displayInterface(type: .effect, number: number)
         } else {
-            pluginSelectionDelegate.select(effect: newEffect, channel: channelNumber, number: number, type: type)
+           // pluginSelectionDelegate.select(effect: newEffect, channel: channelNumber, number: number, type: type)
+            channelViewDelegate.select(description: newEffect.audioComponentDescription, type: .effect, number: number)
         }
     }
     @objc private func sendDestinationChanged(sender: Any){

@@ -162,11 +162,11 @@ public class AudioController: NSObject {
         allControllers.append(masterController)
         return allControllers
     }
-    public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int) {
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[channel]
-        channelController.loadInstrument(fromDescription: desc, context: musicalContextBlock)
-    }
+//    public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int) {
+//        if channel >= instrumentControllers.count { return }
+//        let channelController = instrumentControllers[channel]
+//        channelController.loadInstrument(fromDescription: desc, context: musicalContextBlock)
+//    }
     public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
         if channel >= instrumentControllers.count { completion(nil) }
         let host = instrumentControllers[channel]
@@ -213,10 +213,10 @@ public class AudioController: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType) {
-        guard let channelController = getChannelController(type: type, channel: channel) else { return }
-        channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock)
-    }
+//    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType) {
+//        guard let channelController = getChannelController(type: type, channel: channel) else { return }
+//        channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock)
+//    }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
         if let channelController = getChannelController(type: type, channel: channel) {
             let effect = channelController.getEffect(number: number)
@@ -472,6 +472,9 @@ extension AudioController : ChannelControllerDelegate {
             }
             self.pluginDisplayDelegate?.display(viewController: auViewController)
         }
+    }
+    var contextBlock: AUHostMusicalContextBlock {
+        return musicalContextBlock
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

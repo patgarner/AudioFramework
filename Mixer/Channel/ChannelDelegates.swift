@@ -14,15 +14,12 @@ import Foundation
 import AVFoundation
 import CoreAudioKit
 
-protocol PluginSelectionDelegate{
+//protocol PluginSelectionDelegate{
     //Consolidate these two......................
-    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType)
-    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType)
-    //Consolidate these two...
-//    func displayInstrumentInterface(channel: Int)
-//    func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
+//    func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType)
+//    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType)
     //////////////////////////////////////////////////////////////////////////////////////////
-}
+//}
 
 public protocol ChannelViewDelegate {
     var volume : Float { get set }
@@ -41,6 +38,7 @@ public protocol ChannelViewDelegate {
     func getSendData(sendNumber: Int) -> SendData?
     func connect(sourceType: ConnectionType, sourceNumber: Int, destinationType: BusType, destinationNumber: Int)
     func displayInterface(type: PluginType, number: Int)
+    func select(description: AudioComponentDescription, type: PluginType, number: Int)
 }
 
 protocol ChannelControllerDelegate{
@@ -54,6 +52,7 @@ protocol ChannelControllerDelegate{
     func getBusInput(for node: AVAudioNode) -> Int? //Get input (for aux nodes)
     func connect(busNumber: Int, to node: AVAudioNode) //Connects input (for aux nodes)
     func displayInterface(audioUnit: AVAudioUnit)
+    var contextBlock : AUHostMusicalContextBlock { get }
 }
 
 public enum ConnectionType {
