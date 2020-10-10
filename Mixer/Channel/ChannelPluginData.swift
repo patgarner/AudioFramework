@@ -12,10 +12,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import Foundation
 
-public class ChannelPluginData : Codable{
+public class ChannelPluginData : Codable, Equatable{  
     public var instrumentPlugin = PluginData()
     public var effectPlugins : [PluginData] = []
     public var sends : [SendData] = []
+    public var output = BusInfo(number: -1, type: .none)
     public var volume : Float = 1.0
     public var pan : Float = 0.0
     public var trackName = ""
@@ -30,6 +31,7 @@ public class ChannelPluginData : Codable{
         case trackName
         case busInput
         case id
+        case output
     }
     public init(){
         
@@ -60,6 +62,9 @@ public class ChannelPluginData : Codable{
         do {
             id = try container.decode(String.self, forKey: .id)
         } catch {}
+        do {
+            output = try container.decode(BusInfo.self, forKey: .output)
+        } catch {}
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -71,5 +76,27 @@ public class ChannelPluginData : Codable{
         try container.encode(trackName, forKey: .trackName)
         try container.encode(busInput, forKey: .busInput)
         try container.encode(id, forKey: .id)
+        try container.encode(output, forKey: .output)
     }
+    public static func == (lhs: ChannelPluginData, rhs: ChannelPluginData) -> Bool {
+        if lhs.busInput != rhs.busInput { return false }
+        if lhs.id != rhs.id { return false }
+        if lhs.trackName != rhs.trackName { return false }
+        if lhs.pan != rhs.pan { return false }
+        if lhs.volume != rhs.volume { return false }
+
+        return true
+    }
+    
+}
+
+public struct BusInfo: Codable{
+    var number = -1
+    var type = BusType.master
+}
+
+public enum BusType : Int, Codable {
+    case none
+    case master
+    case bus
 }

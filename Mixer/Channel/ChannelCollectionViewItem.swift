@@ -142,11 +142,18 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             select(popup: popup, list: effectList, pluginSelection: pluginSelection)
         }
         outputPopup.removeAllItems()
-        for i in 0..<pluginSelectionDelegate.numBusses(){
+        outputPopup.addItem(withTitle: "Main")
+        for i in 0..<channelViewDelegate.numBusses{
             let outputName = "Bus \(i+1)"
             outputPopup.addItem(withTitle: outputName)
         }
-        outputPopup.addItem(withTitle: "Main")
+        if let outputDestination = channelViewDelegate.getDestination(type: .output, number: 0){
+            if outputDestination.type == .master {
+                outputPopup.selectItem(at: 0)
+            } else if outputDestination.type == .bus{
+                outputPopup.selectItem(at: outputDestination.number+1)
+            }
+        }
     }
     private func select(popup: NSPopUpButton, list: [AVAudioUnitComponent], pluginSelection: PluginSelection?){
         guard let pluginSelection = pluginSelection else { return }
@@ -204,7 +211,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let popup = sender as! NSPopUpButton
         let index = popup.indexOfSelectedItem
         let sendNumber = popup.tag
-        channelViewDelegate.select(sendNumber: sendNumber, busNumber: index, channel: channelNumber, channelType: type)
+        //channelViewDelegate.select(sendNumber: sendNumber, busNumber: index, channel: channelNumber, channelType: type)
+        channelViewDelegate.connect(sourceType: .send, sourceNumber: sendNumber, destinationType: .bus, destinationNumber: index)
     }
     @objc func sendLevelChanged(sender: Any){
         guard let sendLevelKnob = sender as? NSSlider else { return }
@@ -309,15 +317,15 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             sendPopup.removeAllItems()
             let busList = getBusList()
             sendPopup.addItems(withTitles: busList)
-            if let busNumber = channelViewDelegate.getSendOutput(sendNumber: i){
-                sendPopup.selectItem(at: busNumber)
+            if let busNumber = channelViewDelegate.getDestination(type: .send, number: i){
+                sendPopup.selectItem(at: busNumber.number)
             } else {
                 sendPopup.selectItem(at: sendPopup1.numberOfItems - 1)
             }
         }
     }
     func getBusList() -> [String]{
-        let numBusses = pluginSelectionDelegate.numBusses()
+        let numBusses = channelViewDelegate.numBusses
         var busList : [String] = []
         for i in 0..<numBusses{
             let title = "Bus " + String(i+1)
@@ -327,8 +335,15 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         return busList
     }
     @objc func outputChanged(){
-        let outputIndex = outputPopup.indexOfSelectedItem
-        channelViewDelegate.set(outputNumber: outputIndex, for: channelNumber)
+        let index = outputPopup.indexOfSelectedItem
+        if index == 0 {
+           // channelViewDelegate.set(outputNumber: 0, outputType: .master, channel: channelNumber, channelType: type)
+            channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .master, destinationNumber: 0)
+        } else if index > 0{
+            let busNumber = index - 1
+//            channelViewDelegate.set(outputNumber: busNumber, outputType: .bus, channel: channelNumber, channelType: type)
+            channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .bus, destinationNumber: busNumber)
+        }
     }
     @objc func panChanged(){
         let value = getKnobLevel(blackoutRegion: 0.2, popupButton: panKnob, minValue: -1.0, maxValue: 1.0)
@@ -381,7 +396,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else {
             //Toggle selection on this channel. Deselect other channels
             let newValue = !isSelected
-            channelViewDelegate.didSelect(channel: channelNumber)
+            channelViewDelegate.didSelectChannel()
             isSelected = newValue
         }
 

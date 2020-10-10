@@ -212,9 +212,9 @@ extension MixerViewController : PluginSelectionDelegate{
     //////////////////////////////////////////////////////////////////////////////////////
     //TODO: Pass through functions. These just get info from the AudioController.
     //////////////////////////////////////////////////////////////////////////////////////
-    func numBusses() -> Int{
-        let busses = AudioController.shared.numBusses()
-        return busses
-    }
+//    func numBusses() -> Int{
+//        let busses = AudioController.shared.numBusses()
+//        return busses
+//    }
 }
 

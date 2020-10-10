@@ -11,8 +11,7 @@ import AudioFramework
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, AudioControllerDelegate {
-    var musicalContext: MusicalContext
-    
+    var musicalContext: MusicalContext = MusicalContext()
     func exportMidi(to url: URL) {
         
     }

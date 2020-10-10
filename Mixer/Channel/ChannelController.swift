@@ -65,12 +65,16 @@ class ChannelController : ChannelViewDelegate {
         for i in 0..<sendOutputs.count{
             let sendOutput = sendOutputs[i]
             var busNumber = -1
-            if let number = AudioController.shared.getSendOutput(for: sendOutput){
-                busNumber = number
+            if let busData = delegate.getOutputDestination(for: sendOutput){
+                busNumber = busData.number
             }
             let sendLevel = sendOutput.outputVolume
             let sendData = SendData(busNumber: busNumber, level: sendLevel)
             channelPluginData.sends.append(sendData)
+        }
+        if let outputData = delegate.getOutputDestination(for: outputNode){
+            channelPluginData.output.number = outputData.number
+            channelPluginData.output.type = outputData.type
         }
         channelPluginData.volume = outputNode.outputVolume
         channelPluginData.pan = outputNode.pan
@@ -88,8 +92,9 @@ class ChannelController : ChannelViewDelegate {
             if i >= sendOutputs.count { break }
             let sendOutput = sendOutputs[i]
             sendOutput.outputVolume = sendData.level
-            delegate.setSendOutput(for: sendOutput, to: sendData.busNumber)
+            delegate.connect(node: sendOutput, to: sendData.busNumber, busType: .bus)
         }
+        delegate.connect(node: outputNode, to: 0, busType: .master)
         outputNode.outputVolume = channelPluginData.volume
         outputNode.pan = channelPluginData.pan
         trackName = channelPluginData.trackName
@@ -241,7 +246,7 @@ class ChannelController : ChannelViewDelegate {
             let bufferPointer = UnsafeBufferPointer(start: monoPointer, count: Int(count))
             let array = Array(bufferPointer)
             var peak : Float = 0
-            for i in stride(from: 0, to: array.count, by: 10){
+            for i in stride(from: 0, to: array.count, by: 20){
                 let element = array[i]
                 peak = max(element, peak)
             }
@@ -311,41 +316,68 @@ class ChannelController : ChannelViewDelegate {
         let sendData = SendData(busNumber: -1, level: sendOutput.outputVolume) //TODO: Get actual bus number
         return sendData
     }
-    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) {
-        guard let sendNode = get(sendNumber: sendNumber) else {
-            print("ChannelController.select(sendNumber...) failed because send \(sendNumber) could not be fetched.")
-            return 
+
+    func getDestination(type: ConnectionType, number: Int) -> BusInfo?{
+        var sourceNode : AVAudioNode!
+        if type == .output{
+            sourceNode = outputNode
+        } else if type == .send{
+            guard let sendNode = get(sendNumber: number) else { return nil }
+            sourceNode = sendNode
+        } else { 
+            return nil
         }
-        delegate.setSendOutput(for: sendNode, to: busNumber)
+        guard let destination = delegate.getOutputDestination(for: sourceNode) else { return nil }
+        return destination
     }
-    func getSendOutput(sendNumber: Int) -> Int? {
-        guard let sendNode = get(sendNumber: sendNumber) else { return nil}
-        let sendOutput = delegate.getSendOutput(for: sendNode)
-        return sendOutput
-    }
+
     func selectInput(busNumber: Int){ //Only Aux nodes need this
         guard let inputNode = inputNode else {
             delegate.log("ChannelController could not set input bus because input node is empty")
             return
         }
-        delegate.connectBusInput(to: inputNode, busNumber: busNumber)
+        delegate.connect(busNumber: busNumber, to: inputNode)
     }
     func getBusInputNumber() -> Int?{
         guard let inputNode = inputNode else { return nil }
         let busNumber = delegate.getBusInput(for: inputNode)
         return busNumber
     }
-    func displayInterface(type: PluginType, number: Int = 0){
-        if type != .effect { return }
-        if let effect = getEffect(number: number){
-            delegate.displayInterface(audioUnit: effect.audioUnit)
+//    func displayInterface(type: PluginType, number: Int = 0){
+//        if type != .effect { return }
+//        if let effect = getEffect(number: number){
+//            delegate.displayInterface(audioUnit: effect.audioUnit)
+//        }
+//    }
+    func didSelectChannel() {
+        delegate.didSelectChannel()
+    }
+//    func set(outputNumber: Int, outputType: BusType, channel: Int, channelType: ChannelType){
+//        //delegate.set(outputNumber: outputNumber, outputType: outputType, for: channel, channelType: channelType)
+//        delegate.connect(node: outputNode, to: outputNumber, busType: outputType)
+//    }
+//    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) {
+//        guard let sendNode = get(sendNumber: sendNumber) else {
+//            print("ChannelController.select(sendNumber...) failed because send \(sendNumber) could not be fetched.")
+//            return 
+//        }
+//        delegate.connect(node: sendNode, to: busNumber, busType: .bus)
+//    }
+    func connect(sourceType: ConnectionType, sourceNumber: Int = 0, destinationType: BusType, destinationNumber: Int = 0){
+        var sourceNode : AVAudioNode!
+        if sourceType == .output{
+            sourceNode = outputNode
+        } else if sourceType == .send{
+            guard let node = get(sendNumber: sourceNumber) else { return }
+            sourceNode = node
+        } else {
+            return
         }
+        delegate.connect(node: sourceNode!, to: destinationNumber, busType: destinationType)
     }
-    func didSelect(channel: Int) {
-        delegate.didSelect(channel: channel)
-    }
-    func set(outputNumber: Int, for channel: Int) {
-//        delegate.set(outputNumber: outputNumber, channel: channel)
+
+    var numBusses : Int { //Pass through
+        return delegate.numBusses
     }
     func visualize(){
         var string = ""

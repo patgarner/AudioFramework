@@ -23,7 +23,7 @@ public class AudioController: NSObject {
     private var instrumentControllers : [InstrumentChannelController] = []
     private var auxControllers : [ChannelController] = []
     private var masterController : ChannelController!
-    private var busses : [AVAudioNode] = []
+    private var busses : [UltraMixerNode] = []
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
     private var musicalContextBlock : AUHostMusicalContextBlock!
@@ -34,7 +34,7 @@ public class AudioController: NSObject {
     public func initialize(){
         musicalContextBlock = getMusicalContext
         sequencer = AVAudioSequencer(audioEngine: engine)
-        createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 10)
+        createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
         engine.prepare()
     }
     func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
@@ -351,47 +351,36 @@ public class AudioController: NSObject {
         let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
         return sr
     }
-}
-
-extension AudioController {
-    func numBusses() -> Int{
-        return busses.count
-    }
-    func getSendOutput(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> Int? { 
+    func getSendDestination(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> BusInfo? { 
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
         guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
-        let sendOutput = getSendOutput(for: sendNode)
+        let sendOutput = getOutputDestination(for: sendNode)
         return sendOutput
     }
     func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType){
         guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
         guard let sendOutput = channelController.get(sendNumber: sendNumber) else { return }
-        setSendOutput(for: sendOutput, to: busNumber)
+        connect(node: sendOutput, to: busNumber, busType: .bus)
     }
 }
-extension AudioController : ChannelControllerDelegate {
-    func getSendOutput(for node: AVAudioNode) -> Int?{
+
+extension AudioController : ChannelControllerDelegate {  
+    func getOutputDestination(for node: AVAudioNode) -> BusInfo?{
         let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
         if connections.count != 1 { return nil }
-        guard let connectionNode = connections[0].node else { return nil }
+        guard let destinationNode = connections[0].node else { return nil }
+        if destinationNode == masterController.inputNode! {
+            return BusInfo(number: 0, type: .master)
+        }
         for i in 0..<busses.count{
-            let bus = busses[i]
-            if connectionNode === bus { return i }
+            let output = busses[i]
+            if destinationNode === output {
+                let busData = BusInfo(number: i, type: .bus)
+                return busData
+            }
         }
         return nil
     }
-    func setSendOutput(for node: AVAudioNode, to busNumber: Int){
-        if engine.outputConnectionPoints(for: node, outputBus: 0).count > 0{
-            engine.disconnectNodeOutput(node) 
-        }
-        if busNumber < 0 || busNumber >= busses.count { 
-            return
-        }
-        let bus = busses[busNumber]
-        let format = node.outputFormat(forBus: 0)
-        engine.connect(node, to: bus, format: format)
-    }
-    
     func log(_ message: String) {
         delegate?.log(message)
     }
@@ -404,7 +393,7 @@ extension AudioController : ChannelControllerDelegate {
         }
         return nil
     }
-    func connectBusInput(to node: AVAudioNode, busNumber: Int) {
+    func connect(busNumber : Int, to node: AVAudioNode) {
         engine.disconnectNodeInput(node)
         if busNumber < 0 || busNumber >= busses.count { return }
         let bus = busses[busNumber]
@@ -417,9 +406,9 @@ extension AudioController : ChannelControllerDelegate {
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
-    func displayInterface(audioUnit: AudioUnit) { //TODO: Remove
-        print("")
-    }
+//    func displayInterface(audioUnit: AudioUnit) { //TODO: Remove
+//        print("")
+//    }
     func soloDidChange() {
         var soloMode = false
         for channelController in allChannelControllers{
@@ -439,14 +428,52 @@ extension AudioController : ChannelControllerDelegate {
             }
         }
     }
-    func didSelect(channel: Int){
+    func didSelectChannel(){
         for channel in allChannelControllers{
             channel.isSelected = false
         }
     }
-
+    var numBusses : Int{
+        return busses.count
+    }
+//    func set(outputNumber: Int, outputType: BusType, for channel: Int, channelType: ChannelType){
+//        guard let channelController = getChannelController(type: channelType, channel: channel) else { return }
+//        let outputSource = channelController.outputNode!
+//        var outputDestination : AVAudioNode
+//        if outputType == .bus{
+//            if outputNumber < 0 || outputNumber >= busses.count { return }
+//            outputDestination = busses[outputNumber]
+//        } else if outputType == .master{
+//            outputDestination = masterController.inputNode!
+//        } else {
+//            return
+//        }
+//        channelController.disconnectOutput(audioUnit: outputSource)
+//        let format = outputSource.outputFormat(forBus: 0)
+//        engine.connect(outputSource, to: outputDestination, format: format)
+//    }
+    func connect(node: AVAudioNode, to busNumber: Int, busType: BusType){
+        if engine.outputConnectionPoints(for: node, outputBus: 0).count > 0{
+            engine.disconnectNodeOutput(node) 
+        }
+        var destinationNode : AVAudioNode!
+        if busType == .master{
+            destinationNode = masterController.inputNode!
+        } else if busType == .bus{
+            if busNumber < 0 || busNumber >= busses.count { 
+                return
+            }
+            destinationNode = busses[busNumber]
+        } else {
+            return
+        }
+        let format = node.outputFormat(forBus: 0)
+        engine.connect(node, to: destinationNode, format: format)
+    }
 }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Stems
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension AudioController : StemViewDelegate { 
     //Mark: AudioController
     public var numChannels: Int {
@@ -462,6 +489,7 @@ extension AudioController : StemViewDelegate {
         let id = channelController.id
         return id
     }
+    
     
     //MARK : StemCreatorModel
     public func setName(stemNumber: Int, name: String){

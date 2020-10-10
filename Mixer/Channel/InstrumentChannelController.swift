@@ -91,16 +91,16 @@ class InstrumentChannelController : ChannelController{
         let pluginSelection = PluginSelection(manufacturer: manufacturer, name: name)
         return pluginSelection
     }
-    override func displayInterface(type: PluginType, number: Int = 0){
-        if type == .effect {
-            super.displayInterface(type: type, number: number)
-            return
-        } else if type == .instrument{
-            guard let audioUnit = instrumentHost.audioUnit?.audioUnit else { return }
-            delegate.displayInterface(audioUnit: audioUnit)
-        }
- 
-    }
+//    override func displayInterface(type: PluginType, number: Int = 0){
+//        if type == .effect {
+//            super.displayInterface(type: type, number: number)
+//            return
+//        } else if type == .instrument{
+//            guard let audioUnit = instrumentHost.audioUnit?.audioUnit else { return }
+//            delegate.displayInterface(audioUnit: audioUnit)
+//        }
+// 
+//    }
     override var midiIn : AVAudioUnit?{
         guard let avAudioUnit = instrumentHost.audioUnit else { return nil }
         return avAudioUnit
