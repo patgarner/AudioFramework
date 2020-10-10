@@ -19,8 +19,8 @@ protocol PluginSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel: Int, type: ChannelType)
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType)
     //Consolidate these two...
-    func displayInstrumentInterface(channel: Int)
-    func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
+//    func displayInstrumentInterface(channel: Int)
+//    func displayEffectInterface(channel: Int, number: Int, type: ChannelType)
     //////////////////////////////////////////////////////////////////////////////////////////
 }
 
@@ -40,6 +40,7 @@ public protocol ChannelViewDelegate {
     func getDestination(type: ConnectionType, number: Int) -> BusInfo?
     func getSendData(sendNumber: Int) -> SendData?
     func connect(sourceType: ConnectionType, sourceNumber: Int, destinationType: BusType, destinationNumber: Int)
+    func displayInterface(type: PluginType, number: Int)
 }
 
 protocol ChannelControllerDelegate{
@@ -52,6 +53,7 @@ protocol ChannelControllerDelegate{
     func connect(sourceNode: AVAudioNode, destinationNumber: Int, destinationType: BusType) //Connect
     func getBusInput(for node: AVAudioNode) -> Int? //Get input (for aux nodes)
     func connect(busNumber: Int, to node: AVAudioNode) //Connects input (for aux nodes)
+    func displayInterface(audioUnit: AVAudioUnit)
 }
 
 public enum ConnectionType {

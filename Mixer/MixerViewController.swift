@@ -14,21 +14,6 @@ import Cocoa
 import AVFoundation
 import CoreAudioKit
 
-class MixerView : NSView {
-    var delegate : keyDelegate? = nil
-    override func keyDown(with event: NSEvent) {
-        let keycode = Int(event.keyCode)
-        delegate?.keyDown(keycode)
-    }
-//    override func mouseDown(with event: NSEvent) {
-//        //self.becomeFirstResponder()
-//    }
-}
-
-protocol keyDelegate{
-    func keyDown(_ number: Int)
-}
-
 public class MixerViewController: NSViewController, keyDelegate {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
@@ -48,6 +33,7 @@ public class MixerViewController: NSViewController, keyDelegate {
         if let view = self.view as? MixerView{
             view.delegate = self
         }
+        AudioController.shared.pluginDisplayDelegate = self
         refresh()
     }
     public override func viewDidAppear() {
@@ -171,50 +157,29 @@ extension MixerViewController : NSCollectionViewDataSource{
 extension MixerViewController : PluginSelectionDelegate{
     func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0, type: ChannelType) { //TODO: This absolutely should NOT be here.
         AudioController.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel)
-        displayInstrumentInterface(channel: channel)
-    }
-    func displayInstrumentInterface(channel: Int) {
-        DispatchQueue.main.async {
-            AudioController.shared.requestInstrumentInterface(channel: channel){ (maybeInterface) in
-                guard let interface = maybeInterface else { return }
-                self.interfaceInstance = interface
-                DispatchQueue.main.async {                        
-                    [weak self] in guard let _ = self else { return }
-                    self?.loadVC()
-                }
-            }
-        }
-    }
-    func displayEffectInterface(channel: Int, number: Int, type: ChannelType){
-        DispatchQueue.main.async {
-            guard let audioEffect = AudioController.shared.getAudioEffect(channel: channel, number: number, type: type) else { return }
-            audioEffect.auAudioUnit.requestViewController { (viewController) in
-                if viewController == nil { return }
-                let interfaceInstance = viewController.map(InterfaceInstance.viewController)
-                self.interfaceInstance = interfaceInstance
-                self.loadVC()
-            }
-            
-//            let view = loadViewForAudioUnit(audioEffect.audioUnit, CGSize(width: 1000, height: 1000))
-//            let interfaceInstance = view.map(InterfaceInstance.view)
-//            self.interfaceInstance = interfaceInstance
-//            DispatchQueue.main.async {                        
-//                [weak self] in guard let _ = self else { return }
-//                self?.loadVC()
-//            }           
-        }
     }
     func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType) { 
-        AudioController.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) //{ [weak self] (successful) in
-            displayEffectInterface(channel: channel, number: number, type: type)
-        //}
+        AudioController.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) 
     }
-    //////////////////////////////////////////////////////////////////////////////////////
-    //TODO: Pass through functions. These just get info from the AudioController.
-    //////////////////////////////////////////////////////////////////////////////////////
-//    func numBusses() -> Int{
-//        let busses = AudioController.shared.numBusses()
-//        return busses
-//    }
 }
 
+extension MixerViewController : PluginDisplayDelegate{
+    public func display(viewController: AUViewController) {
+        DispatchQueue.main.async {
+            let window = NSWindow(contentViewController: viewController)
+              window.makeKeyAndOrderFront(nil)    
+        }
+    }
+}
+
+class MixerView : NSView {
+    var delegate : keyDelegate? = nil
+    override func keyDown(with event: NSEvent) {
+        let keycode = Int(event.keyCode)
+        delegate?.keyDown(keycode)
+    }
+}
+
+protocol keyDelegate{
+    func keyDown(_ number: Int)
+}

@@ -176,6 +176,12 @@ class ChannelController : ChannelViewDelegate {
         }
     }
     
+    func displayInterface(type: PluginType, number: Int) {
+        if type == .effect, let effect = getEffect(number: number) {
+            delegate.displayInterface(audioUnit: effect)
+        }
+    }
+    
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +197,7 @@ class ChannelController : ChannelViewDelegate {
         let audioUnitEffect = PluginFactory.effect(description: desc, context: contextBlock) 
         set(effect: audioUnitEffect, number: number)
         reconnectNodes()
+        delegate.displayInterface(audioUnit: audioUnitEffect)
     }
     func set(effect: AVAudioUnit, number: Int){
         if number < effects.count { //There is already an effect there

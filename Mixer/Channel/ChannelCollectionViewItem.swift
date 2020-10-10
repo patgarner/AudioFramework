@@ -181,7 +181,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let component = instrumentsFlat[index]
         if let virtualInstrument = channelViewDelegate.getPluginSelection(pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
             component.name == virtualInstrument.name {
-            pluginSelectionDelegate.displayInstrumentInterface(channel: channelNumber)
+            //pluginSelectionDelegate.displayInstrumentInterface(channel: channelNumber)
+            channelViewDelegate.displayInterface(type: .instrument, number: 0)
             return
         } else {
             pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)
@@ -201,11 +202,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             channelViewDelegate.deselectEffect(number: number)
             return
         }
-        let effect = effects[index]
-        if let previousEffect = channelViewDelegate.getPluginSelection(pluginType: .effect, pluginNumber: number), previousEffect.manufacturer == effect.manufacturerName, previousEffect.name == effect.name {
-            pluginSelectionDelegate.displayEffectInterface(channel: channelNumber, number: number, type: type)
+        let newEffect = effects[index]
+        if let previousEffect = channelViewDelegate.getPluginSelection(pluginType: .effect, pluginNumber: number), previousEffect.manufacturer == newEffect.manufacturerName, previousEffect.name == newEffect.name {
+            //pluginSelectionDelegate.displayEffectInterface(channel: channelNumber, number: number, type: type)
+            channelViewDelegate.displayInterface(type: .effect, number: number)
         } else {
-            pluginSelectionDelegate.select(effect: effect, channel: channelNumber, number: number, type: type)
+            pluginSelectionDelegate.select(effect: newEffect, channel: channelNumber, number: number, type: type)
         }
     }
     @objc private func sendDestinationChanged(sender: Any){

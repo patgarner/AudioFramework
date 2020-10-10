@@ -13,6 +13,7 @@
 import Foundation
 import AVFoundation
 import Cocoa
+import CoreAudioKit
 
 public class AudioController: NSObject {
     var timer = Timer()
@@ -20,6 +21,7 @@ public class AudioController: NSObject {
     var recordingUrl : URL?
     public let engine = AVAudioEngine()
     public var delegate : AudioControllerDelegate?
+    public var pluginDisplayDelegate : PluginDisplayDelegate?
     private var instrumentControllers : [InstrumentChannelController] = []
     private var auxControllers : [ChannelController] = []
     private var masterController : ChannelController!
@@ -212,9 +214,8 @@ public class AudioController: NSObject {
     // Effects
     /////////////////////////////////////////////////////////////
     public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType) {
-        if let channelController = getChannelController(type: type, channel: channel) {
-            channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock)
-        }
+        guard let channelController = getChannelController(type: type, channel: channel) else { return }
+        channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock)
     }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
         if let channelController = getChannelController(type: type, channel: channel) {
@@ -367,7 +368,7 @@ public class AudioController: NSObject {
     }
 }
 
-extension AudioController : ChannelControllerDelegate {  
+extension AudioController : ChannelControllerDelegate {
     func getOutputDestination(for node: AVAudioNode) -> BusInfo?{
         let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
         if connections.count != 1 { return nil }
@@ -462,6 +463,15 @@ extension AudioController : ChannelControllerDelegate {
             }
         }
         engine.connect(sourceNode, to: destinationNode, format: format)
+    }
+    func displayInterface(audioUnit: AVAudioUnit) {
+        audioUnit.auAudioUnit.requestViewController { (viewController) in
+            guard let auViewController = viewController as? AUViewController else {
+                self.log("Error: AudioController.displayInterface viewController = nil")
+                return
+            }
+            self.pluginDisplayDelegate?.display(viewController: auViewController)
+        }
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

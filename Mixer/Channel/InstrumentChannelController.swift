@@ -22,6 +22,9 @@ class InstrumentChannelController : ChannelController{
     func loadInstrument(fromDescription desc: AudioComponentDescription, context: @escaping AUHostMusicalContextBlock){
         instrumentHost.loadInstrument(fromDescription: desc, context: context)
         reconnectNodes()
+        if let audioUnit = instrumentHost.audioUnit{
+            delegate.displayInterface(audioUnit: audioUnit)
+        }
     }
     override func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock){
         super.set(channelPluginData: channelPluginData, contextBlock: contextBlock)
@@ -94,5 +97,14 @@ class InstrumentChannelController : ChannelController{
     override var midiIn : AVAudioUnit?{
         guard let avAudioUnit = instrumentHost.audioUnit else { return nil }
         return avAudioUnit
+    }
+    override func displayInterface(type: PluginType, number: Int) {
+        if type == .instrument {
+            if let audioUnit = instrumentHost.audioUnit {
+                delegate.displayInterface(audioUnit: audioUnit)
+            }
+        } else {
+            super.displayInterface(type: type, number: number)
+        }
     }
 }
