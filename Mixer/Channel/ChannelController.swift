@@ -92,9 +92,9 @@ class ChannelController : ChannelViewDelegate {
             if i >= sendOutputs.count { break }
             let sendOutput = sendOutputs[i]
             sendOutput.outputVolume = sendData.level
-            delegate.connect(node: sendOutput, to: sendData.busNumber, busType: .bus)
+            delegate.connect(sourceNode: sendOutput, destinationNumber: sendData.busNumber, destinationType: .bus)
         }
-        delegate.connect(node: outputNode, to: 0, busType: .master)
+        delegate.connect(sourceNode: outputNode, destinationNumber: 0, destinationType: channelPluginData.output.type)
         outputNode.outputVolume = channelPluginData.volume
         outputNode.pan = channelPluginData.pan
         trackName = channelPluginData.trackName
@@ -343,26 +343,9 @@ class ChannelController : ChannelViewDelegate {
         let busNumber = delegate.getBusInput(for: inputNode)
         return busNumber
     }
-//    func displayInterface(type: PluginType, number: Int = 0){
-//        if type != .effect { return }
-//        if let effect = getEffect(number: number){
-//            delegate.displayInterface(audioUnit: effect.audioUnit)
-//        }
-//    }
     func didSelectChannel() {
         delegate.didSelectChannel()
     }
-//    func set(outputNumber: Int, outputType: BusType, channel: Int, channelType: ChannelType){
-//        //delegate.set(outputNumber: outputNumber, outputType: outputType, for: channel, channelType: channelType)
-//        delegate.connect(node: outputNode, to: outputNumber, busType: outputType)
-//    }
-//    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) {
-//        guard let sendNode = get(sendNumber: sendNumber) else {
-//            print("ChannelController.select(sendNumber...) failed because send \(sendNumber) could not be fetched.")
-//            return 
-//        }
-//        delegate.connect(node: sendNode, to: busNumber, busType: .bus)
-//    }
     func connect(sourceType: ConnectionType, sourceNumber: Int = 0, destinationType: BusType, destinationNumber: Int = 0){
         var sourceNode : AVAudioNode!
         if sourceType == .output{
@@ -373,7 +356,7 @@ class ChannelController : ChannelViewDelegate {
         } else {
             return
         }
-        delegate.connect(node: sourceNode!, to: destinationNumber, busType: destinationType)
+        delegate.connect(sourceNode: sourceNode!, destinationNumber: destinationNumber, destinationType: destinationType)
     }
 
     var numBusses : Int { //Pass through

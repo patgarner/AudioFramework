@@ -39,35 +39,19 @@ public protocol ChannelViewDelegate {
     func setSend(volume: Float, sendNumber: Int)
     func getDestination(type: ConnectionType, number: Int) -> BusInfo?
     func getSendData(sendNumber: Int) -> SendData?
-    
-    
-//    func set(outputNumber: Int, outputType: BusType, channel: Int, channelType: ChannelType) //Set output output
-//    func select(sendNumber: Int, busNumber: Int, channel: Int, channelType: ChannelType) //set send output
     func connect(sourceType: ConnectionType, sourceNumber: Int, destinationType: BusType, destinationNumber: Int)
-    //sourcType = send/master = connectionType
-    //sourceNumber = 0
-    //destinationNumber = 0
-    //destinationType = master/bus 
-    //channel
-    //channelType
-
-    //    func displayInterface(type: PluginType, number: Int)
-
 }
 
 protocol ChannelControllerDelegate{
     var numBusses : Int { get }
     func log(_ message: String)
     var engine : AVAudioEngine { get }
-    func getOutputDestination(for node: AVAudioNode) -> BusInfo? //Get Output
     func soloDidChange()
     func didSelectChannel()
-    func connect(node: AVAudioNode, to busNumber: Int, busType: BusType) //Connect
+    func getOutputDestination(for node: AVAudioNode) -> BusInfo? //Get Output
+    func connect(sourceNode: AVAudioNode, destinationNumber: Int, destinationType: BusType) //Connect
     func getBusInput(for node: AVAudioNode) -> Int? //Get input (for aux nodes)
     func connect(busNumber: Int, to node: AVAudioNode) //Connects input (for aux nodes)
-
-    //    func set(outputNumber: Int, outputType: BusType, for channel: Int, channelType: ChannelType) //Connect output
-    //    func displayInterface(audioUnit: AudioUnit) //TODO:WIP
 }
 
 public enum ConnectionType {

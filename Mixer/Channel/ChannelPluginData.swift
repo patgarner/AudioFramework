@@ -84,15 +84,13 @@ public class ChannelPluginData : Codable, Equatable{
         if lhs.trackName != rhs.trackName { return false }
         if lhs.pan != rhs.pan { return false }
         if lhs.volume != rhs.volume { return false }
-
         return true
     }
-    
 }
 
 public struct BusInfo: Codable{
     var number = -1
-    var type = BusType.master
+    var type = BusType.none
 }
 
 public enum BusType : Int, Codable {

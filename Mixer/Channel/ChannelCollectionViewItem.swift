@@ -114,10 +114,11 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         labelView.isHidden = true
         if type == .master {
             mixerFillView.color = NSColor(calibratedRed: 0.7, green: 0.75, blue: 0.8, alpha: 1)
-            self.trackNameField.stringValue = "Master"
+            self.trackNameField.stringValue = "Main"
             self.trackNameField.isEditable = false
             inputPopup.isHidden = true
             self.soloButton.isHidden = true
+            outputPopup.isHidden = true
         }  else if type == .aux {
             mixerFillView.color = NSColor(calibratedRed: 0.6, green: 0.6, blue: 0.6, alpha: 1)
             reloadInstruments()
@@ -211,7 +212,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let popup = sender as! NSPopUpButton
         let index = popup.indexOfSelectedItem
         let sendNumber = popup.tag
-        //channelViewDelegate.select(sendNumber: sendNumber, busNumber: index, channel: channelNumber, channelType: type)
         channelViewDelegate.connect(sourceType: .send, sourceNumber: sendNumber, destinationType: .bus, destinationNumber: index)
     }
     @objc func sendLevelChanged(sender: Any){
@@ -337,11 +337,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @objc func outputChanged(){
         let index = outputPopup.indexOfSelectedItem
         if index == 0 {
-           // channelViewDelegate.set(outputNumber: 0, outputType: .master, channel: channelNumber, channelType: type)
             channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .master, destinationNumber: 0)
         } else if index > 0{
             let busNumber = index - 1
-//            channelViewDelegate.set(outputNumber: busNumber, outputType: .bus, channel: channelNumber, channelType: type)
             channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .bus, destinationNumber: busNumber)
         }
     }
