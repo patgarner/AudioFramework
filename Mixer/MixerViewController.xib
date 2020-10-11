@@ -53,13 +53,23 @@
                             </connections>
                         </popUpButton>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="oR8-gQ-xDP">
-                            <rect key="frame" x="171" y="-2" width="80" height="32"/>
+                            <rect key="frame" x="168" y="-2" width="80" height="32"/>
                             <buttonCell key="cell" type="push" title="Delete" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1o9-nj-ndI">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
                             <connections>
                                 <action selector="delete:" target="-2" id="9iD-Iz-Nc3"/>
+                            </connections>
+                        </button>
+                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="aIr-Av-iMM">
+                            <rect key="frame" x="261" y="-2" width="105" height="32"/>
+                            <buttonCell key="cell" type="push" title="Reconnect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="L2i-D2-cHR">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="reconnect:" target="-2" id="rj7-tt-ROr"/>
                             </connections>
                         </button>
                     </subviews>
@@ -69,8 +79,10 @@
                         <constraint firstItem="tiM-hi-acl" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="EDE-S5-s5w"/>
                         <constraint firstItem="2K6-FO-icg" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="RHl-6B-Axz"/>
                         <constraint firstItem="2K6-FO-icg" firstAttribute="leading" secondItem="tiM-hi-acl" secondAttribute="trailing" constant="10" id="YDu-p5-LFE"/>
-                        <constraint firstItem="oR8-gQ-xDP" firstAttribute="leading" secondItem="2K6-FO-icg" secondAttribute="trailing" constant="28" id="qaj-OX-gph"/>
+                        <constraint firstItem="oR8-gQ-xDP" firstAttribute="leading" secondItem="2K6-FO-icg" secondAttribute="trailing" constant="25" id="qaj-OX-gph"/>
+                        <constraint firstItem="aIr-Av-iMM" firstAttribute="leading" secondItem="oR8-gQ-xDP" secondAttribute="trailing" constant="25" id="qcT-1B-4vg"/>
                         <constraint firstItem="tiM-hi-acl" firstAttribute="leading" secondItem="gYV-dm-xgY" secondAttribute="leading" constant="22" id="uck-lV-dgE"/>
+                        <constraint firstItem="aIr-Av-iMM" firstAttribute="centerY" secondItem="gYV-dm-xgY" secondAttribute="centerY" id="ybF-mA-PsM"/>
                     </constraints>
                 </customView>
                 <scrollView wantsLayer="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasVerticalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Ck-gp-cpX">

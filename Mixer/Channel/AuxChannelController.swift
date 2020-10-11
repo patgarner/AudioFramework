@@ -51,8 +51,8 @@ class AuxChannelController : ChannelController{
         }
         return pluginData
     }
-    override func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock) {
-        super.set(channelPluginData: channelPluginData, contextBlock: contextBlock)
+    override func set(channelPluginData: ChannelPluginData) {
+        super.set(channelPluginData: channelPluginData)
         guard let inputNode = inputNode else { return }
         delegate.connect(busNumber:channelPluginData.busInput, to: inputNode)
     }

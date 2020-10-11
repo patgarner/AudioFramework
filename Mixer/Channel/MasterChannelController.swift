@@ -41,6 +41,7 @@ class MasterChannelController : ChannelController{
         self.inputNode = AudioNodeFactory.mixerNode(name: "MasterInput")
         self.delegate.engine.attach(inputNode!)
         let format = inputNode!.outputFormat(forBus: 0)
+        print("MasterChannelController.createIONodes() connecting input to output. Format sample rate: \(format.sampleRate)")
         self.delegate.engine.connect(inputNode!, to: outputNode!, format: format)
     }
     override func setSoloVolume(on: Bool) {

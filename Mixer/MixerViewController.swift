@@ -113,6 +113,10 @@ public class MixerViewController: NSViewController, keyDelegate {
     func visualizeAudioGraph(){
         AudioController.shared.visualizeAudioGraph()
     }
+    
+    @IBAction func reconnect(_ sender: Any) {
+        AudioController.shared.reconnectSelectedChannels()
+    }
 }
 
 extension MixerViewController : NSCollectionViewDataSource{
@@ -136,7 +140,6 @@ extension MixerViewController : NSCollectionViewDataSource{
         let channelView = ChannelCollectionViewItem(nibName: nil, bundle: bundle)
         let channelNumber = indexPath[1]
         channelView.channelNumber = channelNumber
-//        channelView.pluginSelectionDelegate = self
         if indexPath[0] == 0{
             channelView.type = .labels
         } else if indexPath[0] == 1{
@@ -153,15 +156,6 @@ extension MixerViewController : NSCollectionViewDataSource{
         return channelView
     }
 }
-
-//extension MixerViewController : PluginSelectionDelegate{
-//    func selectInstrument(_ inst: AVAudioUnitComponent, channel : Int = 0, type: ChannelType) { //TODO: This absolutely should NOT be here.
-//        AudioController.shared.loadInstrument(fromDescription: inst.audioComponentDescription, channel: channel)
-//    }
-//    func select(effect: AVAudioUnitComponent, channel: Int, number: Int, type: ChannelType) { 
-//        AudioController.shared.loadEffect(fromDescription: effect.audioComponentDescription, channel: channel, number: number, type: type) 
-//    }
-//}
 
 extension MixerViewController : PluginDisplayDelegate{
     public func display(viewController: AUViewController) {

@@ -18,7 +18,6 @@ import CoreAudioKit
 public class AudioController: NSObject {
     var timer = Timer()
     public static var shared = AudioController()
-    var recordingUrl : URL?
     public let engine = AVAudioEngine()
     public var delegate : AudioControllerDelegate?
     public var pluginDisplayDelegate : PluginDisplayDelegate?
@@ -65,6 +64,7 @@ public class AudioController: NSObject {
         masterController = MasterChannelController(delegate: self)
         if let masterOutput = masterController.outputNode{
             let format = masterOutput.outputFormat(forBus: 0)
+            print("Connecting MasterChannel to MainMixer. Format sample rate: \(format.sampleRate)")
             engine.connect(masterOutput, to: engine.mainMixerNode, format: format)
         }
         //Instrument Channels
@@ -91,6 +91,7 @@ public class AudioController: NSObject {
     private func connectToMaster(channelController : ChannelController){
         if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
             let format = channelOutput.outputFormat(forBus: 0)
+            print("Connecting node to masterChannel. Format sample rate: \(format.sampleRate)")
             engine.connect(channelOutput, to: masterInput, format: format)
         }
     }
@@ -125,19 +126,20 @@ public class AudioController: NSObject {
         engine.stop()
         removeAll()        
         createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
-        masterController.set(channelPluginData: audioModel.masterChannel, contextBlock: musicalContextBlock)
+        masterController.set(channelPluginData: audioModel.masterChannel)
         let masterOutput = masterController.outputNode!
         let format = masterOutput.outputFormat(forBus: 0)
+        print("Connecting Master to MainMixer. Format sample rate: \(format.sampleRate)")
         engine.connect(masterOutput, to: engine.mainMixerNode, format: format)
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
-            channelController.set(channelPluginData: channelPluginData, contextBlock: musicalContextBlock)
+            channelController.set(channelPluginData: channelPluginData)
         }
         for i in 0..<audioModel.auxChannels.count{
             let channelPluginData = audioModel.auxChannels[i]
             let channelController = auxControllers[i]
-            channelController.set(channelPluginData: channelPluginData, contextBlock: musicalContextBlock)
+            channelController.set(channelPluginData: channelPluginData)
         }
         stemCreatorModel = audioModel.stemCreatorModel
         engine.prepare()
@@ -162,15 +164,17 @@ public class AudioController: NSObject {
         allControllers.append(masterController)
         return allControllers
     }
-//    public func loadInstrument(fromDescription desc: AudioComponentDescription, channel: Int) {
-//        if channel >= instrumentControllers.count { return }
-//        let channelController = instrumentControllers[channel]
-//        channelController.loadInstrument(fromDescription: desc, context: musicalContextBlock)
-//    }
     public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
         if channel >= instrumentControllers.count { completion(nil) }
         let host = instrumentControllers[channel]
         host.requestInstrumentInterface(completion)
+    }
+    func reconnectSelectedChannels(){
+        for channelController in allChannelControllers{
+            if channelController.isSelected {
+                channelController.reconnectNodes()
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////
     // MIDI
@@ -213,10 +217,6 @@ public class AudioController: NSObject {
     /////////////////////////////////////////////////////////////
     // Effects
     /////////////////////////////////////////////////////////////
-//    public func loadEffect(fromDescription desc: AudioComponentDescription, channel: Int, number: Int, type: ChannelType) {
-//        guard let channelController = getChannelController(type: type, channel: channel) else { return }
-//        channelController.loadEffect(fromDescription: desc, number: number, contextBlock: musicalContextBlock)
-//    }
     func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
         if let channelController = getChannelController(type: type, channel: channel) {
             let effect = channelController.getEffect(number: number)
@@ -407,12 +407,13 @@ extension AudioController : ChannelControllerDelegate {
             if let existingNode = connection.node, existingNode === node { return } //This connection already exists. Exit.
         }
         let newConnection = AVAudioConnectionPoint(node: node, bus: 0)
+        print("Connecting nodes. Format sample rate: \(format.sampleRate)")
         connections.append(newConnection)
         engine.connect(bus, to: connections, fromBus: 0, format: format)
     }
     func soloDidChange() {
         var soloMode = false
-        for channelController in allChannelControllers{
+        for channelController in instrumentControllers{
             if channelController.solo {
                 soloMode = true
                 break
@@ -421,7 +422,7 @@ extension AudioController : ChannelControllerDelegate {
         var channelControllers : [ChannelController] = []
         channelControllers.append(contentsOf: instrumentControllers)
         channelControllers.append(contentsOf: auxControllers)
-        for channelController in channelControllers {
+        for channelController in instrumentControllers {
             if soloMode{
                 channelController.setSoloVolume(on: channelController.solo)
             }  else {
@@ -453,16 +454,13 @@ extension AudioController : ChannelControllerDelegate {
             return
         }
         let format = sourceNode.outputFormat(forBus: 0)
-        let attachedNodes = engine.attachedNodes
-        let sourceConnections = engine.outputConnectionPoints(for: sourceNode, outputBus: 0)
-        let destConnections = engine.outputConnectionPoints(for: destinationNode, outputBus: 0)
-        if destConnections.count  > 0{
-            let connection = destConnections[0]
-            if let ultra = connection.node as? UltraMixerNode{
-                print("Name: \(ultra.name)")
-            }
-        }
+        engine.pause()
         engine.connect(sourceNode, to: destinationNode, format: format)
+        do {
+            try engine.start()
+        } catch {
+            print("Boo.")
+        }
     }
     func displayInterface(audioUnit: AVAudioUnit) {
         audioUnit.auAudioUnit.requestViewController { (viewController) in

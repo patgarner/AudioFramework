@@ -82,10 +82,10 @@ class ChannelController : ChannelViewDelegate {
         channelPluginData.id = id
         return channelPluginData
     }
-    func set(channelPluginData: ChannelPluginData, contextBlock: @escaping AUHostMusicalContextBlock){
+    func set(channelPluginData: ChannelPluginData){
         for effectNumber in 0..<channelPluginData.effectPlugins.count{
             let pluginData = channelPluginData.effectPlugins[effectNumber]
-            loadEffect(pluginData: pluginData, number: effectNumber, contextBlock: contextBlock)
+            loadEffect(pluginData: pluginData, number: effectNumber)
         }
         for i in 0..<channelPluginData.sends.count{
             let sendData = channelPluginData.sends[i]
@@ -109,6 +109,13 @@ class ChannelController : ChannelViewDelegate {
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
             let format = previousUnit.outputFormat(forBus: 0)
+            print("Connecting nodes. Format sample rate: \(format.sampleRate)")
+            if !nodes.contains(previousUnit){
+                delegate.engine.attach(previousUnit)
+            }
+            if !nodes.contains(thisUnit){
+                delegate.engine.attach(thisUnit)
+            }
             if nodes.contains(previousUnit), nodes.contains(thisUnit){
                 delegate.engine.connect(previousUnit, to: thisUnit, format: format)
             } else {
@@ -123,6 +130,7 @@ class ChannelController : ChannelViewDelegate {
             let connectionPoint = AVAudioConnectionPoint(node: sendOutput, bus: 0)
             connectionPoints.append(connectionPoint)
         }
+        print("Connecting nodes. Format sample rate: \(format.sampleRate)")
         delegate.engine.connect(sendSplitterNode, to: connectionPoints, fromBus: 0, format: format)
     }
     func disconnectNodes(includeLast: Bool = false){
@@ -185,15 +193,16 @@ class ChannelController : ChannelViewDelegate {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Effects
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    func loadEffect(pluginData: PluginData, number: Int, contextBlock: @escaping AUHostMusicalContextBlock){
+    func loadEffect(pluginData: PluginData, number: Int){
         guard let audioComponentDescription = pluginData.audioComponentDescription else { return }
-        loadEffect(fromDescription: audioComponentDescription, number: number, contextBlock: contextBlock)
+        loadEffect(fromDescription: audioComponentDescription, number: number)
         if effects.count <= number { delegate.log("ChannelController.loadEffect(pluginData) effects index out of bounds.")}
         let effect = effects[number]
         let audioUnit = effect.auAudioUnit
         audioUnit.fullState = pluginData.state
     }
-    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, contextBlock: @escaping AUHostMusicalContextBlock) {
+    public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int) {
+        let contextBlock = delegate.contextBlock
         let audioUnitEffect = PluginFactory.effect(description: desc, context: contextBlock) 
         set(effect: audioUnitEffect, number: number)
         reconnectNodes()

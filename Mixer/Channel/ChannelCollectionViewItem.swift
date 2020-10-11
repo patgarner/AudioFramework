@@ -118,10 +118,11 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             self.trackNameField.isEditable = false
             inputPopup.isHidden = true
             self.soloButton.isHidden = true
-            outputPopup.isHidden = true
+            outputPopup.isEnabled = false
         }  else if type == .aux {
             mixerFillView.color = NSColor(calibratedRed: 0.6, green: 0.6, blue: 0.6, alpha: 1)
             reloadInstruments()
+            self.soloButton.isHidden = true
         } else if type == .midiInstrument{
             reloadInstruments()
             let instrumentSelection = channelViewDelegate.getPluginSelection(pluginType: .instrument, pluginNumber: channelNumber)
@@ -181,11 +182,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let component = instrumentsFlat[index]
         if let virtualInstrument = channelViewDelegate.getPluginSelection(pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
             component.name == virtualInstrument.name {
-            //pluginSelectionDelegate.displayInstrumentInterface(channel: channelNumber)
             channelViewDelegate.displayInterface(type: .instrument, number: 0)
             return
         } else {
-            //pluginSelectionDelegate.selectInstrument(component, channel: channelNumber, type: type)
             channelViewDelegate.select(description: component.audioComponentDescription, type: .instrument, number: 0)
             return
         }
@@ -205,10 +204,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         }
         let newEffect = effects[index]
         if let previousEffect = channelViewDelegate.getPluginSelection(pluginType: .effect, pluginNumber: number), previousEffect.manufacturer == newEffect.manufacturerName, previousEffect.name == newEffect.name {
-            //pluginSelectionDelegate.displayEffectInterface(channel: channelNumber, number: number, type: type)
             channelViewDelegate.displayInterface(type: .effect, number: number)
         } else {
-           // pluginSelectionDelegate.select(effect: newEffect, channel: channelNumber, number: number, type: type)
             channelViewDelegate.select(description: newEffect.audioComponentDescription, type: .effect, number: number)
         }
     }
