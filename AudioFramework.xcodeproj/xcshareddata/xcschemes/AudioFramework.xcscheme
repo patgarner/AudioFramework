@@ -42,6 +42,7 @@
       allowLocationSimulation = "YES">
       <PathRunnable
          runnableDebuggingMode = "0"
+         BundleIdentifier = "UltraMusician.ComposerBot"
          FilePath = "/Users/admin/Library/Developer/Xcode/DerivedData/Composer_Bot_Desktop-bkyzoowylzjpiwcjtsriztugcidg/Build/Products/Debug/Composer Bot Desktop.app">
       </PathRunnable>
    </LaunchAction>

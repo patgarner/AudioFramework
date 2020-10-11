@@ -28,6 +28,7 @@ public class AudioController: NSObject {
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
     private var musicalContextBlock : AUHostMusicalContextBlock!
+    static let format = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)!
     private override init (){
         super.init()
         initialize()
@@ -63,9 +64,10 @@ public class AudioController: NSObject {
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
         if let masterOutput = masterController.outputNode{
-            let format = masterOutput.outputFormat(forBus: 0)
-            print("Connecting MasterChannel to MainMixer. Format sample rate: \(format.sampleRate)")
-            engine.connect(masterOutput, to: engine.mainMixerNode, format: format)
+//            let format = masterOutput.outputFormat(forBus: 0)
+//            let format2 = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)
+            print("Connecting MasterChannel to MainMixer. Format sample rate: \(AudioController.format.sampleRate)")
+            engine.connect(masterOutput, to: engine.mainMixerNode, format: AudioController.format)
         }
         //Instrument Channels
         for _ in 0..<numInstChannels{
@@ -90,9 +92,9 @@ public class AudioController: NSObject {
     }
     private func connectToMaster(channelController : ChannelController){
         if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
-            let format = channelOutput.outputFormat(forBus: 0)
-            print("Connecting node to masterChannel. Format sample rate: \(format.sampleRate)")
-            engine.connect(channelOutput, to: masterInput, format: format)
+           // let format = channelOutput.outputFormat(forBus: 0)
+            print("Connecting node to masterChannel. Format sample rate: \(AudioController.format.sampleRate)")
+            engine.connect(channelOutput, to: masterInput, format: AudioController.format)
         }
     }
     func add(channelType: ChannelType){
@@ -128,9 +130,9 @@ public class AudioController: NSObject {
         createChannels(numInstChannels: audioModel.instrumentChannels.count, numAuxChannels: audioModel.auxChannels.count, numBusses: 4)
         masterController.set(channelPluginData: audioModel.masterChannel)
         let masterOutput = masterController.outputNode!
-        let format = masterOutput.outputFormat(forBus: 0)
-        print("Connecting Master to MainMixer. Format sample rate: \(format.sampleRate)")
-        engine.connect(masterOutput, to: engine.mainMixerNode, format: format)
+       // let format = masterOutput.outputFormat(forBus: 0)
+        print("Connecting Master to MainMixer. Format sample rate: \(AudioController.format.sampleRate)")
+        engine.connect(masterOutput, to: engine.mainMixerNode, format: AudioController.format)
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
@@ -401,15 +403,15 @@ extension AudioController : ChannelControllerDelegate {
         engine.disconnectNodeInput(node)
         if busNumber < 0 || busNumber >= busses.count { return }
         let bus = busses[busNumber]
-        let format = bus.outputFormat(forBus: 0)
+        //let format = bus.outputFormat(forBus: 0)
         var connections = engine.outputConnectionPoints(for: bus, outputBus: 0)
         for connection in connections{
             if let existingNode = connection.node, existingNode === node { return } //This connection already exists. Exit.
         }
         let newConnection = AVAudioConnectionPoint(node: node, bus: 0)
-        print("Connecting nodes. Format sample rate: \(format.sampleRate)")
+        print("Connecting nodes. Format sample rate: \(AudioController.format.sampleRate)")
         connections.append(newConnection)
-        engine.connect(bus, to: connections, fromBus: 0, format: format)
+        engine.connect(bus, to: connections, fromBus: 0, format: AudioController.format)
     }
     func soloDidChange() {
         var soloMode = false
@@ -453,9 +455,9 @@ extension AudioController : ChannelControllerDelegate {
         } else {
             return
         }
-        let format = sourceNode.outputFormat(forBus: 0)
+       // let format = sourceNode.outputFormat(forBus: 0)
         engine.pause()
-        engine.connect(sourceNode, to: destinationNode, format: format)
+        engine.connect(sourceNode, to: destinationNode, format: AudioController.format)
         do {
             try engine.start()
         } catch {

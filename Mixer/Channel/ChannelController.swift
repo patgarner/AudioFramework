@@ -108,7 +108,8 @@ class ChannelController : ChannelViewDelegate {
         for i in 1..<audioUnits.count{
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
-            let format = previousUnit.outputFormat(forBus: 0)
+            //let format = previousUnit.outputFormat(forBus: 0)
+            let format = AudioController.format
             print("Connecting nodes. Format sample rate: \(format.sampleRate)")
             if !nodes.contains(previousUnit){
                 delegate.engine.attach(previousUnit)
@@ -123,7 +124,8 @@ class ChannelController : ChannelViewDelegate {
             }
         }
         guard let sendSplitterNode = sendSplitterNode else { return }
-        let format = sendSplitterNode.outputFormat(forBus: 0)
+//        let format = sendSplitterNode.outputFormat(forBus: 0)
+        let format = AudioController.format
         var connectionPoints = delegate.engine.outputConnectionPoints(for: sendSplitterNode, outputBus: 0)
         for i in 0..<sendOutputs.count{
             let sendOutput = sendOutputs[i]
@@ -254,7 +256,8 @@ class ChannelController : ChannelViewDelegate {
         delegate.engine.attach(channelOutput)
         self.outputNode = channelOutput
         
-        let format = outputNode.outputFormat(forBus: 0)
+        //let format = outputNode.outputFormat(forBus: 0)
+        let format = AudioController.format
         outputNode.installTap(onBus: 0, bufferSize: 2048, format: format) { (buffer, time) in
             let stereoDataUnsafePointer = buffer.floatChannelData!
             let monoPointer = stereoDataUnsafePointer.pointee
