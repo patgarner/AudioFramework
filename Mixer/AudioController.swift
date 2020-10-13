@@ -28,15 +28,59 @@ public class AudioController: NSObject {
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
     private var musicalContextBlock : AUHostMusicalContextBlock!
-    static let format = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)!
+    //static let format = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)!
     private override init (){
         super.init()
         initialize()
     }
+    public func test(){
+        let mixer1 = AudioNodeFactory.mixerNode(name: "Mixer1")
+        let mixer2 = AudioNodeFactory.mixerNode(name: "Mixer2")
+        let mixer3 = AudioNodeFactory.mixerNode(name: "Mixer3")
+        engine.attach(mixer1)
+        engine.attach(mixer2)
+        engine.attach(mixer3)
+        engine.disconnectNodeInput(mixer3)
+        let sourceBus = busses[0]
+        print("engine.input = \(engine.inputNode), engine.output = \(engine.outputNode)")
+        print("prior to connection next avail bus : \(mixer3.nextAvailableInputBus)")
+//        let connection1 = AVAudioConnectionPoint(node: mixer3, bus: mixer3.nextAvailableInputBus)
+//        let format = mixer1.outputFormat(forBus: 0)
+        print("connect() Is main thread = \(Thread.isMainThread)")
+        //engine.connect(mixer1, to: [connection1], fromBus: 0, format: format)
+        
+        let auxInput = auxControllers[0].inputNode!
+        let format2 = sourceBus.outputFormat(forBus: 0)
+
+        engine.connect(sourceBus, to: auxInput, format: format2)
+        if isConnected(sourceNode: sourceBus, destinationNode: auxInput){
+            print("bus node connected to aux1")
+        } else {
+            print("bus node NOT connection to aux1.")
+        }
+
+       // engine.connect(mixer1, to: mixer3, format: format)
+//        if isConnected(sourceNode: mixer1, destinationNode: mixer3){
+//            print("Connected mixer1 and mixer3 successfully")
+//        } else {
+//            print("Couldn't connect mixer1 and mixer3")
+//        }
+//        print("next avail bus : \(mixer3.nextAvailableInputBus)")
+//        print("engine is running: \(engine.isRunning)")
+
+//        engine.connect(mixer2, to: mixer3, format: format)
+//        if isConnected(sourceNode: mixer2, destinationNode: mixer3){
+//            print("Connected mixer2 and mixer3 successfully")
+//        } else {
+//            print("Couldn't connect mixer2 and mixer3")
+//        }
+//        print("next avail bus : \(mixer3.nextAvailableInputBus)")
+    }
     public func initialize(){
         musicalContextBlock = getMusicalContext
         sequencer = AVAudioSequencer(audioEngine: engine)
-        createChannels(numInstChannels: 2, numAuxChannels: 2, numBusses: 4)
+        createChannels(numInstChannels: 0, numAuxChannels: 1, numBusses: 1)
+        //test()
         engine.prepare()
     }
     func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
@@ -66,8 +110,8 @@ public class AudioController: NSObject {
         if let masterOutput = masterController.outputNode{
 //            let format = masterOutput.outputFormat(forBus: 0)
 //            let format2 = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)
-            print("Connecting MasterChannel to MainMixer. Format sample rate: \(AudioController.format.sampleRate)")
-            engine.connect(masterOutput, to: engine.mainMixerNode, format: AudioController.format)
+            //engine.connect(masterOutput, to: engine.mainMixerNode, format: AudioController.format)
+            connect(sourceNode: masterOutput, destinationNode: engine.mainMixerNode)
         }
         //Instrument Channels
         for _ in 0..<numInstChannels{
@@ -93,8 +137,8 @@ public class AudioController: NSObject {
     private func connectToMaster(channelController : ChannelController){
         if let channelOutput = channelController.outputNode, let masterInput = masterController.inputNode{
            // let format = channelOutput.outputFormat(forBus: 0)
-            print("Connecting node to masterChannel. Format sample rate: \(AudioController.format.sampleRate)")
-            engine.connect(channelOutput, to: masterInput, format: AudioController.format)
+            //engine.connect(channelOutput, to: masterInput, format: AudioController.format)
+            connect(sourceNode: channelOutput, destinationNode: masterInput)
         }
     }
     func add(channelType: ChannelType){
@@ -131,8 +175,8 @@ public class AudioController: NSObject {
         masterController.set(channelPluginData: audioModel.masterChannel)
         let masterOutput = masterController.outputNode!
        // let format = masterOutput.outputFormat(forBus: 0)
-        print("Connecting Master to MainMixer. Format sample rate: \(AudioController.format.sampleRate)")
-        engine.connect(masterOutput, to: engine.mainMixerNode, format: AudioController.format)
+        //engine.connect(masterOutput, to: engine.mainMixerNode, format: AudioController.format)
+        connect(sourceNode: masterOutput, destinationNode: engine.mainMixerNode)
         for i in 0..<audioModel.instrumentChannels.count{
             let channelPluginData = audioModel.instrumentChannels[i]
             let channelController = instrumentControllers[i]
@@ -200,10 +244,10 @@ public class AudioController: NSObject {
         channelController.set(pan: pan, channel: channel)
     }
     public func set(tempo: UInt8){
-        for channel in 0..<instrumentControllers.count{
-            let host = instrumentControllers[channel]
-            host.set(tempo: tempo)
-        }
+//        for channel in 0..<instrumentControllers.count{
+//            let host = instrumentControllers[channel]
+//            host.set(tempo: tempo)
+//        }
     }
     public func setController(number: UInt8, value: UInt8, channel: UInt8){
         if channel >= instrumentControllers.count { return }
@@ -371,10 +415,14 @@ public class AudioController: NSObject {
 }
 
 extension AudioController : ChannelControllerDelegate {
-    func getOutputDestination(for node: AVAudioNode) -> BusInfo?{
+    func getOutputDestination(for node: AVAudioNode) -> BusInfo{
         let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
-        if connections.count != 1 { return nil }
-        guard let destinationNode = connections[0].node else { return nil }
+        if connections.count != 1 {
+            return BusInfo()
+        }
+        guard let destinationNode = connections[0].node else { 
+            return BusInfo()
+        }
         if destinationNode == masterController.inputNode! {
             return BusInfo(number: 0, type: .master)
         }
@@ -385,7 +433,7 @@ extension AudioController : ChannelControllerDelegate {
                 return busData
             }
         }
-        return nil
+        return BusInfo()
     }
     func log(_ message: String) {
         delegate?.log(message)
@@ -399,19 +447,77 @@ extension AudioController : ChannelControllerDelegate {
         }
         return nil
     }
-    func connect(busNumber : Int, to node: AVAudioNode) {
-        engine.disconnectNodeInput(node)
+    func connect(busNumber : Int, destinationNode: AVAudioNode) {
+        engine.disconnectNodeInput(destinationNode)
         if busNumber < 0 || busNumber >= busses.count { return }
-        let bus = busses[busNumber]
-        //let format = bus.outputFormat(forBus: 0)
-        var connections = engine.outputConnectionPoints(for: bus, outputBus: 0)
+        let sourceBus = busses[busNumber]
+        let format = sourceBus.outputFormat(forBus: 0)
+        var connections = engine.outputConnectionPoints(for: sourceBus, outputBus: 0)
         for connection in connections{
-            if let existingNode = connection.node, existingNode === node { return } //This connection already exists. Exit.
+            if let existingNode = connection.node, existingNode === destinationNode { return } //This connection already exists. Exit.
         }
-        let newConnection = AVAudioConnectionPoint(node: node, bus: 0)
-        print("Connecting nodes. Format sample rate: \(AudioController.format.sampleRate)")
+        var destinationBusNumber : AVAudioNodeBus = 0
+        if let mixer = destinationNode as? UltraMixerNode{
+            destinationBusNumber = mixer.nextAvailableInputBus
+        }
+        let newConnection = AVAudioConnectionPoint(node: destinationNode, bus: destinationBusNumber)
         connections.append(newConnection)
-        engine.connect(bus, to: connections, fromBus: 0, format: AudioController.format)
+        print("engine.input = \(engine.inputNode), engine.output = \(engine.outputNode)")
+
+        
+        print("connect() Is main thread = \(Thread.isMainThread)")
+        //engine.connect(sourceBus, to: connections, fromBus: 0, format: format)
+        if engine.isRunning { engine.pause() }
+        engine.connect(sourceBus, to: destinationNode, format: format)
+
+        print("output format for input bus = \(format)")
+        if engine.attachedNodes.contains(sourceBus){
+            print("Engine DOES contain source bus")
+        } else {
+            print("Engine DOES NOT contain source bus")
+        }
+        if engine.attachedNodes.contains(destinationNode){
+            print("Engine DOES contain destination node")
+        } else {
+            print("Engine DOES NOT contain destination node")
+        }
+        print("engine is running: \(engine.isRunning)")
+        print("source input format: \(sourceBus.inputFormat(forBus: 0))")
+        print("destination output format: \(destinationNode.outputFormat(forBus: 0))")
+
+        if !isConnected(sourceNode: sourceBus, destinationNode: destinationNode){
+            delegate?.log("Error: AudioController unable to connect bus to destination node.")
+            for i in 0..<destinationNode.numberOfInputs{
+                let busFormat = destinationNode.inputFormat(forBus: i)
+                print("Format \(i) = \(busFormat)")
+                guard  let connection = engine.inputConnectionPoint(for: destinationNode, inputBus: i) else {
+                    print("no input connection for bus \(i)")
+                    continue
+                }
+                guard let node = connection.node else {
+                    print("no node for connection \(i)")
+                    continue
+                }
+                print("node: \(node)")
+            }
+        }
+    }
+    func isConnected(sourceNode: AVAudioNode, destinationNode: AVAudioNode) -> Bool {
+        let connections = engine.outputConnectionPoints(for: sourceNode, outputBus: 0)
+        for connection in connections {
+            guard let node = connection.node else { continue }
+            if node === destinationNode {
+                return true
+            }
+        }
+        let attachedNodes = engine.attachedNodes
+        if !attachedNodes.contains(sourceNode) {
+            delegate?.log("areConnected = false. SourceNode not attached to engine.")
+        }
+        if !attachedNodes.contains(destinationNode) {
+            delegate?.log("areConnected = false. DestinationNode not attached to engine.")
+        }
+        return false
     }
     func soloDidChange() {
         var soloMode = false
@@ -444,25 +550,28 @@ extension AudioController : ChannelControllerDelegate {
         if engine.outputConnectionPoints(for: sourceNode, outputBus: 0).count > 0{
             engine.disconnectNodeOutput(sourceNode) 
         }
-        var destinationNode : AVAudioNode!
-        if destinationType == .master{
-            destinationNode = masterController.inputNode!
-        } else if destinationType == .bus{
-            if destinationNumber < 0 || destinationNumber >= busses.count { 
-                return
-            }
-            destinationNode = busses[destinationNumber]
-        } else {
+        guard let destinationNode = locateDestinationNode(type: destinationType, number: destinationNumber) else {
+            log("Error: AudioController.connect(sourceNode: \(sourceNode), destinationNumber \(destinationNumber), destinationType: \(destinationType) failed.)")
             return
         }
-       // let format = sourceNode.outputFormat(forBus: 0)
         engine.pause()
-        engine.connect(sourceNode, to: destinationNode, format: AudioController.format)
+        connect(sourceNode: sourceNode, destinationNode: destinationNode)
         do {
             try engine.start()
         } catch {
             print("Boo.")
         }
+    }
+    private func locateDestinationNode(type: BusType, number: Int) -> AVAudioNode? {
+        var destinationNode : AVAudioNode?
+        if type == .master{
+            destinationNode = masterController.inputNode!
+        } else if type == .bus{
+            if number > 0, number < busses.count { 
+                destinationNode = busses[number]
+            }
+        } 
+        return destinationNode
     }
     func displayInterface(audioUnit: AVAudioUnit) {
         audioUnit.auAudioUnit.requestViewController { (viewController) in
@@ -475,6 +584,22 @@ extension AudioController : ChannelControllerDelegate {
     }
     var contextBlock: AUHostMusicalContextBlock {
         return musicalContextBlock
+    }
+    func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode) {
+        let attachedNodes = engine.attachedNodes
+        if !attachedNodes.contains(sourceNode){
+            log("AudioController.connectNodes error: source node not attached to engine.")
+        }
+        if !attachedNodes.contains(destinationNode){
+            log("AudioController.connectNodes error: destination node not attached to engine.")
+        }
+        let format = sourceNode.outputFormat(forBus: 0)
+//        engine.pause()
+        engine.connect(sourceNode, to: destinationNode, format: format)
+        if !isConnected(sourceNode: sourceNode, destinationNode: destinationNode){
+            
+            log("AudioController.connect() failed to connect \(sourceNode) to \(destinationNode)")
+        }
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

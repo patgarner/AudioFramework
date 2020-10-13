@@ -11,4 +11,11 @@ import AVFoundation
 
 class UltraMixerNode: AVAudioMixerNode {
     var name = ""
+    override var debugDescription: String{
+        let s = name + " : UltraMixerNode"
+        return s
+    }
+    override var description: String{
+        return debugDescription
+    }
 }

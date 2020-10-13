@@ -21,7 +21,6 @@ protocol VirtualInstrumentHost {
     func set(volume: UInt8, channel: UInt8)
     func set(pan: UInt8, channel: UInt8)
     func setController(number: UInt8, value: UInt8, channel: UInt8)
-    func set(tempo: UInt8)
     func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->())
     var fullState : [String : Any]? { get set }
     var samplerData : PluginData { get set }

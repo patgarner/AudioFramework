@@ -34,7 +34,7 @@ public protocol ChannelViewDelegate {
     func getBusInputNumber() -> Int? //Get Input
     func didSelectChannel()
     func setSend(volume: Float, sendNumber: Int)
-    func getDestination(type: ConnectionType, number: Int) -> BusInfo?
+    func getDestination(type: ConnectionType, number: Int) -> BusInfo
     func getSendData(sendNumber: Int) -> SendData?
     func connect(sourceType: ConnectionType, sourceNumber: Int, destinationType: BusType, destinationNumber: Int)
     func displayInterface(type: PluginType, number: Int)
@@ -47,12 +47,13 @@ protocol ChannelControllerDelegate{
     var engine : AVAudioEngine { get }
     func soloDidChange()
     func didSelectChannel()
-    func getOutputDestination(for node: AVAudioNode) -> BusInfo? //Get Output
+    func getOutputDestination(for node: AVAudioNode) -> BusInfo //Get Output
     func connect(sourceNode: AVAudioNode, destinationNumber: Int, destinationType: BusType) //Connect
     func getBusInput(for node: AVAudioNode) -> Int? //Get input (for aux nodes)
-    func connect(busNumber: Int, to node: AVAudioNode) //Connects input (for aux nodes)
+    func connect(busNumber: Int, destinationNode: AVAudioNode) //Connects input (for aux nodes)
     func displayInterface(audioUnit: AVAudioUnit)
     var contextBlock : AUHostMusicalContextBlock { get }
+    func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode)
 }
 
 public enum ConnectionType {

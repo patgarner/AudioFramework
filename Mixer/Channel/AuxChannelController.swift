@@ -10,35 +10,35 @@ import Foundation
 import AVFoundation
 
 class AuxChannelController : ChannelController{
-    override func createIONodes() {
-        super.createIONodes()
-        let inputNode = AudioNodeFactory.mixerNode(name: "AuxInput")
-        self.delegate.engine.attach(inputNode)
-        self.inputNode = inputNode
-    }
-    override func allAudioUnits(includeSends: Bool) -> [AVAudioNode] {
-        var audioUnits : [AVAudioNode] = []
-        if inputNode != nil {
-            audioUnits.append(inputNode!)
-        }
-        audioUnits.append(contentsOf: effects)
-        if muteNode != nil{
-            audioUnits.append(muteNode!)
-        }
-        if soloNode != nil {
-            audioUnits.append(soloNode!)
-        }
-        if sendSplitterNode != nil{
-            audioUnits.append(sendSplitterNode!)
-        }
-        if includeSends{
-            audioUnits.append(contentsOf: sendOutputs)
-        }
-        if outputNode != nil {
-            audioUnits.append(outputNode!)
-        }
-        return audioUnits
-    }
+//    override func createIONodes() {
+//        super.createIONodes()
+//        let inputNode = AudioNodeFactory.mixerNode(name: "AuxInput")
+//        self.delegate.engine.attach(inputNode)
+//        self.inputNode = inputNode
+//    }
+//    override func allAudioUnits(includeSends: Bool) -> [AVAudioNode] {
+//        var audioUnits : [AVAudioNode] = []
+//        if inputNode != nil {
+//            audioUnits.append(inputNode!)
+//        }
+//        audioUnits.append(contentsOf: effects)
+//        if muteNode != nil{
+//            audioUnits.append(muteNode!)
+//        }
+//        if soloNode != nil {
+//            audioUnits.append(soloNode!)
+//        }
+//        if sendSplitterNode != nil{
+//            audioUnits.append(sendSplitterNode!)
+//        }
+//        if includeSends{
+//            audioUnits.append(contentsOf: sendOutputs)
+//        }
+//        if outputNode != nil {
+//            audioUnits.append(outputNode!)
+//        }
+//        return audioUnits
+//    }
     override func getChannelPluginData() -> ChannelPluginData {
         let pluginData = super.getChannelPluginData()
         guard let input = inputNode else {
@@ -54,6 +54,6 @@ class AuxChannelController : ChannelController{
     override func set(channelPluginData: ChannelPluginData) {
         super.set(channelPluginData: channelPluginData)
         guard let inputNode = inputNode else { return }
-        delegate.connect(busNumber:channelPluginData.busInput, to: inputNode)
+        delegate.connect(busNumber:channelPluginData.busInput, destinationNode: inputNode)
     }
 }

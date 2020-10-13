@@ -31,7 +31,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var trackNameField: NSTextField!
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
-    //var pluginSelectionDelegate : PluginSelectionDelegate!
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
@@ -143,19 +142,25 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             let effectList = getAudioComponentList(type: .effect)
             select(popup: popup, list: effectList, pluginSelection: pluginSelection)
         }
+        fillOutputPopup()
+    }
+    private func fillOutputPopup(){
         outputPopup.removeAllItems()
         outputPopup.addItem(withTitle: "Main")
         for i in 0..<channelViewDelegate.numBusses{
             let outputName = "Bus \(i+1)"
             outputPopup.addItem(withTitle: outputName)
         }
-        if let outputDestination = channelViewDelegate.getDestination(type: .output, number: 0){
-            if outputDestination.type == .master {
-                outputPopup.selectItem(at: 0)
-            } else if outputDestination.type == .bus{
-                outputPopup.selectItem(at: outputDestination.number+1)
-            }
+        outputPopup.addItem(withTitle: "")
+        let outputDestination = channelViewDelegate.getDestination(type: .output, number: 0)
+        if outputDestination.type == .master {
+            outputPopup.selectItem(at: 0)
+        } else if outputDestination.type == .bus{
+            outputPopup.selectItem(at: outputDestination.number+1)
+        } else {
+            outputPopup.selectItem(at: outputPopup.numberOfItems - 1)
         }
+        
     }
     private func select(popup: NSPopUpButton, list: [AVAudioUnitComponent], pluginSelection: PluginSelection?){
         guard let pluginSelection = pluginSelection else { return }
@@ -318,11 +323,13 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             sendPopup.removeAllItems()
             let busList = getBusList()
             sendPopup.addItems(withTitles: busList)
-            if let busNumber = channelViewDelegate.getDestination(type: .send, number: i){
-                sendPopup.selectItem(at: busNumber.number)
+            let busInfo = channelViewDelegate.getDestination(type: .send, number: i)
+            if busInfo.type == .bus {
+                sendPopup.selectItem(at: busInfo.number)
             } else {
                 sendPopup.selectItem(at: sendPopup1.numberOfItems - 1)
             }
+            
         }
     }
     func getBusList() -> [String]{
@@ -339,7 +346,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let index = outputPopup.indexOfSelectedItem
         if index == 0 {
             channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .master, destinationNumber: 0)
-        } else if index > 0{
+        } else if index > channelViewDelegate.numBusses {
+            channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .none, destinationNumber: -1)
+        } else {
             let busNumber = index - 1
             channelViewDelegate.connect(sourceType: .output, sourceNumber: 0, destinationType: .bus, destinationNumber: busNumber)
         }
