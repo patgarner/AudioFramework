@@ -174,7 +174,7 @@
         <scene sceneID="hIz-AP-VOD">
             <objects>
                 <viewController showSeguePresentationStyle="single" id="XfG-lQ-9wD" customClass="MixerViewController" customModule="AudioFramework" sceneMemberID="viewController">
-                    <view key="view" id="m2S-Jp-Qdl">
+                    <view key="view" id="m2S-Jp-Qdl" customClass="KeyView">
                         <rect key="frame" x="0.0" y="0.0" width="1200" height="430"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>

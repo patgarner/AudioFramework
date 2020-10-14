@@ -8,6 +8,7 @@
 
 import Cocoa
 import AudioFramework
+import AVFoundation
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, AudioControllerDelegate {

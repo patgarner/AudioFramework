@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Cocoa
 
 class VUMeterView : NSView {
     var level : Float = 0

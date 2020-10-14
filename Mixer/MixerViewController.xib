@@ -13,7 +13,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <customView id="c22-O7-iKe" customClass="MixerView" customModule="AudioFramework" customModuleProvider="target">
+        <customView id="c22-O7-iKe" customClass="KeyView" customModule="AudioFramework" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="1000" height="450"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -89,7 +89,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="1000" height="420"/>
                     <clipView key="contentView" drawsBackground="NO" id="1sw-qb-1Hq">
                         <rect key="frame" x="1" y="1" width="998" height="418"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <collectionView id="2IY-X6-Wd3">
                                 <rect key="frame" x="0.0" y="0.0" width="998" height="418"/>

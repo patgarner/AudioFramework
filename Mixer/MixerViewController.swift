@@ -14,7 +14,7 @@ import Cocoa
 import AVFoundation
 import CoreAudioKit
 
-public class MixerViewController: NSViewController, keyDelegate {
+public class MixerViewController: NSViewController, KeyDelegate {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     private var interfaceInstance : InterfaceInstance? = nil
@@ -30,7 +30,7 @@ public class MixerViewController: NSViewController, keyDelegate {
     }
     override public func viewDidLoad() {
         super.viewDidLoad()
-        if let view = self.view as? MixerView{
+        if let view = self.view as? KeyView{
             view.delegate = self
         }
         AudioController.shared.pluginDisplayDelegate = self
@@ -97,21 +97,19 @@ public class MixerViewController: NSViewController, keyDelegate {
         channelCollectionView.needsLayout = true
         channelCollectionView.needsDisplay = true
     }
-    func keyDown(_ number: Int) {
-        print(number)
-        if number == 51 {
+    public func keyDown(_ number: Int) {
+        if number == 51 { //Delete
             delete(self)
-        } else if number == 48 {
-            visualizeAudioGraph()
+        } else if number == 48 { //Tab
+            visualizeAudioGraph() 
         }
-        
     }
     @IBAction func delete(_ sender: Any) {
         AudioController.shared.deleteSelectedChannels()
         channelCollectionView.reloadData()
     }
     func visualizeAudioGraph(){
-        AudioController.shared.visualizeAudioGraph()
+        AudioController.shared.visualize()
     }
     
     @IBAction func reconnect(_ sender: Any) {
@@ -166,14 +164,19 @@ extension MixerViewController : PluginDisplayDelegate{
     }
 }
 
-class MixerView : NSView {
-    var delegate : keyDelegate? = nil
-    override func keyDown(with event: NSEvent) {
+public class KeyView : NSView {
+    public var delegate : KeyDelegate? = nil
+    override public func keyDown(with event: NSEvent) {
         let keycode = Int(event.keyCode)
         delegate?.keyDown(keycode)
     }
 }
 
-protocol keyDelegate{
+public protocol KeyDelegate{
     func keyDown(_ number: Int)
+}
+
+public enum InterfaceInstance {
+    case view(NSView)
+    case viewController(NSViewController)
 }

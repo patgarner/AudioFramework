@@ -16,13 +16,13 @@ import AVFoundation
 class ChannelController : ChannelViewDelegate {
     var delegate : ChannelControllerDelegate!
     weak var channelView : ChannelCollectionViewItem?
-    var inputNode : AVAudioNode? 
+    var inputNode : AVAudioNode!
     public var effects : [AVAudioUnit] = []
-    var sendSplitterNode : UltraMixerNode? = nil
-    var sendOutputs : [UltraMixerNode] = []
-    var soloNode : UltraMixerNode? = nil
-    var outputNode : UltraMixerNode!
+    var soloNode : UltraMixerNode!
     var muteNode : UltraMixerNode!
+    var sendSplitterNode : UltraMixerNode!
+    var sendOutputs : [UltraMixerNode] = []
+    var outputNode : UltraMixerNode!
     //Model
     var trackName = ""
     var id = UUID().uuidString
@@ -45,8 +45,6 @@ class ChannelController : ChannelViewDelegate {
             }
         }
     }
-    
-    //
     public init(delegate: ChannelControllerDelegate){
         self.delegate = delegate
         createIONodes()
@@ -72,7 +70,6 @@ class ChannelController : ChannelViewDelegate {
         let outputInfo = delegate.getOutputDestination(for: outputNode)
         channelPluginData.output.number = outputInfo.number
         channelPluginData.output.type = outputInfo.type
-        
         channelPluginData.volume = outputNode.outputVolume
         channelPluginData.pan = outputNode.pan
         channelPluginData.trackName = trackName
@@ -105,9 +102,6 @@ class ChannelController : ChannelViewDelegate {
         for i in 1..<audioUnits.count{
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
-            let format = previousUnit.outputFormat(forBus: 0)
-//            let format = AudioController.format
-            print("Connecting nodes. Format sample rate: \(format.sampleRate)")
             if !nodes.contains(previousUnit){
                 delegate.engine.attach(previousUnit)
             }
@@ -129,10 +123,10 @@ class ChannelController : ChannelViewDelegate {
             let connectionPoint = AVAudioConnectionPoint(node: sendOutput, bus: 0)
             connectionPoints.append(connectionPoint)
         }
-        print("Connecting nodes. Format sample rate: \(format.sampleRate)")
+//        print("Connecting nodes. Format sample rate: \(format.sampleRate)")
         delegate.engine.connect(sendSplitterNode, to: connectionPoints, fromBus: 0, format: format)
     }
-    func disconnectNodes(includeLast: Bool = false){
+    private func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits()
         if nodes.count == 0 { return }
         var lastIndex = nodes.count
@@ -144,20 +138,22 @@ class ChannelController : ChannelViewDelegate {
             disconnectOutput(audioUnit: node)
         }
     }
-    func allAudioUnits(includeSends: Bool = false) -> [AVAudioNode] {
-         var audioUnits : [AVAudioNode] = []
-//        if let instrumentAU = instrumentHost.audioUnit {
-//            audioUnits.append(instrumentAU)
-//        }
+    private func allAudioUnits(includeSends: Bool = false) -> [AVAudioNode] {
+        var audioUnits : [AVAudioNode] = []
+        if inputNode != nil {
+            audioUnits.append(inputNode!)
+        }
+        
         audioUnits.append(contentsOf: effects)
+        
         if muteNode != nil {
             audioUnits.append(muteNode!)
         }
         if soloNode != nil{
             audioUnits.append(soloNode!)
         }
-        if let sendSplitter = sendSplitterNode{
-            audioUnits.append(sendSplitter)
+        if sendSplitterNode != nil{
+            audioUnits.append(sendSplitterNode!)
         }
         if includeSends{
             audioUnits.append(contentsOf: sendOutputs)
@@ -167,7 +163,7 @@ class ChannelController : ChannelViewDelegate {
         }
         return audioUnits
     }
-    func disconnectOutput(audioUnit: AVAudioNode?){
+    private func disconnectOutput(audioUnit: AVAudioNode?){
         if let audioUnit = audioUnit{
             if delegate.engine.attachedNodes.contains(audioUnit){
                 delegate.engine.disconnectNodeOutput(audioUnit)
@@ -256,6 +252,18 @@ class ChannelController : ChannelViewDelegate {
         delegate.engine.attach(inputNode)
         self.inputNode = inputNode
         
+        let muteNode = AudioNodeFactory.mixerNode(name: "MuteNode")
+        delegate.engine.attach(muteNode)
+        self.muteNode = muteNode
+  
+        let soloNode = AudioNodeFactory.mixerNode(name: "SoloNode")
+        delegate.engine.attach(soloNode)
+        self.soloNode = soloNode
+        
+        let sendSplitterNode = AudioNodeFactory.mixerNode(name: "SendSplitter")
+        delegate.engine.attach(sendSplitterNode)
+        self.sendSplitterNode = sendSplitterNode
+        
         let numSends = 2
         for i in 0..<numSends{
             let name = "Send Output \(i + 1)"
@@ -265,24 +273,11 @@ class ChannelController : ChannelViewDelegate {
             sendOutput.outputVolume = 0.0
         }
         
-        let muteNode = AudioNodeFactory.mixerNode(name: "MuteNode")
-        delegate.engine.attach(muteNode)
-        self.muteNode = muteNode
-        
-        let sendSplitterNode = AudioNodeFactory.mixerNode(name: "SendSplitter")
-        delegate.engine.attach(sendSplitterNode)
-        self.sendSplitterNode = sendSplitterNode
-        
-        let soloNode = AudioNodeFactory.mixerNode(name: "SoloNode")
-        delegate.engine.attach(soloNode)
-        self.soloNode = soloNode
-        
         let channelOutput = AudioNodeFactory.mixerNode(name: "ChannelOutput")
         delegate.engine.attach(channelOutput)
         self.outputNode = channelOutput
         
         let format = outputNode.outputFormat(forBus: 0)
-//        let format = AudioController.format
         outputNode.installTap(onBus: 0, bufferSize: 2048, format: format) { (buffer, time) in
             let stereoDataUnsafePointer = buffer.floatChannelData!
             let monoPointer = stereoDataUnsafePointer.pointee
@@ -419,9 +414,9 @@ class ChannelController : ChannelViewDelegate {
         if inputNode != nil {
             let busInput = delegate.getBusInput(for: inputNode!)
             let identity = identify(node: inputNode!)
-            var inputString = "nil"
+            var inputString = "nil -> "
             if busInput != nil {
-                inputString = "Bus \(busInput!) => "
+                inputString = "Bus \(busInput!) -> "
             }
             string += inputString + identity + "\n"
         }
@@ -443,6 +438,7 @@ class ChannelController : ChannelViewDelegate {
                 string += thisConnection
             }
         }
+        print(string)
         delegate.log(string)
     }
     func identify(node : AVAudioNode) -> String {
