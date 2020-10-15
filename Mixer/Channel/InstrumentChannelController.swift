@@ -29,7 +29,7 @@ class InstrumentChannelController : ChannelController{
     }
     private func loadInstrument(fromDescription desc: AudioComponentDescription, showInterface: Bool){
         let context = delegate.contextBlock
-        let audioUnit = PluginFactory.instrument(description: desc, context: context)
+        let audioUnit = AudioNodeFactory.instrument(description: desc, context: context)
         if inputNode != nil {
             delegate.engine.detach(inputNode!)
         }
@@ -59,27 +59,26 @@ class InstrumentChannelController : ChannelController{
         }
     }
     func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        guard let inst = inputNode as? AVAudioUnitMIDIInstrument else { return }
-        inst.startNote(note, withVelocity: velocity, onChannel: channel)
+        guard let instrumentNode = inputNode as? AVAudioUnitMIDIInstrument else { return }
+        instrumentNode.startNote(note, withVelocity: velocity, onChannel: channel)
     }
-    
     func noteOff(_ note: UInt8, channel: UInt8) {
-        guard let inst = inputNode as? AVAudioUnitMIDIInstrument else { return }
-        inst.stopNote(note, onChannel: channel)
+        instrumentNode?.stopNote(note, onChannel: channel)
     }
     func set(volume: UInt8, channel: UInt8){
-        guard let inst = inputNode as? AVAudioUnitMIDIInstrument else { return }
         let controller = UInt8(7)
-        inst.sendController(controller, withValue: volume, onChannel: 0)
+        instrumentNode?.sendController(controller, withValue: volume, onChannel: 0)
     }
     func set(pan: UInt8, channel: UInt8){
-        guard let inst = inputNode as? AVAudioUnitMIDIInstrument else { return }
         let controller = UInt8(10)
-        inst.sendController(controller, withValue: pan, onChannel: channel)
+        instrumentNode?.sendController(controller, withValue: pan, onChannel: channel)
     }
     func setController(number: UInt8, value: UInt8, channel: UInt8){
-        guard let inst = inputNode as? AVAudioUnitMIDIInstrument else { return }
-        inst.sendController(number, withValue: value, onChannel: channel)
+        instrumentNode?.sendController(number, withValue: value, onChannel: channel)
+    }
+    private var instrumentNode : AVAudioUnitMIDIInstrument? {
+        let node = inputNode as? AVAudioUnitMIDIInstrument
+        return node
     }
     public func allNotesOff(){
         

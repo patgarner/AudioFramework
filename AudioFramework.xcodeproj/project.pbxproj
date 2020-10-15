@@ -12,6 +12,12 @@
 		84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
 		84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */; };
 		84070C5E24FF5D5900E572E7 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController.swift */; };
+		840D4AFF253777DA00E841F0 /* AudioUnitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840D4AFE253777DA00E841F0 /* AudioUnitViewController.swift */; };
+		840D4B02253777DA00E841F0 /* AudioUnitViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 840D4B00253777DA00E841F0 /* AudioUnitViewController.xib */; };
+		840D4B08253777DA00E841F0 /* PassThroughNode.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 840D4AF9253777DA00E841F0 /* PassThroughNode.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		840D4B142537914A00E841F0 /* PassThroughNodeAudioUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 840D4AFC253777DA00E841F0 /* PassThroughNodeAudioUnit.m */; };
+		840D4B152537914F00E841F0 /* PassThroughNodeAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 840D4AFB253777DA00E841F0 /* PassThroughNodeAudioUnit.h */; };
+		840D4B162537915600E841F0 /* PassThroughNode-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 840D4B04253777DA00E841F0 /* PassThroughNode-Bridging-Header.h */; };
 		841BFE6D2526B8A000FA0276 /* VUMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE6C2526B8A000FA0276 /* VUMeterView.swift */; };
 		841BFE6E2526B8A000FA0276 /* VUMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE6C2526B8A000FA0276 /* VUMeterView.swift */; };
 		841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
@@ -70,6 +76,8 @@
 		8480DB092532161E00A40CEB /* PluginDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8480DB072532161E00A40CEB /* PluginDisplayDelegate.swift */; };
 		8487F51925111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
 		8487F51A25111FC1003DC1D6 /* AuxChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8487F51825111FC1003DC1D6 /* AuxChannelController.swift */; };
+		849216612537CCA6005982C3 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 840D4B0E2537849F00E841F0 /* AudioToolbox.framework */; };
+		849216622537CCA6005982C3 /* AudioToolbox.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 840D4B0E2537849F00E841F0 /* AudioToolbox.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		84951278252CC9D4008C5C47 /* PluginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84951276252CC9D4008C5C47 /* PluginVC.swift */; };
 		84951279252CC9D4008C5C47 /* PluginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84951276252CC9D4008C5C47 /* PluginVC.swift */; };
 		8495127A252CC9D4008C5C47 /* PluginVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84951277252CC9D4008C5C47 /* PluginVC.xib */; };
@@ -124,6 +132,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		840D4B06253777DA00E841F0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8423699F24FEC2BC001266BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 840D4AF8253777DA00E841F0;
+			remoteInfo = PassThroughNode;
+		};
 		842369B324FEC2BC001266BE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8423699F24FEC2BC001266BE /* Project object */;
@@ -148,6 +163,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		840D4B0C253777DA00E841F0 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				840D4B08253777DA00E841F0 /* PassThroughNode.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		840D4B132537906500E841F0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				849216622537CCA6005982C3 /* AudioToolbox.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84ACE04B251910B5003963FD /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -167,6 +204,15 @@
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
 		84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelDelegates.swift; sourceTree = "<group>"; };
 		84070C5624FF5D5900E572E7 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
+		840D4AF9253777DA00E841F0 /* PassThroughNode.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PassThroughNode.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		840D4AFB253777DA00E841F0 /* PassThroughNodeAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PassThroughNodeAudioUnit.h; sourceTree = "<group>"; };
+		840D4AFC253777DA00E841F0 /* PassThroughNodeAudioUnit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PassThroughNodeAudioUnit.m; sourceTree = "<group>"; };
+		840D4AFE253777DA00E841F0 /* AudioUnitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioUnitViewController.swift; sourceTree = "<group>"; };
+		840D4B01253777DA00E841F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AudioUnitViewController.xib; sourceTree = "<group>"; };
+		840D4B03253777DA00E841F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		840D4B04253777DA00E841F0 /* PassThroughNode-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PassThroughNode-Bridging-Header.h"; sourceTree = "<group>"; };
+		840D4B05253777DA00E841F0 /* PassThroughNode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PassThroughNode.entitlements; sourceTree = "<group>"; };
+		840D4B0E2537849F00E841F0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		841BFE6C2526B8A000FA0276 /* VUMeterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VUMeterView.swift; sourceTree = "<group>"; };
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
 		841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioControllerDelegate.swift; sourceTree = "<group>"; };
@@ -232,6 +278,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		840D4AF6253777DA00E841F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				849216612537CCA6005982C3 /* AudioToolbox.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		842369A524FEC2BC001266BE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -268,6 +322,7 @@
 		84070C1724FF49BC00E572E7 /* Mixer */ = {
 			isa = PBXGroup;
 			children = (
+				840D4A78253763D900E841F0 /* Plugin */,
 				84A446292530B977002539E9 /* Channel */,
 				84951275252CC8D5008C5C47 /* Waves */,
 				842369D224FEC44C001266BE /* AudioController.swift */,
@@ -284,6 +339,35 @@
 			);
 			path = Mixer;
 			sourceTree = SOURCE_ROOT;
+		};
+		840D4A78253763D900E841F0 /* Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				840D4AFB253777DA00E841F0 /* PassThroughNodeAudioUnit.h */,
+				840D4AFC253777DA00E841F0 /* PassThroughNodeAudioUnit.m */,
+			);
+			path = Plugin;
+			sourceTree = "<group>";
+		};
+		840D4AFA253777DA00E841F0 /* PassThroughNode */ = {
+			isa = PBXGroup;
+			children = (
+				840D4AFE253777DA00E841F0 /* AudioUnitViewController.swift */,
+				840D4B00253777DA00E841F0 /* AudioUnitViewController.xib */,
+				840D4B03253777DA00E841F0 /* Info.plist */,
+				840D4B04253777DA00E841F0 /* PassThroughNode-Bridging-Header.h */,
+				840D4B05253777DA00E841F0 /* PassThroughNode.entitlements */,
+			);
+			path = PassThroughNode;
+			sourceTree = "<group>";
+		};
+		840D4B0D2537849F00E841F0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				840D4B0E2537849F00E841F0 /* AudioToolbox.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
 		};
 		841D0A7624FED209008F6305 /* AudioUtilities */ = {
 			isa = PBXGroup;
@@ -326,8 +410,10 @@
 				842369B524FEC2BC001266BE /* AudioFrameworkTests */,
 				84ACE02625191008003963FD /* AudioFrameworkDemo */,
 				84ACE03C2519100B003963FD /* AudioFrameworkDemoTests */,
+				840D4AFA253777DA00E841F0 /* PassThroughNode */,
 				842369A924FEC2BC001266BE /* Products */,
 				9617728FADD13898116E6918 /* Pods */,
+				840D4B0D2537849F00E841F0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -338,6 +424,7 @@
 				842369B124FEC2BC001266BE /* AudioFrameworkTests.xctest */,
 				84ACE02525191008003963FD /* AudioFrameworkDemo.app */,
 				84ACE0392519100B003963FD /* AudioFrameworkDemoTests.xctest */,
+				840D4AF9253777DA00E841F0 /* PassThroughNode.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -481,6 +568,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				840D4B162537915600E841F0 /* PassThroughNode-Bridging-Header.h in Headers */,
+				840D4B152537914F00E841F0 /* PassThroughNodeAudioUnit.h in Headers */,
 				842369B924FEC2BC001266BE /* AudioFramework.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -488,6 +577,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		840D4AF8253777DA00E841F0 /* PassThroughNode */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 840D4B09253777DA00E841F0 /* Build configuration list for PBXNativeTarget "PassThroughNode" */;
+			buildPhases = (
+				840D4AF5253777DA00E841F0 /* Sources */,
+				840D4AF6253777DA00E841F0 /* Frameworks */,
+				840D4AF7253777DA00E841F0 /* Resources */,
+				840D4B132537906500E841F0 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PassThroughNode;
+			productName = PassThroughNode;
+			productReference = 840D4AF9253777DA00E841F0 /* PassThroughNode.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		842369A724FEC2BC001266BE /* AudioFramework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 842369BC24FEC2BC001266BE /* Build configuration list for PBXNativeTarget "AudioFramework" */;
@@ -532,11 +639,13 @@
 				84ACE02225191008003963FD /* Frameworks */,
 				84ACE02325191008003963FD /* Resources */,
 				84ACE04B251910B5003963FD /* Embed Frameworks */,
+				840D4B0C253777DA00E841F0 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				84ACE04A251910B4003963FD /* PBXTargetDependency */,
+				840D4B07253777DA00E841F0 /* PBXTargetDependency */,
 			);
 			name = AudioFrameworkDemo;
 			productName = AudioFrameworkDemo;
@@ -571,6 +680,9 @@
 				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = UltraMusician;
 				TargetAttributes = {
+					840D4AF8253777DA00E841F0 = {
+						CreatedOnToolsVersion = 11.1;
+					};
 					842369A724FEC2BC001266BE = {
 						CreatedOnToolsVersion = 11.1;
 					};
@@ -603,11 +715,20 @@
 				842369B024FEC2BC001266BE /* AudioFrameworkTests */,
 				84ACE02425191008003963FD /* AudioFrameworkDemo */,
 				84ACE0382519100B003963FD /* AudioFrameworkDemoTests */,
+				840D4AF8253777DA00E841F0 /* PassThroughNode */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		840D4AF7253777DA00E841F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				840D4B02253777DA00E841F0 /* AudioUnitViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		842369A624FEC2BC001266BE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -654,6 +775,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		840D4AF5253777DA00E841F0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				840D4AFF253777DA00E841F0 /* AudioUnitViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		842369A424FEC2BC001266BE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -672,6 +801,7 @@
 				8460307B250803FA00CB9844 /* ChannelPluginData.swift in Sources */,
 				84DF4105252FBC8E0084AE61 /* PluginFactory.swift in Sources */,
 				842369F724FEC44C001266BE /* PluginData.swift in Sources */,
+				840D4B142537914A00E841F0 /* PassThroughNodeAudioUnit.m in Sources */,
 				8461C119252EA72400147933 /* AudioUnitGenericView.swift in Sources */,
 				84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */,
 				84070C5E24FF5D5900E572E7 /* MixerViewController.swift in Sources */,
@@ -780,6 +910,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		840D4B07253777DA00E841F0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 840D4AF8253777DA00E841F0 /* PassThroughNode */;
+			targetProxy = 840D4B06253777DA00E841F0 /* PBXContainerItemProxy */;
+		};
 		842369B424FEC2BC001266BE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 842369A724FEC2BC001266BE /* AudioFramework */;
@@ -798,6 +933,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		840D4B00253777DA00E841F0 /* AudioUnitViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				840D4B01253777DA00E841F0 /* Base */,
+			);
+			name = AudioUnitViewController.xib;
+			sourceTree = "<group>";
+		};
 		84ACE0302519100B003963FD /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -809,6 +952,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		840D4B0A253777DA00E841F0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PassThroughNode/PassThroughNode.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NL76446BRD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = PassThroughNode/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = UltraMusician.AudioFrameworkDemo.PassThroughNode;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "PassThroughNode/PassThroughNode-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		840D4B0B253777DA00E841F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PassThroughNode/PassThroughNode.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NL76446BRD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_FILE = PassThroughNode/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = UltraMusician.AudioFrameworkDemo.PassThroughNode;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "PassThroughNode/PassThroughNode-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		842369BA24FEC2BC001266BE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1021,6 +1208,7 @@
 		84ACE0412519100B003963FD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AudioFrameworkDemo/AudioFrameworkDemo.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1042,6 +1230,7 @@
 		84ACE0422519100B003963FD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = AudioFrameworkDemo/AudioFrameworkDemo.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -1107,6 +1296,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		840D4B09253777DA00E841F0 /* Build configuration list for PBXNativeTarget "PassThroughNode" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				840D4B0A253777DA00E841F0 /* Debug */,
+				840D4B0B253777DA00E841F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		842369A224FEC2BC001266BE /* Build configuration list for PBXProject "AudioFramework" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

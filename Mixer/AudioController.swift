@@ -14,6 +14,7 @@ import Foundation
 import AVFoundation
 import Cocoa
 import CoreAudioKit
+//import PassThroughNode
 
 public class AudioController: NSObject {
     public static var shared = AudioController()
@@ -30,18 +31,29 @@ public class AudioController: NSObject {
     private override init (){
         super.init()
         initialize()
+        test()
+    }
+    func test(){
+//        let passThrough = AudioNodeFactory.passThrough()
+//        print(passThrough)
     }
     public func initialize(){
         musicalContextBlock = getMusicalContext
-        createChannels(numInstChannels: 1, numAuxChannels: 0, numBusses: 1)
+//        isFirstNodeConnected(message: "AudioController.initialize About to create channels.")
+
+        createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
+//        isFirstNodeConnected(message: "AudioController.initialize finished creating channels.")
+
         sequencer = AVAudioSequencer(audioEngine: engine)
-        //test()
+//        isFirstNodeConnected(message: "AudioController.initialize finished creating sequencer.")
         NotificationCenter.default.addObserver(
              self,
              selector: #selector(handleInterruption),
              name: NSNotification.Name.AVAudioEngineConfigurationChange,
              object: engine)
-        engine.prepare()
+//        isFirstNodeConnected(message: "AudioController.initialize about to prepare.")
+//        engine.prepare()
+//        isFirstNodeConnected(message: "AudioController.initialize end of init function.")
     }
     @objc func handleInterruption(sender: Any){
         print("Yay! Engine status changed!")
@@ -73,6 +85,7 @@ public class AudioController: NSObject {
             instrumentControllers.append(channelController)
             connectToMaster(channelController: channelController)
         }
+        isFirstNodeConnected(message: "Just created instrument channels")
         //Aux Channels
         for i in 0..<numAuxChannels{
             let auxController = AuxChannelController(delegate: self)
@@ -86,6 +99,23 @@ public class AudioController: NSObject {
             let bus = AudioNodeFactory.mixerNode(name: name)
             engine.attach(bus)
             busses.append(bus)
+        }
+    }
+    func isFirstNodeConnected(message: String){
+        if instrumentControllers.count == 0 {
+            print(message + " ************InstrumentControllers empty.**********************")
+            return
+        }
+        let channelController = instrumentControllers[0]
+        if let input = channelController.inputNode{
+            let outputConnections = engine.outputConnectionPoints(for: input, outputBus: 0)
+            if outputConnections.count == 0 {
+                print(message + "*************INPUT NODE DISCONNECTED*****************")
+            } else {
+                print(message + "******************INPUT node OK!!****************")
+            }
+        } else {
+            print(message + "*****************INPUT node nil.**************")
         }
     }
     private func connectToMaster(channelController : ChannelController){
@@ -138,7 +168,7 @@ public class AudioController: NSObject {
             channelController.set(channelPluginData: channelPluginData)
         }
         stemCreatorModel = audioModel.stemCreatorModel
-        engine.prepare()
+//        engine.prepare()
     }
     private func removeAll(){
         for channelController in allChannelControllers{
@@ -332,21 +362,7 @@ public class AudioController: NSObject {
         }
     }
     public func visualize(){
-//        print("==============INST=============")
-//        for i in 0..<instrumentControllers.count {
-//            let controller = instrumentControllers[i]
-//            print("AudioController visualizing instrumentController \(i)")
-//            controller.visualize()
-//        }
-//        print("==============AUX=============")
-//        for i in 0..<auxControllers.count{
-//            let controller = auxControllers[i]
-//            print("AudioController visualizing auxController \(i)")
-//            controller.visualize()
-//        }
-//        print("============MASTER===============")
-//        print("AudioController visualizing masterController")
-//        masterController.visualize()
+        isFirstNodeConnected(message: "Visualize called.")
         for channelController in allChannelControllers{
             if channelController.isSelected {
                 channelController.visualize()
@@ -379,7 +395,7 @@ extension AudioController : ChannelControllerDelegate {
         guard let destinationNode = connections[0].node else { 
             return BusInfo()
         }
-        if destinationNode == masterController.inputNode! {
+        if destinationNode === masterController.inputNode {
             return BusInfo(number: 0, type: .master)
         }
         for i in 0..<busses.count{
@@ -485,7 +501,7 @@ extension AudioController : ChannelControllerDelegate {
             engine.disconnectNodeOutput(sourceNode) 
         }
         guard let destinationNode = locateDestinationNode(type: destinationType, number: destinationNumber) else {
-            log("Error: AudioController.connect(sourceNode, destinationNumber, destinationType) failed because it couldn't locate destination node.")
+            print("Error: AudioController.connect(sourceNode, destinationNumber, destinationType) failed because it couldn't locate destination node.")
             return
         }
         engine.pause()
@@ -531,8 +547,7 @@ extension AudioController : ChannelControllerDelegate {
 //        engine.pause()
         engine.connect(sourceNode, to: destinationNode, format: format)
         if !isConnected(sourceNode: sourceNode, destinationNode: destinationNode){
-            
-            log("AudioController.connect() failed to connect \(sourceNode) to \(destinationNode)")
+            print("AudioController.connect() \(sourceNode) is not connected to \(destinationNode). Connection might be pending, meaning it will become active later.")
         }
     }
 }
