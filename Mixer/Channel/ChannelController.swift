@@ -102,12 +102,6 @@ class ChannelController : ChannelViewDelegate {
         for i in 1..<audioUnits.count{
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
-            if !attachedNodes.contains(previousUnit){
-                delegate.engine.attach(previousUnit)
-            }
-            if !attachedNodes.contains(thisUnit){
-                delegate.engine.attach(thisUnit)
-            }
             if attachedNodes.contains(previousUnit), attachedNodes.contains(thisUnit){
                 delegate.connect(sourceNode: previousUnit, destinationNode: thisUnit)
             } else {
@@ -123,10 +117,6 @@ class ChannelController : ChannelViewDelegate {
             connectionPoints.append(connectionPoint)
         }
         delegate.engine.connect(sendSplitterNode, to: connectionPoints, fromBus: 0, format: format)
-        //        print("=======================================")
-        //        print("Just finished connnecting nodes. Graph = ")
-        //        visualize()
-        //        print("=======================================")
     }
     private func disconnectNodes(includeLast: Bool = false){
         let nodes = allAudioUnits()
@@ -267,10 +257,25 @@ class ChannelController : ChannelViewDelegate {
         }
         let effect = effects[number]
         let audioUnit = effect.auAudioUnit
+        let existingContext = audioUnit.musicalContextBlock
+
         audioUnit.fullState = pluginData.state
+        
+        let existingContext2 = audioUnit.musicalContextBlock
+
+        //d,d,i,d,i,d
+        var d1 = 0.0
+        var d2 = 0.0
+        var d3 = 0.0
+        var d4 = 0.0
+        var i1 = 0
+        var i2 = 0
+        existingContext2!(&d1, &d2, &i1, &d3, &i2, &d4)
+//        let contextBlock = delegate.contextBlock //TODO: For testing purposes. Remove.
+//        audioUnit.musicalContextBlock = contextBlock
     }
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, showInterface: Bool) {
-        let contextBlock = delegate.contextBlock
+        let contextBlock = delegate.contextBlock()
         let audioUnitEffect = AudioNodeFactory.effect(description: desc, context: contextBlock) 
         set(effect: audioUnitEffect, number: number)
         reconnectNodes()
@@ -409,7 +414,7 @@ class ChannelController : ChannelViewDelegate {
     }
     func select(description: AudioComponentDescription, type: PluginType, number: Int) {
         if type == .effect {
-            let contextBlock = delegate.contextBlock
+            let contextBlock = delegate.contextBlock()
             let audioUnit = AudioNodeFactory.effect(description: description, context: contextBlock) 
             set(effect: audioUnit, number: number)
             reconnectNodes()

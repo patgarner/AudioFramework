@@ -28,7 +28,7 @@ class InstrumentChannelController : ChannelController{
         fullState = pluginData.state
     }
     private func loadInstrument(fromDescription desc: AudioComponentDescription, showInterface: Bool){
-        let context = delegate.contextBlock
+        let context = delegate.contextBlock()
         let audioUnit = AudioNodeFactory.instrument(description: desc, context: context)
         if inputNode != nil {
             delegate.engine.detach(inputNode!)

@@ -52,7 +52,7 @@ protocol ChannelControllerDelegate{
     func getBusInput(for node: AVAudioNode) -> Int? //Get input (for aux nodes)
     func connect(busNumber: Int, destinationNode: AVAudioNode) //Connects input (for aux nodes)
     func displayInterface(audioUnit: AVAudioUnit)
-    var contextBlock : AUHostMusicalContextBlock { get }
+    func contextBlock() -> AUHostMusicalContextBlock
     func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode)
 }
 

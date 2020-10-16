@@ -34,26 +34,16 @@ public class AudioController: NSObject {
         test()
     }
     func test(){
-//        let passThrough = AudioNodeFactory.passThrough()
-//        print(passThrough)
     }
-    public func initialize(){
+    private func initialize(){
         musicalContextBlock = getMusicalContext
-//        isFirstNodeConnected(message: "AudioController.initialize About to create channels.")
-
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
-//        isFirstNodeConnected(message: "AudioController.initialize finished creating channels.")
-
         sequencer = AVAudioSequencer(audioEngine: engine)
-//        isFirstNodeConnected(message: "AudioController.initialize finished creating sequencer.")
         NotificationCenter.default.addObserver(
              self,
              selector: #selector(handleInterruption),
              name: NSNotification.Name.AVAudioEngineConfigurationChange,
              object: engine)
-//        isFirstNodeConnected(message: "AudioController.initialize about to prepare.")
-//        engine.prepare()
-//        isFirstNodeConnected(message: "AudioController.initialize end of init function.")
     }
     @objc func handleInterruption(sender: Any){
         print("Yay! Engine status changed!")
@@ -64,8 +54,9 @@ public class AudioController: NSObject {
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-        if delegate == nil { return false }
-        let context = delegate!.musicalContext
+        print("getMusicalContextCalled.")
+        if self.delegate == nil { return false }
+        let context = self.delegate!.musicalContext
         currentTempo?.pointee = context.currentTempo
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
         timeSignatureDenominator?.pointee = context.timeSignatureDenominator
@@ -73,6 +64,10 @@ public class AudioController: NSObject {
         sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
         currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
         return true
+        
+        //AudioController : ChannelControllerDelegate
+        //  ChannelController
+        //    AVAudioUnitEffect.musicalContextBlock
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
@@ -500,6 +495,7 @@ extension AudioController : ChannelControllerDelegate {
         if engine.outputConnectionPoints(for: sourceNode, outputBus: 0).count > 0{
             engine.disconnectNodeOutput(sourceNode) 
         }
+        if destinationNumber < 0 { return }
         guard let destinationNode = locateDestinationNode(type: destinationType, number: destinationNumber) else {
             print("Error: AudioController.connect(sourceNode, destinationNumber, destinationType) failed because it couldn't locate destination node.")
             return
@@ -532,16 +528,17 @@ extension AudioController : ChannelControllerDelegate {
             self.pluginDisplayDelegate?.display(viewController: auViewController)
         }
     }
-    var contextBlock: AUHostMusicalContextBlock {
-        return musicalContextBlock
+    func contextBlock() -> AUHostMusicalContextBlock {
+        //return musicalContextBlock
+        return getMusicalContext
     }
     func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode) {
         let attachedNodes = engine.attachedNodes
         if !attachedNodes.contains(sourceNode){
-            log("AudioController.connectNodes error: source node not attached to engine.")
+            engine.attach(sourceNode)
         }
         if !attachedNodes.contains(destinationNode){
-            log("AudioController.connectNodes error: destination node not attached to engine.")
+            engine.attach(destinationNode)
         }
         let format = sourceNode.outputFormat(forBus: 0)
 //        engine.pause()
