@@ -12,7 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 import Foundation
 
-public class ChannelPluginData : Codable, Equatable{  
+public class ChannelModel : Codable, Equatable{  
     public var instrumentPlugin = PluginData()
     public var effectPlugins : [PluginData] = []
     public var sends : [SendData] = []
@@ -78,7 +78,7 @@ public class ChannelPluginData : Codable, Equatable{
         try container.encode(id, forKey: .id)
         try container.encode(output, forKey: .output)
     }
-    public static func == (lhs: ChannelPluginData, rhs: ChannelPluginData) -> Bool {
+    public static func == (lhs: ChannelModel, rhs: ChannelModel) -> Bool {
         if lhs.busInput != rhs.busInput { return false }
         if lhs.id != rhs.id { return false }
         if lhs.trackName != rhs.trackName { return false }
@@ -91,6 +91,13 @@ public class ChannelPluginData : Codable, Equatable{
 public struct BusInfo: Codable{
     var number = -1
     var type = BusType.none
+    public init(){
+        
+    }
+    public init(number: Int, type: BusType){
+        self.number = number
+        self.type = type
+    }
 }
 
 public enum BusType : Int, Codable {

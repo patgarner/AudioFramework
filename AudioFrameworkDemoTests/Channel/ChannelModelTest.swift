@@ -20,8 +20,8 @@ class ChannelModelTest: XCTestCase {
     }
     
     func testEquality(){
-        let channelModel1 = ChannelPluginData()
-        let channelModel2 = ChannelPluginData()
+        let channelModel1 = ChannelModel()
+        let channelModel2 = ChannelModel()
         XCTAssert(channelModel1 == channelModel2)
         
         channelModel1.busInput = 9
@@ -61,7 +61,7 @@ class ChannelModelTest: XCTestCase {
     func testSerialization() {
         let encoder = JSONEncoder()
         let decoder = JSONDecoder()
-        let channelModel = ChannelPluginData()
+        let channelModel = ChannelModel()
         channelModel.busInput = 9
         channelModel.id = "orange"
     }

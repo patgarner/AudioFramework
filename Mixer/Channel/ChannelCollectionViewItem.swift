@@ -3,11 +3,11 @@
 //  
 /*
  Copyright 2020 David Mann Music LLC
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import Cocoa
@@ -132,7 +132,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             guard let sendData = channelViewDelegate.getSendData(sendNumber: i) else { continue }
             let sendLevelKnob = sendLevelKnobs[i]
             self.set(popupButton: sendLevelKnob, value: sendData.level, blackoutRegion: 0.2, minValue: 0, maxValue: 1)
-
+            
         }
         fillEffectsPopup()
         let effectsPopups = [audioFXPopup!, audioFXPopup2!]
@@ -169,7 +169,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             let manufacturer = item.manufacturerName
             let name = item.name
             if manufacturer == pluginSelection.manufacturer,
-            name == pluginSelection.name{
+                name == pluginSelection.name{
                 popup.selectItem(at: i)
                 break
             }
@@ -181,8 +181,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else if type == .midiInstrument{
             inputInstrumentChanged()
         }
+        print("MARS")
+        AudioController.shared.test()
+        print("NEPTUNE")
     }
     private func inputInstrumentChanged(){
+        AudioController.shared.test()
         let index = inputPopup.indexOfSelectedItem
         let component = instrumentsFlat[index]
         if let virtualInstrument = channelViewDelegate.getPluginSelection(pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
@@ -191,8 +195,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             return
         } else {
             channelViewDelegate.select(description: component.audioComponentDescription, type: .instrument, number: 0)
+            print("VENUS")
+            AudioController.shared.test()
+            print("JUPITER")
             return
         }
+        
     }
     private func audioInputChanged(){
         let index = inputPopup.indexOfSelectedItem
@@ -269,7 +277,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         inputPopup.removeAllItems()
         for instrument in instrumentsFlat{
             let string = instrument.manufacturerName + "-" + instrument.name
-
+            
             inputPopup.addItem(withTitle: string)
         }
         inputPopup.addItem(withTitle: "")
@@ -372,7 +380,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         let rotatedValue = (rawValue + 0.5).truncatingRemainder(dividingBy: 1.0)
         //Now we have a value between lowerLim and UpperLim
         let whiteoutRegion = 1.0 - blackoutRegion
-       
+        
         var completeness = (rotatedValue - blackoutRegion * 0.5) / whiteoutRegion
         if completeness < 0.000001 { completeness = 0 }
         let finalValue = (maxValue - minValue) * Float(completeness) + minValue
@@ -407,7 +415,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             channelViewDelegate.didSelectChannel()
             isSelected = newValue
         }
-
+        
     }
     public override var isSelected: Bool {
         didSet{

@@ -17,12 +17,12 @@
 		<key>AudioFrameworkDemo.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
-		<key>PassThroughNode.xcscheme_^#shared#^_</key>
+		<key>AudioFrameworkDemoTests.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>2</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
@@ -33,6 +33,16 @@
 			<true/>
 		</dict>
 		<key>842369B024FEC2BC001266BE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>84ACE02425191008003963FD</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>84ACE0382519100B003963FD</key>
 		<dict>
 			<key>primary</key>
 			<true/>

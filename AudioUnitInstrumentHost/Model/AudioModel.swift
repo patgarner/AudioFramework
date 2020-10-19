@@ -13,9 +13,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 import Foundation
 
 public class AudioModel : Codable{
-    public var instrumentChannels : [ChannelPluginData] = []
-    public var auxChannels : [ChannelPluginData] = []
-    public var masterChannel = ChannelPluginData()
+    public var instrumentChannels : [ChannelModel] = []
+    public var auxChannels : [ChannelModel] = []
+    public var masterChannel = ChannelModel()
     public var sends : [SendData] = []
     public var stemCreatorModel = StemCreatorModel()
     enum CodingKeys : CodingKey{
@@ -30,17 +30,17 @@ public class AudioModel : Codable{
     required public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         do {
-            instrumentChannels = try container.decode([ChannelPluginData].self, forKey: .instrumentChannels)
+            instrumentChannels = try container.decode([ChannelModel].self, forKey: .instrumentChannels)
         } catch {
             print("AllPluginData: failed to load instrument channels: Error: \(error)")
         }
         do {
-            auxChannels = try container.decode([ChannelPluginData].self, forKey: .auxChannels)
+            auxChannels = try container.decode([ChannelModel].self, forKey: .auxChannels)
         } catch {
             print("AllPluginData: failed to load aux channels: Error: \(error)")
         }
         do {
-            masterChannel = try container.decode(ChannelPluginData.self, forKey: .masterChannel)
+            masterChannel = try container.decode(ChannelModel.self, forKey: .masterChannel)
         } catch {
             print("AllPluginData: failed to load master channel: Error: \(error)")
         }

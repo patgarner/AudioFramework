@@ -9,15 +9,24 @@
 import Foundation
 import AVFoundation
 
-class InstrumentChannelController : ChannelController{
-    override func set(channelPluginData: ChannelPluginData){
+public class InstrumentChannelController : ChannelController{
+    override func set(channelPluginData: ChannelModel){
         super.set(channelPluginData: channelPluginData)
         loadInstrument(pluginData: channelPluginData.instrumentPlugin)
     }
-    override func select(description: AudioComponentDescription, type: PluginType, number: Int) {
+    override public func select(description: AudioComponentDescription, type: PluginType, number: Int) {
         if type == .instrument {
+            print("ARM")
+            AudioController.shared.test()
+            print("LEG")
             loadInstrument(fromDescription: description, showInterface: true)
+            print("EYE")
+            AudioController.shared.test()
+            print("BALL")
             reconnectNodes()
+            print("FACE")
+            AudioController.shared.test()
+            print("LICK")
         } else {
             super.select(description: description, type: type, number: number)
         }
@@ -28,8 +37,21 @@ class InstrumentChannelController : ChannelController{
         fullState = pluginData.state
     }
     private func loadInstrument(fromDescription desc: AudioComponentDescription, showInterface: Bool){
+        print("ALIEN")
+        AudioController.shared.test()
+        print("CONAN")
         let context = delegate.contextBlock()
+        print("ONE")
+        AudioController.shared.test()
+        print("TWO")
+        delegate.engine.pause()
+        print("APPLE")
+        AudioController.shared.test()
+        print("ORANGE")
         let audioUnit = AudioNodeFactory.instrument(description: desc, context: context)
+        print("GRAPE")
+        AudioController.shared.test()
+        print("STRAWBERRY")
         if inputNode != nil {
             delegate.engine.detach(inputNode!)
         }
@@ -39,14 +61,17 @@ class InstrumentChannelController : ChannelController{
         if showInterface{
             delegate.displayInterface(audioUnit: audioUnit)
         }
+        print("InstrumentChannelController.loadInstrument about to check context FART")
+        AudioController.shared.test()
+        print("InstrumentChannelController.loadInstrument finished checking context BUTT")
     }
-    func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
-        guard let au = self.auAudioUnit else { completion(nil) ; return }
-        au.requestViewController { (vc) in
-            completion(vc.map(InterfaceInstance.viewController))
-        }
-    }
-
+    //    func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
+    //        guard let au = self.auAudioUnit else { completion(nil) ; return }
+    //        au.requestViewController { (vc) in
+    //            completion(vc.map(InterfaceInstance.viewController))
+    //        }
+    //    }
+    
     private var fullState : [String : Any]? {
         get {
             guard let au = self.auAudioUnit else { return nil }
@@ -83,7 +108,7 @@ class InstrumentChannelController : ChannelController{
     public func allNotesOff(){
         
     }
-    override func getChannelPluginData() -> ChannelPluginData{
+    override func getChannelPluginData() -> ChannelModel{
         let channelPluginData = super.getChannelPluginData()
         let state = fullState
         let desc = audioComponentDescription
@@ -102,7 +127,7 @@ class InstrumentChannelController : ChannelController{
         guard let instrumentHost = inputNode as? AVAudioUnitMIDIInstrument else { return nil }
         return instrumentHost.auAudioUnit
     }
-    override func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+    override public func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect {
             let pluginSelection = super.getPluginSelection(pluginType: pluginType, pluginNumber: pluginNumber)
             return pluginSelection
@@ -117,7 +142,7 @@ class InstrumentChannelController : ChannelController{
         guard let avAudioUnit = inputNode as? AVAudioUnitMIDIInstrument else { return nil }
         return avAudioUnit
     }
-    override func displayInterface(type: PluginType, number: Int) {
+    override public func displayInterface(type: PluginType, number: Int) {
         if type == .instrument {
             if let audioUnit = inputNode as? AVAudioUnitMIDIInstrument {
                 delegate.displayInterface(audioUnit: audioUnit)

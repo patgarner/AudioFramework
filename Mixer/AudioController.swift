@@ -14,7 +14,6 @@ import Foundation
 import AVFoundation
 import Cocoa
 import CoreAudioKit
-//import PassThroughNode
 
 public class AudioController: NSObject {
     public static var shared = AudioController()
@@ -27,16 +26,26 @@ public class AudioController: NSObject {
     private var busses : [UltraMixerNode] = []
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
-    private var musicalContextBlock : AUHostMusicalContextBlock!
+    var context : AUHostMusicalContextBlock!
     private override init (){
         super.init()
         initialize()
-        test()
     }
-    func test(){
+    public func test(){
+        let inst1 = instrumentControllers[0]
+        if let instNode = inst1.inputNode as? AVAudioUnitMIDIInstrument {
+            let context = instNode.auAudioUnit.musicalContextBlock
+            if context == nil {
+                print("context is nil")
+            } else {
+                print("context is not nil")
+            }
+        } else {
+            print("Node == nil")
+        }
     }
     private func initialize(){
-        musicalContextBlock = getMusicalContext
+        context = getMusicalContext
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
         sequencer = AVAudioSequencer(audioEngine: engine)
         NotificationCenter.default.addObserver(
@@ -54,9 +63,11 @@ public class AudioController: NSObject {
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-        print("getMusicalContextCalled.")
-        if self.delegate == nil { return false }
-        let context = self.delegate!.musicalContext
+        guard let context = AudioController.shared.delegate?.musicalContext else { 
+            print("getMusicalContext.delegate.context = nil")
+            return false
+            
+        }
         currentTempo?.pointee = context.currentTempo
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
         timeSignatureDenominator?.pointee = context.timeSignatureDenominator
@@ -64,10 +75,6 @@ public class AudioController: NSObject {
         sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
         currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
         return true
-        
-        //AudioController : ChannelControllerDelegate
-        //  ChannelController
-        //    AVAudioUnitEffect.musicalContextBlock
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
@@ -185,11 +192,11 @@ public class AudioController: NSObject {
         allControllers.append(masterController)
         return allControllers
     }
-    public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
-        if channel >= instrumentControllers.count { completion(nil) }
-        let host = instrumentControllers[channel]
-        host.requestInstrumentInterface(completion)
-    }
+//    public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
+//        if channel >= instrumentControllers.count { completion(nil) }
+//        let host = instrumentControllers[channel]
+//        host.requestInstrumentInterface(completion)
+//    }
     func reconnectSelectedChannels(){
         for channelController in allChannelControllers{
             if channelController.isSelected {
@@ -382,7 +389,7 @@ public class AudioController: NSObject {
 }
 
 extension AudioController : ChannelControllerDelegate {
-    func getOutputDestination(for node: AVAudioNode) -> BusInfo{
+    public func getOutputDestination(for node: AVAudioNode) -> BusInfo{
         let connections = engine.outputConnectionPoints(for: node, outputBus: 0)
         if connections.count != 1 {
             return BusInfo()
@@ -402,10 +409,10 @@ extension AudioController : ChannelControllerDelegate {
         }
         return BusInfo()
     }
-    func log(_ message: String) {
+    public func log(_ message: String) {
         delegate?.log(message)
     }
-    func getBusInput(for node: AVAudioNode) -> Int? {
+    public func getBusInput(for node: AVAudioNode) -> Int? {
         guard let inputConnection = engine.inputConnectionPoint(for: node, inputBus: 0) else { return nil }
         guard let sourceNode = inputConnection.node else { return nil }
         for i in 0..<busses.count{
@@ -414,7 +421,7 @@ extension AudioController : ChannelControllerDelegate {
         }
         return nil
     }
-    func connect(busNumber : Int, destinationNode: AVAudioNode) {
+    public func connect(busNumber : Int, destinationNode: AVAudioNode) {
         engine.disconnectNodeInput(destinationNode)
         if busNumber < 0 || busNumber >= busses.count { return }
         let sourceBus = busses[busNumber]
@@ -464,7 +471,7 @@ extension AudioController : ChannelControllerDelegate {
         }
         return false
     }
-    func soloDidChange() {
+    public func soloDidChange() {
         var soloMode = false
         for channelController in instrumentControllers{
             if channelController.solo {
@@ -483,15 +490,15 @@ extension AudioController : ChannelControllerDelegate {
             }
         }
     }
-    func didSelectChannel(){
+    public func didSelectChannel(){
         for channel in allChannelControllers{
             channel.isSelected = false
         }
     }
-    var numBusses : Int{
+    public var numBusses : Int{
         return busses.count
     }
-    func connect(sourceNode: AVAudioNode, destinationNumber: Int, destinationType: BusType){
+    public func connect(sourceNode: AVAudioNode, destinationNumber: Int, destinationType: BusType){
         if engine.outputConnectionPoints(for: sourceNode, outputBus: 0).count > 0{
             engine.disconnectNodeOutput(sourceNode) 
         }
@@ -519,7 +526,7 @@ extension AudioController : ChannelControllerDelegate {
         } 
         return destinationNode
     }
-    func displayInterface(audioUnit: AVAudioUnit) {
+    public func displayInterface(audioUnit: AVAudioUnit) {
         audioUnit.auAudioUnit.requestViewController { (viewController) in
             guard let auViewController = viewController as? AUViewController else {
                 self.log("Error: AudioController.displayInterface viewController = nil")
@@ -528,11 +535,26 @@ extension AudioController : ChannelControllerDelegate {
             self.pluginDisplayDelegate?.display(viewController: auViewController)
         }
     }
-    func contextBlock() -> AUHostMusicalContextBlock {
-        //return musicalContextBlock
-        return getMusicalContext
+//    func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
+//                           timeSignatureNumerator : UnsafeMutablePointer<Double>?,
+//                           timeSignatureDenominator : UnsafeMutablePointer<Int>?,
+//                           currentBeatPosition: UnsafeMutablePointer<Double>?,
+//                           sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
+//                           currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
+//        if self.delegate == nil { return false }
+//        let context = self.delegate!.musicalContext
+//        currentTempo?.pointee = context.currentTempo
+//        timeSignatureNumerator?.pointee = context.timeSignatureNumerator
+//        timeSignatureDenominator?.pointee = context.timeSignatureDenominator
+//        currentBeatPosition?.pointee = context.currentBeatPosition
+//        sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
+//        currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
+//        return true
+//    }
+    public func contextBlock() -> AUHostMusicalContextBlock {
+        return context
     }
-    func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode) {
+    public func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode) {
         let attachedNodes = engine.attachedNodes
         if !attachedNodes.contains(sourceNode){
             engine.attach(sourceNode)

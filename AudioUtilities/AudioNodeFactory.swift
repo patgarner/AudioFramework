@@ -10,7 +10,6 @@ import Foundation
 import AVFoundation
 import AudioToolbox
 import CoreAudioKit
-//import PassThroughNode
 
 class AudioNodeFactory{
     class func mixerNode(name: String) -> UltraMixerNode{
@@ -18,23 +17,16 @@ class AudioNodeFactory{
         mixerNode.name = name
         return mixerNode
     }
-    class func effect(description: AudioComponentDescription, context: @escaping AUHostMusicalContextBlock) -> AVAudioUnitEffect{
+    class func effect(description: AudioComponentDescription, context: AUHostMusicalContextBlock?) -> AVAudioUnitEffect{
         let plugin = AVAudioUnitEffect(audioComponentDescription: description)
         plugin.auAudioUnit.musicalContextBlock = context
-        let resultingContext = plugin.auAudioUnit.musicalContextBlock
-        //d,d,i,d,i,d
-        var d1 = 0.0
-        var d2 = 0.0
-        var d3 = 0.0
-        var d4 = 0.0
-        var i1 = 0
-        var i2 = 0
-        resultingContext!(&d1, &d2, &i1, &d3, &i2, &d4)
         return plugin
+        
+        //An audio unit accessing this property should cache it in realtime-safe storage before beginning to render.
     }
-    class func instrument(description: AudioComponentDescription, context: @escaping AUHostMusicalContextBlock) -> AVAudioUnitMIDIInstrument{
+    class func instrument(description: AudioComponentDescription, context: AUHostMusicalContextBlock?) -> AVAudioUnitMIDIInstrument{
         let plugin = AVAudioUnitMIDIInstrument(audioComponentDescription: description)
-        plugin.auAudioUnit.musicalContextBlock = context
+        plugin.auAudioUnit.musicalContextBlock = context     
         let resultingContext = plugin.auAudioUnit.musicalContextBlock
         return plugin
     }

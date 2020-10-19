@@ -41,7 +41,7 @@ public protocol ChannelViewDelegate {
     func select(description: AudioComponentDescription, type: PluginType, number: Int)
 }
 
-protocol ChannelControllerDelegate{
+public protocol ChannelControllerDelegate{
     var numBusses : Int { get }
     func log(_ message: String)
     var engine : AVAudioEngine { get }

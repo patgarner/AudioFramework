@@ -15,7 +15,7 @@ public enum InterfaceInstance {
 }
 
 protocol VirtualInstrumentHost {
-    func loadInstrument(fromDescription desc: AudioComponentDescription, context: @escaping AUHostMusicalContextBlock/*, completion: @escaping (Bool)->()*/)
+    func loadInstrument(fromDescription desc: AudioComponentDescription, context: AUHostMusicalContextBlock?)
     func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8)
     func noteOff(_ note: UInt8, channel: UInt8)
     func set(volume: UInt8, channel: UInt8)

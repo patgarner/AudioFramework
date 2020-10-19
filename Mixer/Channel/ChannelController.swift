@@ -13,7 +13,7 @@
 import Foundation
 import AVFoundation
 
-class ChannelController : ChannelViewDelegate {
+public class ChannelController : ChannelViewDelegate {
     var delegate : ChannelControllerDelegate!
     weak var channelView : ChannelCollectionViewItem?
     var inputNode : AVAudioNode!
@@ -24,9 +24,9 @@ class ChannelController : ChannelViewDelegate {
     private var sendOutputs : [UltraMixerNode] = []
     weak var outputNode : UltraMixerNode!
     //Model
-    var trackName = ""
+    public var trackName = ""
     var id = UUID().uuidString
-    var solo : Bool = false {
+    public var solo : Bool = false {
         didSet {
             delegate.soloDidChange()
         }
@@ -52,8 +52,8 @@ class ChannelController : ChannelViewDelegate {
     }
     public init(){
     }
-    func getChannelPluginData() -> ChannelPluginData{
-        let channelPluginData = ChannelPluginData()
+    func getChannelPluginData() -> ChannelModel{
+        let channelPluginData = ChannelModel()
         for effect in effects{
             let effectPluginData = PluginData()
             effectPluginData.audioComponentDescription = effect.audioComponentDescription
@@ -76,7 +76,7 @@ class ChannelController : ChannelViewDelegate {
         channelPluginData.id = id
         return channelPluginData
     }
-    func set(channelPluginData: ChannelPluginData){
+    func set(channelPluginData: ChannelModel){
         for effectNumber in 0..<channelPluginData.effectPlugins.count{
             let pluginData = channelPluginData.effectPlugins[effectNumber]
             loadEffect(pluginData: pluginData, number: effectNumber)
@@ -211,7 +211,7 @@ class ChannelController : ChannelViewDelegate {
             }
         }
     }
-    var mute : Bool {
+    public var mute : Bool {
         get {
             if muteNode == nil { return false }
             if muteNode!.outputVolume > 0 {
@@ -239,7 +239,7 @@ class ChannelController : ChannelViewDelegate {
         }
     }
     
-    func displayInterface(type: PluginType, number: Int) {
+    public func displayInterface(type: PluginType, number: Int) {
         if type == .effect, let effect = getEffect(number: number) {
             delegate.displayInterface(audioUnit: effect)
         }
@@ -257,25 +257,12 @@ class ChannelController : ChannelViewDelegate {
         }
         let effect = effects[number]
         let audioUnit = effect.auAudioUnit
-        let existingContext = audioUnit.musicalContextBlock
-
         audioUnit.fullState = pluginData.state
         
-        let existingContext2 = audioUnit.musicalContextBlock
-
-        //d,d,i,d,i,d
-        var d1 = 0.0
-        var d2 = 0.0
-        var d3 = 0.0
-        var d4 = 0.0
-        var i1 = 0
-        var i2 = 0
-        existingContext2!(&d1, &d2, &i1, &d3, &i2, &d4)
-//        let contextBlock = delegate.contextBlock //TODO: For testing purposes. Remove.
-//        audioUnit.musicalContextBlock = contextBlock
     }
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, showInterface: Bool) {
-        let contextBlock = delegate.contextBlock()
+        let contextBlock = AudioController.shared.contextBlock()
+        delegate.engine.stop()
         let audioUnitEffect = AudioNodeFactory.effect(description: desc, context: contextBlock) 
         set(effect: audioUnitEffect, number: number)
         reconnectNodes()
@@ -304,7 +291,7 @@ class ChannelController : ChannelViewDelegate {
         return effects[number]
     }
     
-    var pan : Float {
+    public var pan : Float {
         get {
             return outputNode.pan
         }
@@ -331,7 +318,7 @@ class ChannelController : ChannelViewDelegate {
     ///////////////////////////////////////////////////////////////////////////////
     // ChannelViewDelegate2
     ///////////////////////////////////////////////////////////////////////////////
-    var volume : Float {
+    public var volume : Float {
         get {
             return outputNode.outputVolume
         }
@@ -339,14 +326,14 @@ class ChannelController : ChannelViewDelegate {
             outputNode.outputVolume = newValue
         }
     }
-    func deselectEffect(number: Int){
+    public func deselectEffect(number: Int){
         if number < 0 || number >= effects.count{
             return
         }
         effects.remove(at: number)
         reconnectNodes()
     }
-    func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
+    public func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect{
             guard let effect = getEffect(number: pluginNumber) else { return nil }
             let manufacturer = effect.manufacturerName
@@ -357,18 +344,18 @@ class ChannelController : ChannelViewDelegate {
             return nil
         }
     }
-    func setSend(volume: Float, sendNumber: Int){
+    public func setSend(volume: Float, sendNumber: Int){
         if sendNumber < 0 || sendNumber >= sendOutputs.count { return }
         let sendOutput = sendOutputs[sendNumber]
         sendOutput.outputVolume = volume
     }
-    func getSendData(sendNumber: Int) -> SendData?{
+    public func getSendData(sendNumber: Int) -> SendData?{
         guard let sendOutput = get(sendNumber: sendNumber) else { return nil }
         let sendData = SendData(busNumber: -1, level: sendOutput.outputVolume) //TODO: Get actual bus number
         return sendData
     }
     
-    func getDestination(type: ConnectionType, number: Int) -> BusInfo{
+    public func getDestination(type: ConnectionType, number: Int) -> BusInfo{
         var sourceNode : AVAudioNode!
         if type == .output{
             sourceNode = outputNode
@@ -381,22 +368,22 @@ class ChannelController : ChannelViewDelegate {
         return destination
     }
     
-    func selectInput(busNumber: Int){ //Only Aux nodes need this
+    public func selectInput(busNumber: Int){ //Only Aux nodes need this
         guard let inputNode = inputNode else {
             delegate.log("ChannelController could not set input bus because input node is empty")
             return
         }
         delegate.connect(busNumber: busNumber, destinationNode: inputNode)
     }
-    func getBusInputNumber() -> Int?{
+    public func getBusInputNumber() -> Int?{
         guard let inputNode = inputNode else { return nil }
         let busNumber = delegate.getBusInput(for: inputNode)
         return busNumber
     }
-    func didSelectChannel() {
+    public func didSelectChannel() {
         delegate.didSelectChannel()
     }
-    func connect(sourceType: ConnectionType, sourceNumber: Int = 0, destinationType: BusType, destinationNumber: Int = 0){
+    public func connect(sourceType: ConnectionType, sourceNumber: Int = 0, destinationType: BusType, destinationNumber: Int = 0){
         var sourceNode : AVAudioNode!
         if sourceType == .output{
             sourceNode = outputNode
@@ -409,12 +396,14 @@ class ChannelController : ChannelViewDelegate {
         delegate.connect(sourceNode: sourceNode!, destinationNumber: destinationNumber, destinationType: destinationType)
     }
     
-    var numBusses : Int { //Pass through
+    public var numBusses : Int { //Pass through
         return delegate.numBusses
     }
-    func select(description: AudioComponentDescription, type: PluginType, number: Int) {
+    public func select(description: AudioComponentDescription, type: PluginType, number: Int) {
         if type == .effect {
-            let contextBlock = delegate.contextBlock()
+            //let contextBlock = delegate.contextBlock()
+            let contextBlock = AudioController.shared.contextBlock()
+            delegate.engine.stop()
             let audioUnit = AudioNodeFactory.effect(description: description, context: contextBlock) 
             set(effect: audioUnit, number: number)
             reconnectNodes()
@@ -459,9 +448,12 @@ class ChannelController : ChannelViewDelegate {
         }
         if let midiInstrument = node as? AVAudioUnitMIDIInstrument{
             let string = midiInstrument.manufacturerName
+            let context = midiInstrument.auAudioUnit.musicalContextBlock
             return string
         }
-        if node === inputNode { return "InputNode" }
+        if node === inputNode {
+            return "InputNode" 
+        }
         for i in 0..<effects.count{
             let effect = effects[i]
             if node === effect {

@@ -9,37 +9,8 @@
 import Foundation
 import AVFoundation
 
-class AuxChannelController : ChannelController{
-//    override func createIONodes() {
-//        super.createIONodes()
-//        let inputNode = AudioNodeFactory.mixerNode(name: "AuxInput")
-//        self.delegate.engine.attach(inputNode)
-//        self.inputNode = inputNode
-//    }
-//    override func allAudioUnits(includeSends: Bool) -> [AVAudioNode] {
-//        var audioUnits : [AVAudioNode] = []
-//        if inputNode != nil {
-//            audioUnits.append(inputNode!)
-//        }
-//        audioUnits.append(contentsOf: effects)
-//        if muteNode != nil{
-//            audioUnits.append(muteNode!)
-//        }
-//        if soloNode != nil {
-//            audioUnits.append(soloNode!)
-//        }
-//        if sendSplitterNode != nil{
-//            audioUnits.append(sendSplitterNode!)
-//        }
-//        if includeSends{
-//            audioUnits.append(contentsOf: sendOutputs)
-//        }
-//        if outputNode != nil {
-//            audioUnits.append(outputNode!)
-//        }
-//        return audioUnits
-//    }
-    override func getChannelPluginData() -> ChannelPluginData {
+public class AuxChannelController : ChannelController{
+    override func getChannelPluginData() -> ChannelModel {
         let pluginData = super.getChannelPluginData()
         guard let input = inputNode else {
             return pluginData
@@ -51,7 +22,7 @@ class AuxChannelController : ChannelController{
         }
         return pluginData
     }
-    override func set(channelPluginData: ChannelPluginData) {
+    override func set(channelPluginData: ChannelModel) {
         super.set(channelPluginData: channelPluginData)
         guard let inputNode = inputNode else { return }
         delegate.connect(busNumber:channelPluginData.busInput, destinationNode: inputNode)
