@@ -158,6 +158,8 @@ extension MixerViewController : NSCollectionViewDataSource{
 extension MixerViewController : PluginDisplayDelegate{
     public func display(viewController: AUViewController) {
         DispatchQueue.main.async {
+            viewController.view.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin, .height, .width]
+            
             let window = NSWindow(contentViewController: viewController)
               window.makeKeyAndOrderFront(nil)    
         }
