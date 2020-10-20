@@ -47,7 +47,7 @@ public class MixerViewController: NSViewController, KeyDelegate {
         channelCollectionView.needsLayout = true
         channelCollectionView.needsDisplay = true
     }
-    func loadVC(){
+  /*  func loadVC(){
         guard let interfaceInstance = self.interfaceInstance  else { return }
         let contentRect = NSMakeRect(100, 100, 1000, 1000)
         let styles = NSWindow.StyleMask.resizable.rawValue | NSWindow.StyleMask.titled.rawValue | NSWindow.StyleMask.closable.rawValue
@@ -78,7 +78,7 @@ public class MixerViewController: NSViewController, KeyDelegate {
         }
         instrumentWindowController!.showWindow(self)  
         print("")
-    }
+    }*/
 
     
     
@@ -158,10 +158,9 @@ extension MixerViewController : NSCollectionViewDataSource{
 extension MixerViewController : PluginDisplayDelegate{
     public func display(viewController: AUViewController) {
         DispatchQueue.main.async {
-            viewController.view.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin, .height, .width]
-            
+            //viewController.view.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin, .height, .width]
             let window = NSWindow(contentViewController: viewController)
-              window.makeKeyAndOrderFront(nil)    
+            window.makeKeyAndOrderFront(nil)    
         }
     }
 }

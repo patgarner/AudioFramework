@@ -26,6 +26,7 @@ public class AudioController: NSObject {
     private var busses : [UltraMixerNode] = []
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
+    let beatGenerator = BeatGenerator(tempo: 120)
     var context : AUHostMusicalContextBlock!
     private override init (){
         super.init()
@@ -649,6 +650,45 @@ extension AudioController : StemCreatorDelegate{
     }
     public func exportStem(to url: URL, includeMP3: Bool){
         AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3)
+    }
+}
+
+extension AudioController : BeatInfoSource {
+    public func set(tempo: Double){
+        beatGenerator.setTempo(tempo: tempo)
+    }
+    public var isPlaying : Bool { 
+        return beatGenerator.isPlaying
+    }
+    public func start() {
+        beatGenerator.start()
+    }
+    public func stop(){
+        beatGenerator.stop()
+    }
+    public func add(beatListener: BeatDelegate){
+        beatGenerator.addListener(beatListener)
+    }
+    public func removeBeatListeners(){
+        beatGenerator.removeListeners()
+    }
+
+    public func playOffline(numBars: Int, barLength: Double){
+        beatGenerator.playOffline(numBars: numBars, barLength: barLength)
+    }
+    public func playOffline(until: Double){
+        beatGenerator.playOffline(until: until)
+    }
+    public var currentBeat : Double { 
+        get {
+            return beatGenerator.currentBeat
+        }
+        set {
+            beatGenerator.currentBeat = newValue
+        }
+    }
+    public var exactBeat : Double { 
+        return beatGenerator.exactBeat
     }
 }
 

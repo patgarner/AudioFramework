@@ -262,7 +262,7 @@ public class ChannelController : ChannelViewDelegate {
     }
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, showInterface: Bool) {
         let contextBlock = AudioController.shared.contextBlock()
-        delegate.engine.stop()
+       // delegate.engine.stop()
         let audioUnitEffect = AudioNodeFactory.effect(description: desc, context: contextBlock) 
         set(effect: audioUnitEffect, number: number)
         reconnectNodes()
@@ -448,7 +448,7 @@ public class ChannelController : ChannelViewDelegate {
         }
         if let midiInstrument = node as? AVAudioUnitMIDIInstrument{
             let string = midiInstrument.manufacturerName
-            let context = midiInstrument.auAudioUnit.musicalContextBlock
+            //let context = midiInstrument.auAudioUnit.musicalContextBlock
             return string
         }
         if node === inputNode {
