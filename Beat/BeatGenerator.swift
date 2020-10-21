@@ -16,14 +16,24 @@ public class BeatGenerator : BeatGeneratable{
     private var thread : Thread? = nil
     private var beatListeners : [BeatDelegate] = []
     private var running = false
+    public var tempo : Double = 100.0 {
+        didSet{
+            let divisionsPerMeasure = 32.0
+            let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
+            subdivisionDurationMicroseconds = UInt32(subdivisionDurationSeconds * 1000000.0)
+        }
+    }
     public init(tempo: Double){
-          setTempo(tempo: tempo)
+//        set(tempo: tempo)
+        //self.t = tempo
+        self.tempo = tempo
     }
-    public func setTempo(tempo: Double) {
-        let divisionsPerMeasure = 32.0
-        let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
-        subdivisionDurationMicroseconds = UInt32(subdivisionDurationSeconds * 1000000.0)
-    }
+//    public func set(tempo: Double) {
+//        self.t = tempo
+//        let divisionsPerMeasure = 32.0
+//        let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
+//        subdivisionDurationMicroseconds = UInt32(subdivisionDurationSeconds * 1000000.0)
+//    }
     public func start() {
         if thread != nil {
             return
@@ -91,7 +101,7 @@ public class BeatGenerator : BeatGeneratable{
     }
     
     public func addListener(_ listener: BeatDelegate) {
-         beatListeners.append(listener)
+        beatListeners.append(listener)
     }
     public func removeListeners() {
         beatListeners.removeAll()
@@ -120,5 +130,5 @@ public class BeatGenerator : BeatGeneratable{
             return true
         }
     }
-
+    
 }

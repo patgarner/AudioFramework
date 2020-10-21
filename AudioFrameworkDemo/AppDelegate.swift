@@ -12,7 +12,6 @@ import AVFoundation
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, AudioControllerDelegate {
-    var musicalContext: MusicalContext = MusicalContext()
     func exportMidi(to url: URL) {
         
     }

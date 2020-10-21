@@ -9,7 +9,8 @@
 import Foundation
 
 public protocol BeatGeneratable {
-    func setTempo(tempo: Double) 
+   // func set(tempo: Double)
+    var tempo : Double { get set }
     func start()
     func stop()
     func playOffline(numBars: Int, barLength: Double)

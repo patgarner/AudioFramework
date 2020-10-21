@@ -158,7 +158,13 @@ extension MixerViewController : NSCollectionViewDataSource{
 extension MixerViewController : PluginDisplayDelegate{
     public func display(viewController: AUViewController) {
         DispatchQueue.main.async {
-            //viewController.view.autoresizingMask = [.minXMargin, .maxXMargin, .minYMargin, .maxYMargin, .height, .width]
+            let view = viewController.view
+            for subview in view.subviews{             //Needed for WAVES plugins
+                if let openGLView = subview as? NSOpenGLView {
+                    openGLView.wantsBestResolutionOpenGLSurface = false
+                }
+            }
+            //
             let window = NSWindow(contentViewController: viewController)
             window.makeKeyAndOrderFront(nil)    
         }

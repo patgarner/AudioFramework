@@ -19,5 +19,5 @@ public protocol AudioControllerDelegate{
     func log(_ message : String)
     func displayInterface(audioUnit: AudioUnit)   
     func exportMidi(to url: URL)
-    var musicalContext : MusicalContext { get }
+//    var musicalContext : MusicalContext { get }
 }

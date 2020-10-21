@@ -20,6 +20,20 @@
                ReferencedContainer = "container:AudioFramework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "842369A724FEC2BC001266BE"
+               BuildableName = "AudioFramework.framework"
+               BlueprintName = "AudioFramework"
+               ReferencedContainer = "container:AudioFramework.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction

@@ -64,11 +64,7 @@ public class AudioController: NSObject {
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-        guard let context = AudioController.shared.delegate?.musicalContext else { 
-            print("getMusicalContext.delegate.context = nil")
-            return false
-            
-        }
+        let context = musicalContext
         currentTempo?.pointee = context.currentTempo
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
         timeSignatureDenominator?.pointee = context.timeSignatureDenominator
@@ -76,6 +72,24 @@ public class AudioController: NSObject {
         sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
         currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
         return true
+    }
+    var musicalContext : MusicalContext {
+        let context = MusicalContext()
+        let barLength = 4.0 //TODO
+        context.currentTempo = beatGenerator.tempo
+        context.timeSignatureNumerator = 4.0 //TODO
+        context.timeSignatureDenominator = 4 //TODO
+        let exactBeat = beatGenerator.exactBeat
+        context.currentBeatPosition = exactBeat
+        let currentMeasure = floor(exactBeat / barLength) //TODO
+        let currentMeasureStart = currentMeasure * barLength //TODO
+        context.currentMeasureDownbeatPosition = currentMeasureStart
+        let beatsTillNextBeat = ceil(exactBeat) - exactBeat
+        let timeTillNextBeat = 60.0 / context.currentTempo * beatsTillNextBeat
+        let sampleRate = self.sampleRate
+        let samplesTillNextBeat = Int(round(sampleRate * timeTillNextBeat))
+        context.sampleOffsetToNextBeat = samplesTillNextBeat
+        return context
     }
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
@@ -193,11 +207,6 @@ public class AudioController: NSObject {
         allControllers.append(masterController)
         return allControllers
     }
-//    public func requestInstrumentInterface(channel: Int, _ completion: @escaping (InterfaceInstance?)->()) {
-//        if channel >= instrumentControllers.count { completion(nil) }
-//        let host = instrumentControllers[channel]
-//        host.requestInstrumentInterface(completion)
-//    }
     func reconnectSelectedChannels(){
         for channelController in allChannelControllers{
             if channelController.isSelected {
@@ -234,17 +243,6 @@ public class AudioController: NSObject {
     public func reset(){
         engine.reset()
     }
-    /////////////////////////////////////////////////////////////
-    // Effects
-    /////////////////////////////////////////////////////////////
-//    func getAudioEffect(channel:Int, number: Int, type: ChannelType) -> AVAudioUnit?{
-//        if let channelController = getChannelController(type: type, channel: channel) {
-//            let effect = channelController.getEffect(number: number)
-//            return effect
-//        } else {
-//            return nil
-//        }
-//    }
     ////////////////////////////////////////////////////////////
     func getChannelController(type: ChannelType, channel: Int) -> ChannelController? {
         if channel < 0 { return nil }
@@ -536,22 +534,6 @@ extension AudioController : ChannelControllerDelegate {
             self.pluginDisplayDelegate?.display(viewController: auViewController)
         }
     }
-//    func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
-//                           timeSignatureNumerator : UnsafeMutablePointer<Double>?,
-//                           timeSignatureDenominator : UnsafeMutablePointer<Int>?,
-//                           currentBeatPosition: UnsafeMutablePointer<Double>?,
-//                           sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
-//                           currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-//        if self.delegate == nil { return false }
-//        let context = self.delegate!.musicalContext
-//        currentTempo?.pointee = context.currentTempo
-//        timeSignatureNumerator?.pointee = context.timeSignatureNumerator
-//        timeSignatureDenominator?.pointee = context.timeSignatureDenominator
-//        currentBeatPosition?.pointee = context.currentBeatPosition
-//        sampleOffsetToNextBeat?.pointee = context.sampleOffsetToNextBeat
-//        currentMeasureDownbeatPosition?.pointee = context.currentMeasureDownbeatPosition
-//        return true
-//    }
     public func contextBlock() -> AUHostMusicalContextBlock {
         return context
     }
@@ -655,7 +637,7 @@ extension AudioController : StemCreatorDelegate{
 
 extension AudioController : BeatInfoSource {
     public func set(tempo: Double){
-        beatGenerator.setTempo(tempo: tempo)
+        beatGenerator.tempo = tempo
     }
     public var isPlaying : Bool { 
         return beatGenerator.isPlaying
