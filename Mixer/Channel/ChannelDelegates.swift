@@ -29,6 +29,7 @@ public protocol ChannelViewDelegate {
     var trackName: String { get set }
     var numBusses : Int { get }
     func deselectEffect(number: Int)
+    func deselectInstrument()
     func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection?
     func selectInput(busNumber: Int) //Set Input
     func getBusInputNumber() -> Int? //Get Input
@@ -39,6 +40,7 @@ public protocol ChannelViewDelegate {
     func connect(sourceType: ConnectionType, sourceNumber: Int, destinationType: BusType, destinationNumber: Int)
     func displayInterface(type: PluginType, number: Int)
     func select(description: AudioComponentDescription, type: PluginType, number: Int)
+    func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]
 }
 
 public protocol ChannelControllerDelegate{
@@ -54,6 +56,7 @@ public protocol ChannelControllerDelegate{
     func displayInterface(audioUnit: AVAudioUnit)
     func contextBlock() -> AUHostMusicalContextBlock
     func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode)
+    func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]
 }
 
 public enum ConnectionType {

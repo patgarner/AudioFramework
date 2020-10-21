@@ -26,7 +26,9 @@ public class AudioController: NSObject {
     private var busses : [UltraMixerNode] = []
     private var stemCreatorModel = StemCreatorModel()
     private var sequencer : AVAudioSequencer!
-    let beatGenerator = BeatGenerator(tempo: 120)
+    private let beatGenerator = BeatGenerator(tempo: 120)
+    private var instrumentList : [AVAudioUnitComponent] = []
+    private var effectList : [AVAudioUnitComponent] = []
     var context : AUHostMusicalContextBlock!
     private override init (){
         super.init()
@@ -54,6 +56,19 @@ public class AudioController: NSObject {
              selector: #selector(handleInterruption),
              name: NSNotification.Name.AVAudioEngineConfigurationChange,
              object: engine)
+        var desc = AudioComponentDescription()
+        desc.componentType = kAudioUnitType_MusicDevice
+        instrumentList = AVAudioUnitComponentManager.shared().components(matching: desc).sorted(by: { (component1, component2) -> Bool in
+            if component1.manufacturerName > component2.manufacturerName { return false }
+            if component1.manufacturerName < component2.manufacturerName { return true }
+            return component1.name < component2.name
+        })
+        desc.componentType = kAudioUnitType_Effect
+        effectList = AVAudioUnitComponentManager.shared().components(matching: desc).sorted(by: { (component1, component2) -> Bool in
+            if component1.manufacturerName > component2.manufacturerName { return false }
+            if component1.manufacturerName < component2.manufacturerName { return true }
+            return component1.name < component2.name
+        })
     }
     @objc func handleInterruption(sender: Any){
         print("Yay! Engine status changed!")
@@ -546,10 +561,18 @@ extension AudioController : ChannelControllerDelegate {
             engine.attach(destinationNode)
         }
         let format = sourceNode.outputFormat(forBus: 0)
-//        engine.pause()
         engine.connect(sourceNode, to: destinationNode, format: format)
         if !isConnected(sourceNode: sourceNode, destinationNode: destinationNode){
             print("AudioController.connect() \(sourceNode) is not connected to \(destinationNode). Connection might be pending, meaning it will become active later.")
+        }
+    }
+    public func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]{
+        if type == .instrument {
+            return instrumentList
+        } else if type == .effect {
+            return effectList
+        } else {
+            return []
         }
     }
 }

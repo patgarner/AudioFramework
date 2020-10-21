@@ -16,17 +16,8 @@ public class InstrumentChannelController : ChannelController{
     }
     override public func select(description: AudioComponentDescription, type: PluginType, number: Int) {
         if type == .instrument {
-            print("ARM")
-            AudioController.shared.test()
-            print("LEG")
             loadInstrument(fromDescription: description, showInterface: true)
-            print("EYE")
-            AudioController.shared.test()
-            print("BALL")
             reconnectNodes()
-            print("FACE")
-            AudioController.shared.test()
-            print("LICK")
         } else {
             super.select(description: description, type: type, number: number)
         }
@@ -37,21 +28,9 @@ public class InstrumentChannelController : ChannelController{
         fullState = pluginData.state
     }
     private func loadInstrument(fromDescription desc: AudioComponentDescription, showInterface: Bool){
-        print("ALIEN")
-        AudioController.shared.test()
-        print("CONAN")
         let context = delegate.contextBlock()
-        print("ONE")
-        AudioController.shared.test()
-        print("TWO")
         delegate.engine.pause()
-        print("APPLE")
-        AudioController.shared.test()
-        print("ORANGE")
         let audioUnit = AudioNodeFactory.instrument(description: desc, context: context)
-        print("GRAPE")
-        AudioController.shared.test()
-        print("STRAWBERRY")
         if inputNode != nil {
             delegate.engine.detach(inputNode!)
         }
@@ -61,17 +40,13 @@ public class InstrumentChannelController : ChannelController{
         if showInterface{
             delegate.displayInterface(audioUnit: audioUnit)
         }
-        print("InstrumentChannelController.loadInstrument about to check context FART")
-        AudioController.shared.test()
-        print("InstrumentChannelController.loadInstrument finished checking context BUTT")
     }
-    //    func requestInstrumentInterface(_ completion: @escaping (InterfaceInstance?)->()){
-    //        guard let au = self.auAudioUnit else { completion(nil) ; return }
-    //        au.requestViewController { (vc) in
-    //            completion(vc.map(InterfaceInstance.viewController))
-    //        }
-    //    }
-    
+    override public func deselectInstrument() {
+        if inputNode != nil {
+            delegate.engine.detach(inputNode)
+            reconnectNodes()
+        }
+    }
     private var fullState : [String : Any]? {
         get {
             guard let au = self.auAudioUnit else { return nil }

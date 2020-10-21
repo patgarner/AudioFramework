@@ -318,6 +318,10 @@ public class ChannelController : ChannelViewDelegate {
     ///////////////////////////////////////////////////////////////////////////////
     // ChannelViewDelegate2
     ///////////////////////////////////////////////////////////////////////////////
+    public func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]{
+        let list = delegate.getAudioComponentList(type: type)
+        return list
+    }
     public var volume : Float {
         get {
             return outputNode.outputVolume
@@ -332,6 +336,9 @@ public class ChannelController : ChannelViewDelegate {
         }
         effects.remove(at: number)
         reconnectNodes()
+    }
+    public func deselectInstrument() {
+        
     }
     public func getPluginSelection(pluginType: PluginType, pluginNumber: Int) -> PluginSelection? {
         if pluginType == .effect{

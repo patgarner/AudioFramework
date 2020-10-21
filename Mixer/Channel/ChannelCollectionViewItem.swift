@@ -35,7 +35,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var channelNumber = -1
     var type = ChannelType.midiInstrument
     private var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
-    private var instrumentsFlat : [AVAudioUnitComponent] = []
+//    private var instrumentsFlat : [AVAudioUnitComponent] = []
     
     @IBOutlet weak var vuMeterView: VUMeterView!
     override public func viewDidLoad() {
@@ -125,7 +125,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else if type == .midiInstrument{
             reloadInstruments()
             let instrumentSelection = channelViewDelegate.getPluginSelection(pluginType: .instrument, pluginNumber: channelNumber)
-            select(popup: inputPopup, list: instrumentsFlat, pluginSelection: instrumentSelection)
+            let instruments = getAudioComponentList(type: .instrument)
+            select(popup: inputPopup, list: instruments, pluginSelection: instrumentSelection)
         }
         fillSendPopups()
         for i in 0..<sendLevelKnobs.count{
@@ -181,26 +182,23 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         } else if type == .midiInstrument{
             inputInstrumentChanged()
         }
-        print("MARS")
-        AudioController.shared.test()
-        print("NEPTUNE")
     }
     private func inputInstrumentChanged(){
-        AudioController.shared.test()
         let index = inputPopup.indexOfSelectedItem
-        let component = instrumentsFlat[index]
+        let instruments = getAudioComponentList(type: .instrument)
+        if index < 0 || index >= instruments.count {
+            channelViewDelegate.deselectInstrument()
+            return
+        }
+        let component = instruments[index]
         if let virtualInstrument = channelViewDelegate.getPluginSelection(pluginType: .instrument, pluginNumber: -1), component.manufacturerName == virtualInstrument.manufacturer,
             component.name == virtualInstrument.name {
             channelViewDelegate.displayInterface(type: .instrument, number: 0)
             return
         } else {
             channelViewDelegate.select(description: component.audioComponentDescription, type: .instrument, number: 0)
-            print("VENUS")
-            AudioController.shared.test()
-            print("JUPITER")
             return
         }
-        
     }
     private func audioInputChanged(){
         let index = inputPopup.indexOfSelectedItem
@@ -262,8 +260,11 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     ////////////////////////////////////////////////////////
     // Instruments
     /////////////////////////////////////////////////////////
+//    var instrumentsFlat : [AVAudioUnitComponent] {
+//        return getAudioComponentList(type: .instrument)
+//    }
     private func reloadInstruments() {
-        instrumentsFlat = getAudioComponentList(type: .instrument)
+//        instrumentsFlat = getAudioComponentList(type: .instrument)
         fillInputPopup()
     }
     private func fillInputPopup(){
@@ -275,9 +276,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     private func fillInstruments(){
         inputPopup.removeAllItems()
-        for instrument in instrumentsFlat{
+        let instruments = getAudioComponentList(type: .instrument)
+        for instrument in instruments{
             let string = instrument.manufacturerName + "-" + instrument.name
-            
             inputPopup.addItem(withTitle: string)
         }
         inputPopup.addItem(withTitle: "")
@@ -298,10 +299,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     // Effects
     /////////////////////////////////////////////////////////////////
     public func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]{
-        var desc = AudioComponentDescription()
-        if type == .effect { desc.componentType = kAudioUnitType_Effect }
-        if type == .instrument { desc.componentType = kAudioUnitType_MusicDevice}
-        return AVAudioUnitComponentManager.shared().components(matching: desc)
+        let list = channelViewDelegate.getAudioComponentList(type: type)
+        return list
     }
     func fillEffectsPopup(){
         let effects = getAudioComponentList(type: .effect)
