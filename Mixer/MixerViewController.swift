@@ -47,41 +47,6 @@ public class MixerViewController: NSViewController, KeyDelegate {
         channelCollectionView.needsLayout = true
         channelCollectionView.needsDisplay = true
     }
-  /*  func loadVC(){
-        guard let interfaceInstance = self.interfaceInstance  else { return }
-        let contentRect = NSMakeRect(100, 100, 1000, 1000)
-        let styles = NSWindow.StyleMask.resizable.rawValue | NSWindow.StyleMask.titled.rawValue | NSWindow.StyleMask.closable.rawValue
-        let styleMask = NSWindow.StyleMask.init(rawValue: styles)
-        let window = NSWindow(contentRect: contentRect, styleMask: styleMask, backing: NSWindow.BackingStoreType.buffered, defer: true)
-        instrumentWindowController = NSWindowController(window: window)
-        switch(interfaceInstance) {            
-        case .view(let view):
-            guard let window = instrumentWindowController!.window else { break }
-            let frame = window.frameRect(forContentRect: view.bounds)
-            window.setFrame(frame, display: true)
-            window.contentView = view
-        case .viewController(let vc):
-//            guard let auVC = vc as? AUViewController else {  return }
-//            let view = auVC.view
-//            let size = view.frame.size
-//            print("size = \(size)")
-//            let bundle = Bundle(for: PluginVC.self)
-//            let newVC = PluginVC(nibName: nil, bundle: bundle)
-//            newVC.view.addSubview(view)
-//            let oldFrame = view.frame
-//            let newFrame = CGRect(x: oldFrame.origin.x, y: oldFrame.origin.y, width: oldFrame.size.width * 2, height: oldFrame.size.height * 2)
-//            view.frame = newFrame
-//            for subview in view.subviews{
-//                subview.frame = newFrame  
-//            }
-            instrumentWindowController!.contentViewController = vc //original. Fail NI Emotive Strings, Wave, Altiverb 
-        }
-        instrumentWindowController!.showWindow(self)  
-        print("")
-    }*/
-
-    
-    
     @IBAction func addTrack(_ sender: Any) {
         guard let button = sender as? NSPopUpButton else { return }
         let index = button.indexOfSelectedItem

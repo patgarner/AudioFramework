@@ -12,8 +12,7 @@ import AudioFramework
 class ViewController: NSViewController, KeyDelegate {
     func keyDown(_ number: Int) {
         if number == 48 { //Tab
-            //visualizeAudioGraph()
-            print("")
+           
         }
     }
     

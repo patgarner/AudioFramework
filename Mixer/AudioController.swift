@@ -86,6 +86,8 @@ public class AudioController: NSObject {
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
+        print("getMusicalContext called")
+        if !beatGenerator.isPlaying { return false }
         let context = musicalContext
         currentTempo?.pointee = context.currentTempo
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
@@ -124,7 +126,6 @@ public class AudioController: NSObject {
             instrumentControllers.append(channelController)
             connectToMaster(channelController: channelController)
         }
-        isFirstNodeConnected(message: "Just created instrument channels")
         //Aux Channels
         for i in 0..<numAuxChannels{
             let auxController = AuxChannelController(delegate: self)
@@ -140,7 +141,7 @@ public class AudioController: NSObject {
             busses.append(bus)
         }
     }
-    func isFirstNodeConnected(message: String){
+    func isFirstNodeConnected(message: String){ //TODO: Remove
         if instrumentControllers.count == 0 {
             print(message + " ************InstrumentControllers empty.**********************")
             return
@@ -692,6 +693,7 @@ extension AudioController : BeatInfoSource {
     }
     public func stop(){
         beatGenerator.stop()
+        print("Line after stop")
     }
     public func add(beatListener: BeatDelegate){
         beatGenerator.addListener(beatListener)
