@@ -56,6 +56,9 @@ public class AudioController: NSObject {
              selector: #selector(handleInterruption),
              name: NSNotification.Name.AVAudioEngineConfigurationChange,
              object: engine)
+        populatePluginLists()
+    }
+    private func populatePluginLists(){
         var desc = AudioComponentDescription()
         desc.componentType = kAudioUnitType_MusicDevice
         instrumentList = AVAudioUnitComponentManager.shared().components(matching: desc).sorted(by: { (component1, component2) -> Bool in
@@ -64,7 +67,11 @@ public class AudioController: NSObject {
             return component1.name < component2.name
         })
         desc.componentType = kAudioUnitType_Effect
-        effectList = AVAudioUnitComponentManager.shared().components(matching: desc).sorted(by: { (component1, component2) -> Bool in
+        effectList = AVAudioUnitComponentManager.shared().components(matching: desc)
+        desc.componentType = kAudioUnitType_MusicEffect
+        let musicEffectList = AVAudioUnitComponentManager.shared().components(matching: desc)
+        effectList.append(contentsOf: musicEffectList)
+        effectList.sort(by: { (component1, component2) -> Bool in
             if component1.manufacturerName > component2.manufacturerName { return false }
             if component1.manufacturerName < component2.manufacturerName { return true }
             return component1.name < component2.name
@@ -666,6 +673,14 @@ extension AudioController : BeatInfoSource {
         return beatGenerator.isPlaying
     }
     public func start() {
+        if !engine.isRunning{
+            engine.prepare()
+            do {
+                try engine.start()
+            } catch {
+                print("Failed to start engine.")
+            }
+        }
         beatGenerator.start()
     }
     public func stop(){

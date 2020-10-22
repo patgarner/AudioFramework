@@ -414,7 +414,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             channelViewDelegate.didSelectChannel()
             isSelected = newValue
         }
-        
     }
     public override var isSelected: Bool {
         didSet{
