@@ -55,7 +55,7 @@ public protocol ChannelControllerDelegate{
     func connect(busNumber: Int, destinationNode: AVAudioNode) //Connects input (for aux nodes)
     func displayInterface(audioUnit: AVAudioUnit)
     func contextBlock() -> AUHostMusicalContextBlock
-    func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode)
+    func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode, bus: Int?)
     func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]
 }
 

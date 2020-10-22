@@ -559,7 +559,7 @@ extension AudioController : ChannelControllerDelegate {
     public func contextBlock() -> AUHostMusicalContextBlock {
         return context
     }
-    public func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode) {
+    public func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode, bus: Int? = nil) {
         let attachedNodes = engine.attachedNodes
         if !attachedNodes.contains(sourceNode){
             engine.attach(sourceNode)
@@ -568,7 +568,11 @@ extension AudioController : ChannelControllerDelegate {
             engine.attach(destinationNode)
         }
         let format = sourceNode.outputFormat(forBus: 0)
-        engine.connect(sourceNode, to: destinationNode, format: format)
+        if bus == nil {
+            engine.connect(sourceNode, to: destinationNode, format: format)
+        } else {
+            engine.connect(sourceNode, to: destinationNode, fromBus: 0, toBus: bus!, format: format)
+        }
         if !isConnected(sourceNode: sourceNode, destinationNode: destinationNode){
             print("AudioController.connect() \(sourceNode) is not connected to \(destinationNode). Connection might be pending, meaning it will become active later.")
         }
@@ -673,15 +677,18 @@ extension AudioController : BeatInfoSource {
         return beatGenerator.isPlaying
     }
     public func start() {
-        if !engine.isRunning{
-            engine.prepare()
-            do {
-                try engine.start()
-            } catch {
-                print("Failed to start engine.")
-            }
+        engine.stop()
+        for channelController in allChannelControllers{
+            channelController.set(musicalContextBlock: context)
         }
-        beatGenerator.start()
+        engine.prepare()
+        do {
+            try engine.start()
+            beatGenerator.start()
+        } catch {
+            print("Failed to start engine.")
+            return
+        }
     }
     public func stop(){
         beatGenerator.stop()

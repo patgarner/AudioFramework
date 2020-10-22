@@ -98,15 +98,10 @@ public class ChannelController : ChannelViewDelegate {
         let audioUnits = allAudioUnits()
         if audioUnits.count == 0 { return }
         disconnectNodes()
-        let attachedNodes = delegate.engine.attachedNodes
         for i in 1..<audioUnits.count{
             let previousUnit = audioUnits[i-1]
             let thisUnit = audioUnits[i]
-            if attachedNodes.contains(previousUnit), attachedNodes.contains(thisUnit){
-                delegate.connect(sourceNode: previousUnit, destinationNode: thisUnit)
-            } else {
-                print("Sorry, engine needs to contain BOTH nodes it is connecting.")
-            }
+            delegate.connect(sourceNode: previousUnit, destinationNode: thisUnit, bus: 0)
         }
         guard let sendSplitterNode = sendSplitterNode else { return }
         let format = sendSplitterNode.outputFormat(forBus: 0)
@@ -162,7 +157,7 @@ public class ChannelController : ChannelViewDelegate {
         
         let dummyNode = AVAudioPlayerNode() //TODO: HACK ****************************
         delegate.engine.attach(dummyNode)
-        delegate.connect(sourceNode: dummyNode, destinationNode: inputNode)
+        delegate.connect(sourceNode: dummyNode, destinationNode: inputNode, bus: 1)
         
         let muteNode = AudioNodeFactory.mixerNode(name: "MuteNode")
         delegate.engine.attach(muteNode)
@@ -476,6 +471,12 @@ public class ChannelController : ChannelViewDelegate {
             }
         }
         return "Unidentified \(node.debugDescription)"
+    }
+    func set(musicalContextBlock : AUHostMusicalContextBlock?){ 
+        inputNode.auAudioUnit.musicalContextBlock = musicalContextBlock
+        for effect in effects{
+            effect.auAudioUnit.musicalContextBlock = musicalContextBlock
+        }
     }
 }
 
