@@ -9,7 +9,7 @@
 import Foundation
 
 public class BeatGenerator : BeatGeneratable{
-    public var currentBeat = 0.0
+    public var currentBeat = 0.0 
     private var currentBeatTimesStamp : UInt64 = 0
     private var subdivisionLengthInBeats = 0.125
     private var subdivisionDurationMicroseconds : UInt32 = 0
@@ -24,16 +24,8 @@ public class BeatGenerator : BeatGeneratable{
         }
     }
     public init(tempo: Double){
-//        set(tempo: tempo)
-        //self.t = tempo
         self.tempo = tempo
     }
-//    public func set(tempo: Double) {
-//        self.t = tempo
-//        let divisionsPerMeasure = 32.0
-//        let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
-//        subdivisionDurationMicroseconds = UInt32(subdivisionDurationSeconds * 1000000.0)
-//    }
     public func start() {
         if thread != nil {
             return
@@ -56,14 +48,14 @@ public class BeatGenerator : BeatGeneratable{
                 self.incrementBeat()
             }
         })
+        thread!.qualityOfService = .userInteractive
         thread!.start()
     }
     
     public func stop() {
-        if thread != nil{
-            thread!.cancel()
-            thread = nil
-        }
+        if thread == nil { return }
+            self.thread!.cancel()
+            self.thread = nil
     }
     
     public func playOffline(numBars: Int, barLength: Double) {
@@ -88,6 +80,7 @@ public class BeatGenerator : BeatGeneratable{
         }
     }
     private func incrementBeat(){
+        if thread == nil { return }
         currentBeat += self.subdivisionLengthInBeats
         currentBeatTimesStamp = mach_absolute_time()
     }

@@ -86,7 +86,6 @@ public class AudioController: NSObject {
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-        print("getMusicalContext called")
         if !beatGenerator.isPlaying { return false }
         let context = musicalContext
         currentTempo?.pointee = context.currentTempo
@@ -241,10 +240,14 @@ public class AudioController: NSObject {
     // MIDI
     //////////////////////////////////////////////////////////////////
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
+        let date = Date().timeIntervalSince1970
+        print(date)
         if channel >= instrumentControllers.count { return }
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
-        channelController.noteOn(note, withVelocity: velocity, channel: channel)
+        DispatchQueue.main.async {
+            channelController.noteOn(note, withVelocity: velocity, channel: channel)
+        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -386,12 +389,40 @@ public class AudioController: NSObject {
         }
     }
     public func visualize(){
-        isFirstNodeConnected(message: "Visualize called.")
         for channelController in allChannelControllers{
             if channelController.isSelected {
                 channelController.visualize()
             }
         }
+        var string = ""
+        for busNumber in 0..<busses.count{
+            string += "****************** BUS \(busNumber+1) *********************\n"
+            let bus = busses[busNumber]
+            string += "   =====INPUTS=====\n"
+            for inputNumber in 0..<bus.numberOfInputs{
+                let input = engine.inputConnectionPoint(for: bus, inputBus: inputNumber)
+                if let node = input?.node {
+                    if let ultraMixer = node as? UltraMixerNode {
+                        string += "      \(inputNumber): \(ultraMixer.name)\n"
+                      } else {
+                        string += "      \(inputNumber): NoName\n"
+                      }
+                } 
+            }
+            string += "   =====OUTPUTS=====\n"
+            let outputConnections = engine.outputConnectionPoints(for: bus, outputBus: 0)
+            for outputNumber in 0..<outputConnections.count{
+                let connection = outputConnections[outputNumber]
+                if let node = connection.node {
+                    if let ultraMixer = node as? UltraMixerNode {
+                        string += "      \(outputNumber): \(ultraMixer.name)\n"
+                    } else {
+                        string += "      \(outputNumber): NoName"
+                    }
+                }                
+            }
+        }
+        log(string)
     }
     public var sampleRate : Double {
         let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
@@ -693,7 +724,6 @@ extension AudioController : BeatInfoSource {
     }
     public func stop(){
         beatGenerator.stop()
-        print("Line after stop")
     }
     public func add(beatListener: BeatDelegate){
         beatGenerator.addListener(beatListener)
