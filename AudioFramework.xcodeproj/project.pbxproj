@@ -54,6 +54,7 @@
 		843FD47525068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
 		843FD4822506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
 		843FD4832506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
+		845900C92543BA6700410584 /* BeatGeneratorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845900C82543BA6700410584 /* BeatGeneratorTest.swift */; };
 		8459589B251436F20091A43E /* SendData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459589A251436F20091A43E /* SendData.swift */; };
 		8459589C251436F20091A43E /* SendData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459589A251436F20091A43E /* SendData.swift */; };
 		8460307B250803FA00CB9844 /* ChannelModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8460307A250803FA00CB9844 /* ChannelModel.swift */; };
@@ -231,6 +232,7 @@
 		8429DB94252017AD00ADE7B0 /* StemCreatorViewController2.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StemCreatorViewController2.xib; path = StemCreator/StemCreatorViewController2.xib; sourceTree = SOURCE_ROOT; };
 		843FD47425068E9200189936 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		843FD4812506A3B500189936 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
+		845900C82543BA6700410584 /* BeatGeneratorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatGeneratorTest.swift; sourceTree = "<group>"; };
 		8459589A251436F20091A43E /* SendData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendData.swift; sourceTree = "<group>"; };
 		8460307A250803FA00CB9844 /* ChannelModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelModel.swift; sourceTree = "<group>"; };
 		8461C115252EA6A000147933 /* AudioUnitGenericWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioUnitGenericWindow.swift; path = Waves/AudioUnitGenericWindow.swift; sourceTree = "<group>"; };
@@ -565,6 +567,7 @@
 			children = (
 				84F3D13F25420B0F001E7ABD /* BeatToolsTest.swift */,
 				84F3D14125420B3E001E7ABD /* FakeBeatDelegate.swift */,
+				845900C82543BA6700410584 /* BeatGeneratorTest.swift */,
 			);
 			path = Beat;
 			sourceTree = "<group>";
@@ -886,6 +889,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				843D4189251E661200E57CF5 /* AppDelegate.swift in Sources */,
+				845900C92543BA6700410584 /* BeatGeneratorTest.swift in Sources */,
 				849216BD253A86DC005982C3 /* FakeChannelControllerDelegate.swift in Sources */,
 				8480DAFC2530FFE800A40CEB /* ChannelModelTest.swift in Sources */,
 				84F3D14025420B0F001E7ABD /* BeatToolsTest.swift in Sources */,

@@ -45,7 +45,9 @@ public class BeatGenerator : BeatGeneratable{
                 let diffNanoSeconds = Double(postSleepTime - preSleepTime)
                 let diffMicroSeconds = UInt32(round(diffNanoSeconds / 1000.0))
                 offset = diffMicroSeconds - recommendedSleepTime
-                self.incrementBeat()
+                if self.thread != nil {
+                    self.incrementBeat()
+                }
             }
         })
         thread!.qualityOfService = .userInteractive
@@ -54,8 +56,8 @@ public class BeatGenerator : BeatGeneratable{
     
     public func stop() {
         if thread == nil { return }
-            self.thread!.cancel()
-            self.thread = nil
+        self.thread!.cancel()
+        self.thread = nil
     }
     
     public func playOffline(numBars: Int, barLength: Double) {
@@ -80,7 +82,7 @@ public class BeatGenerator : BeatGeneratable{
         }
     }
     private func incrementBeat(){
-        if thread == nil { return }
+//        if thread == nil { return }
         currentBeat += self.subdivisionLengthInBeats
         currentBeatTimesStamp = mach_absolute_time()
     }
@@ -99,19 +101,19 @@ public class BeatGenerator : BeatGeneratable{
     public func removeListeners() {
         beatListeners.removeAll()
     }
-    public func back(){ //TODO : Don't hardcode section
-        let section = Int(currentBeat) / 16
-        var newBeat = Double(section - 1) * 16.0
-        if newBeat < 0 {
-            newBeat = 0
-        }
-        currentBeat = newBeat
-    }
-    public func forward(){
-        let section = Int(currentBeat) / 16
-        let newBeat = Double(section + 1) * 16.0
-        currentBeat = newBeat
-    }
+//    public func back(){ //TODO : Don't hardcode section
+//        let section = Int(currentBeat) / 16
+//        var newBeat = Double(section - 1) * 16.0
+//        if newBeat < 0 {
+//            newBeat = 0
+//        }
+//        currentBeat = newBeat
+//    }
+//    public func forward(){
+//        let section = Int(currentBeat) / 16
+//        let newBeat = Double(section + 1) * 16.0
+//        currentBeat = newBeat
+//    }
     func goto(beat: Double){
         self.currentBeat = beat
     }

@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import AudioFramework
 
 class BeatToolsTest: XCTestCase {
     

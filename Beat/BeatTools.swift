@@ -9,7 +9,10 @@
 import Foundation
 
 public class BeatTools{
-    func getBarForBeat(_ beat : Float) -> Int{
+    public init(){
+        
+    }
+    public func getBarForBeat(_ beat : Float) -> Int{
         let barLength : Float = 4.0
         //Assuming 4 beats per bar
         //Beat 0 = bar 0

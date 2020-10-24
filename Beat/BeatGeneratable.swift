@@ -17,8 +17,8 @@ public protocol BeatGeneratable {
     func addListener(_ listener : BeatDelegate)
     func removeListeners()
     func playOffline(until end: Double)
-    func back()
-    func forward()
+//    func back()
+//    func forward()
     var isPlaying : Bool { get }
     var currentBeat : Double { get set }
     var exactBeat : Double { get }

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AudioFramework
 
 class FakeBeatDelegate : BeatDelegate{
     var currentBeat : Double = 0.0

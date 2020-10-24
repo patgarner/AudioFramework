@@ -58,4 +58,11 @@ class FakeChannelControllerDelegate : ChannelControllerDelegate{
     func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode) {
         
     }
+    func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode, bus: Int?) {
+        
+    }
+    
+    func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent] {
+        return []
+    }
 }
