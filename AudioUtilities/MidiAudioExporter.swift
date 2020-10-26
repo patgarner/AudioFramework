@@ -10,8 +10,8 @@ import Foundation
 import AVFoundation
 import Cocoa
 
-class AudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool){
+class MidiAudioExporter{
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil){
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
@@ -26,11 +26,22 @@ class AudioExporter{
         } catch {
             fatalError("Enabling manual rendering mode failed: \(error).")
         }
+        delegate?.willStartMidiAudioExport()
+        delegate?.checkCallback()
         do {
             try engine.start()
+            delegate?.willStartMidiAudioExport()
+            delegate?.checkCallback()
+
             sequencer.currentPositionInSeconds = 0
             sequencer.prepareToPlay()
+            delegate?.willStartMidiAudioExport()
+            delegate?.checkCallback()
+
             try sequencer.start()
+            delegate?.willStartMidiAudioExport()
+            delegate?.checkCallback()
+
         } catch {
             fatalError("Unable to start audio engine: \(error).")
         }
@@ -44,7 +55,12 @@ class AudioExporter{
             return
         }
         let sourceFileLength = AVAudioFramePosition(lengthInSeconds * buffer.format.sampleRate)
+        delegate?.willStartMidiAudioExport()
+        delegate?.checkCallback()
+
         while engine.manualRenderingSampleTime < sourceFileLength {
+            delegate?.checkCallback()
+
             do {
                 let frameCount = sourceFileLength - engine.manualRenderingSampleTime
                 let framesToRender = min(AVAudioFrameCount(frameCount), buffer.frameCapacity)
@@ -83,3 +99,8 @@ class AudioExporter{
     }
 }
 
+protocol MidiAudioExporterDelegate{
+    func willStartMidiAudioExport()
+    func set(progress: Double)
+    func checkCallback()
+}

@@ -30,6 +30,8 @@ public class AudioController: NSObject {
     private var instrumentList : [AVAudioUnitComponent] = []
     private var effectList : [AVAudioUnitComponent] = []
     var context : AUHostMusicalContextBlock!
+    var transportBlock : AUHostTransportStateBlock!
+    var isRendering = false
     private override init (){
         super.init()
         initialize()
@@ -48,7 +50,11 @@ public class AudioController: NSObject {
         }
     }
     private func initialize(){
+        engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
+        let f = engine.mainMixerNode.outputFormat(forBus: 0)
+        print(f)
         context = getMusicalContext
+        transportBlock = getTransportState
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
         sequencer = AVAudioSequencer(audioEngine: engine)
         NotificationCenter.default.addObserver(
@@ -57,6 +63,8 @@ public class AudioController: NSObject {
              name: NSNotification.Name.AVAudioEngineConfigurationChange,
              object: engine)
         populatePluginLists()
+        print(engine)
+
     }
     private func populatePluginLists(){
         var desc = AudioComponentDescription()
@@ -78,16 +86,21 @@ public class AudioController: NSObject {
         })
     }
     @objc func handleInterruption(sender: Any){
-        print("Yay! Engine status changed!")
+        print("Engine interrupted.")
     }
+    /////////////////////////////////////////////////////////////////////////
+    // Context
+    /////////////////////////////////////////////////////////////////////////
     func getMusicalContext(currentTempo : UnsafeMutablePointer<Double>?,
                            timeSignatureNumerator : UnsafeMutablePointer<Double>?,
                            timeSignatureDenominator : UnsafeMutablePointer<Int>?,
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-        if !beatGenerator.isPlaying { return false }
+        //if && !isRendering { return false }
+
         let context = musicalContext
+       // print(context.debugDescription)
         currentTempo?.pointee = context.currentTempo
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
         timeSignatureDenominator?.pointee = context.timeSignatureDenominator
@@ -102,18 +115,42 @@ public class AudioController: NSObject {
         context.currentTempo = beatGenerator.tempo
         context.timeSignatureNumerator = 4.0 //TODO
         context.timeSignatureDenominator = 4 //TODO
-        let exactBeat = beatGenerator.exactBeat
+        var exactBeat = beatGenerator.exactBeat
+        if isRendering {
+            exactBeat = sequencer.currentPositionInBeats
+        }
         context.currentBeatPosition = exactBeat
         let currentMeasure = floor(exactBeat / barLength) //TODO
         let currentMeasureStart = currentMeasure * barLength //TODO
         context.currentMeasureDownbeatPosition = currentMeasureStart
         let beatsTillNextBeat = ceil(exactBeat) - exactBeat
         let timeTillNextBeat = 60.0 / context.currentTempo * beatsTillNextBeat
-        let sampleRate = self.sampleRate
+        let sampleRate = format.sampleRate
         let samplesTillNextBeat = Int(round(sampleRate * timeTillNextBeat))
         context.sampleOffsetToNextBeat = samplesTillNextBeat
         return context
     }
+    private func setAllMusicalContextBlocks(){
+        for channelController in allChannelControllers{
+            channelController.set(musicalContextBlock: context, transportBlock: transportBlock)
+        }
+    }  
+    func getTransportState(transportStateFlags : UnsafeMutablePointer<AUHostTransportStateFlags>?,
+                           currentSamplePosition : UnsafeMutablePointer<Double>?,
+                           cycleStartBeatPosition : UnsafeMutablePointer<Double>?,
+                           cycleEndBeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
+        let exactBeat = beatGenerator.exactBeat
+        let sampleRate = format.sampleRate
+        let samplePosition = exactBeat / beatGenerator.tempo * 60.0 * sampleRate
+        if beatGenerator.isPlaying || isRendering {
+            transportStateFlags?.pointee = .moving
+        } 
+        currentSamplePosition?.pointee = samplePosition
+        return false
+    }
+    ////////////////////////////////////////////////////////////////////////////
+    //
+    ////////////////////////////////////////////////////////////////////////////
     private func createChannels(numInstChannels: Int, numAuxChannels: Int, numBusses: Int){
         masterController = MasterChannelController(delegate: self)
         if let masterOutput = masterController.outputNode{
@@ -240,14 +277,12 @@ public class AudioController: NSObject {
     // MIDI
     //////////////////////////////////////////////////////////////////
     public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        let date = Date().timeIntervalSince1970
-        print(date)
         if channel >= instrumentControllers.count { return }
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
-        DispatchQueue.main.async {
+       // DispatchQueue.main.async {
             channelController.noteOn(note, withVelocity: velocity, channel: channel)
-        }
+        //}
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -335,7 +370,7 @@ public class AudioController: NSObject {
     }
     public func renderAudio(midiSourceURL: URL, audioDestinationURL: URL){
         if !loadMidiSequence(from: midiSourceURL) { return }
-        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, includeMP3: true)
+        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, includeMP3: true)
     }
     func createMidiSequencer(url: URL) ->AVAudioSequencer?{
         let sequencer = AVAudioSequencer(audioEngine: engine)
@@ -345,6 +380,7 @@ public class AudioController: NSObject {
             let tempoTrackOffset = 1 //If no tempo track, set to zero.
             for i in tempoTrackOffset..<sequencer.tracks.count{
                 let track = sequencer.tracks[i]
+                
                 guard let channel = getChannelController(type: .midiInstrument, channel: i - tempoTrackOffset) else { continue }
                 let destination = channel.midiIn
                 track.destinationAudioUnit = destination
@@ -424,10 +460,10 @@ public class AudioController: NSObject {
         }
         log(string)
     }
-    public var sampleRate : Double {
-        let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
-        return sr
-    }
+//    public var sampleRate : Double {
+//        //let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
+//        return 48000
+//    }
     func getSendDestination(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> BusInfo? { 
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
         guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
@@ -478,7 +514,7 @@ extension AudioController : ChannelControllerDelegate {
         engine.disconnectNodeInput(destinationNode)
         if busNumber < 0 || busNumber >= busses.count { return }
         let sourceBus = busses[busNumber]
-        let format = sourceBus.outputFormat(forBus: 0)
+        //let format = sourceBus.outputFormat(forBus: 0)
         var connections = engine.outputConnectionPoints(for: sourceBus, outputBus: 0)
         for connection in connections{
             if let existingNode = connection.node, existingNode === destinationNode { return } //This connection already exists. Exit.
@@ -599,7 +635,7 @@ extension AudioController : ChannelControllerDelegate {
         if !attachedNodes.contains(destinationNode){
             engine.attach(destinationNode)
         }
-        let format = sourceNode.outputFormat(forBus: 0)
+        //let format = sourceNode.outputFormat(forBus: 0)
         if bus == nil {
             engine.connect(sourceNode, to: destinationNode, format: format)
         } else {
@@ -617,6 +653,10 @@ extension AudioController : ChannelControllerDelegate {
         } else {
             return []
         }
+    }
+    private var format : AVAudioFormat{
+        let format = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)!
+        return format
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -670,7 +710,13 @@ extension AudioController : StemViewDelegate {
         delegate.exportMidi(to: midiTempURL)
         if !loadMidiSequence(from: midiTempURL) { return }
         let stemCreator = StemCreator(delegate: self)
+        isRendering = true
+        setAllMusicalContextBlocks()
         stemCreator.createStems(model: stemCreatorModel, folder: destinationFolder)
+        isRendering = false
+        for channelController in allChannelControllers{
+            channelController.mute = false
+        }
     }
     public var namePrefix: String {
         get {
@@ -697,7 +743,26 @@ extension AudioController : StemCreatorDelegate{
         }
     }
     public func exportStem(to url: URL, includeMP3: Bool){
-        AudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3)
+        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self)
+    }
+}
+
+extension AudioController: MidiAudioExporterDelegate{
+    func willStartMidiAudioExport() {
+        setAllMusicalContextBlocks()
+    }
+    func set(progress: Double){
+        
+    }
+    func checkCallback(){
+        let channelController = instrumentControllers[0]
+        guard let inputNode = channelController.inputNode else { return }
+        let block = inputNode.auAudioUnit.musicalContextBlock
+        if block == nil {
+            print("Context is NIL.")
+        } else {
+            print("Context is good!")
+        }
     }
 }
 
@@ -710,9 +775,7 @@ extension AudioController : BeatInfoSource {
     }
     public func start() {
         engine.stop()
-        for channelController in allChannelControllers{
-            channelController.set(musicalContextBlock: context)
-        }
+        setAllMusicalContextBlocks()
         engine.prepare()
         do {
             try engine.start()

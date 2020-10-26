@@ -18,4 +18,12 @@ public class MusicalContext{
     public init(){
         
     }
+    public var debugDescription : String {
+        var string = "currentTempo: \(currentTempo)\n"
+        string += "timeSignature: \(timeSignatureNumerator)/\(timeSignatureDenominator)\n"
+        string += "currentBeatPosition: \(currentBeatPosition)\n"
+        string += "sampleOffsetToNextBeat: \(sampleOffsetToNextBeat)\n"
+        string += "currentMeasureDownbeatPosition: \(currentMeasureDownbeatPosition)\n"
+        return string
+    }
 }

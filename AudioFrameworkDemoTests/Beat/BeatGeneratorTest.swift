@@ -26,7 +26,4 @@ class BeatGeneratorTest: XCTestCase {
         beatGenerator.playOffline(until: 1.5)
         XCTAssert(del.currentBeat == 1.5)
     }
-
-
-
 }

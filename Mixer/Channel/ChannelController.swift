@@ -472,10 +472,12 @@ public class ChannelController : ChannelViewDelegate {
         }
         return "Unidentified \(node.debugDescription)"
     }
-    func set(musicalContextBlock : AUHostMusicalContextBlock?){ 
+    func set(musicalContextBlock : AUHostMusicalContextBlock?, transportBlock: AUHostTransportStateBlock? ){ 
         inputNode.auAudioUnit.musicalContextBlock = musicalContextBlock
+        inputNode.auAudioUnit.transportStateBlock = transportBlock
         for effect in effects{
             effect.auAudioUnit.musicalContextBlock = musicalContextBlock
+            effect.auAudioUnit.transportStateBlock = transportBlock
         }
     }
 }

@@ -16,6 +16,7 @@ public class BeatGenerator : BeatGeneratable{
     private var thread : Thread? = nil
     private var beatListeners : [BeatDelegate] = []
     private var running = false
+    private var offlineMode = false
     public var tempo : Double = 100.0 {
         didSet{
             let divisionsPerMeasure = 32.0
@@ -53,27 +54,28 @@ public class BeatGenerator : BeatGeneratable{
         thread!.qualityOfService = .userInteractive
         thread!.start()
     }
-    
     public func stop() {
         if thread == nil { return }
         self.thread!.cancel()
         self.thread = nil
     }
-    
     public func playOffline(numBars: Int, barLength: Double) {
+        offlineMode = true
         let totalBeats = Double(numBars) * barLength
         while(currentBeat < totalBeats){
             playBeat()
             incrementBeat()
         }
+        offlineMode = false
     }
-    
     public func playOffline(until end: Double) {
+        offlineMode = true
         currentBeat = 0
         while(currentBeat <= end){
             playBeat()
             incrementBeat()
         }
+        offlineMode = false
     }
     private func playBeat(){
         for i in 0..<self.beatListeners.count{
@@ -82,7 +84,6 @@ public class BeatGenerator : BeatGeneratable{
         }
     }
     private func incrementBeat(){
-//        if thread == nil { return }
         currentBeat += self.subdivisionLengthInBeats
         currentBeatTimesStamp = mach_absolute_time()
     }
@@ -94,36 +95,23 @@ public class BeatGenerator : BeatGeneratable{
         let beat = currentBeat + beatsElapsed
         return beat
     }
-    
     public func addListener(_ listener: BeatDelegate) {
         beatListeners.append(listener)
     }
     public func removeListeners() {
         beatListeners.removeAll()
     }
-//    public func back(){ //TODO : Don't hardcode section
-//        let section = Int(currentBeat) / 16
-//        var newBeat = Double(section - 1) * 16.0
-//        if newBeat < 0 {
-//            newBeat = 0
-//        }
-//        currentBeat = newBeat
-//    }
-//    public func forward(){
-//        let section = Int(currentBeat) / 16
-//        let newBeat = Double(section + 1) * 16.0
-//        currentBeat = newBeat
-//    }
     func goto(beat: Double){
         self.currentBeat = beat
     }
     
     public var isPlaying: Bool {
-        if thread == nil {
-            return false
-        } else {
+        if thread != nil {
             return true
+        } else if offlineMode {
+            return true
+        } else {
+            return false
         }
     }
-    
 }
