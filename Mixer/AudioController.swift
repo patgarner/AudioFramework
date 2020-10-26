@@ -280,9 +280,7 @@ public class AudioController: NSObject {
         if channel >= instrumentControllers.count { return }
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
-       // DispatchQueue.main.async {
-            channelController.noteOn(note, withVelocity: velocity, channel: channel)
-        //}
+        channelController.noteOn(note, withVelocity: velocity, channel: channel)
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {

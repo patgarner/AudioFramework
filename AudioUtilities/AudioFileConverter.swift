@@ -16,6 +16,7 @@ import AVFoundation
 class AudioFileConverter{
     class func convert(sourceURL: URL, destinationURL: URL, deleteSource: Bool){
         let asset = AVAsset(url: sourceURL)
+        let fileManager = FileManager()
         do {
             let reader = try AVAssetReader(asset: asset)
             let track = asset .tracks(withMediaType: AVMediaType.audio)[0]
@@ -31,10 +32,9 @@ class AudioFileConverter{
             let readerOutput = AVAssetReaderTrackOutput(track: track, outputSettings: compressionSettings)
             reader.add(readerOutput)
             let outURL = destinationURL
-            if FileManager.default.fileExists(atPath: outURL.relativeString){
-                print("File exists! Kill!\(outURL.absoluteString)")
+            if fileManager.fileExists(atPath: outURL.relativePath){
+                try fileManager.removeItem(at: outURL)
             }
-            
             let writer = try AVAssetWriter(outputURL: outURL, fileType: AVFileType.wav)
             //Need to delete output file if it exists
             let writerInput = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: compressionSettings)
@@ -61,7 +61,6 @@ class AudioFileConverter{
                 print("Done!")
             }
             if deleteSource{
-                let fileManager = FileManager()
                 try fileManager.removeItem(at: sourceURL)
             }
         } catch {
