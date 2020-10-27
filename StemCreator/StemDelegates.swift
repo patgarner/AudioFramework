@@ -9,29 +9,33 @@
 import Foundation
 import AVFoundation
 
-public protocol StemCreatorDelegate {
-    func set(mute: Bool, for channelId: String)
-    func muteAllExcept(channelIds: [String])
+public protocol StemCreatorDelegate { //These absolutely need to call back to AudioController
+    func muteAllExcept(channelIds: [String]) 
     func exportStem(to url: URL, includeMP3: Bool, number: Int)
 }
 
 public protocol StemViewDelegate{
-    var numChannels : Int { get }
-    var numStems : Int { get }
+    var numChannels : Int { get } //YES
     func getNameFor(channelId : String) -> String?
-    func addStem()
-    func getNameFor(stem: Int) -> String?
-    func setName(stemNumber: Int, name: String)
     func getIdFor(channel: Int) -> String?
-    func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String)
-    func isSelected(stemNumber: Int, channelId: String) -> Bool
-    func delete(stemNumber: Int)
-    func exportStems(destinationFolder: URL)
-    var namePrefix : String { get set }
+    func prepareForStemExport(destinationFolder: URL)
+    func muteAllExcept(channelIds: [String]) 
+    func exportStem(to url: URL, includeMP3: Bool, number: Int)
+    func stemExportComplete()
 }
 
 public protocol StemRowViewDelegate{
     func refresh()
+    func isSelected(stemNumber: Int, channelId: String) -> Bool
+    var numStems : Int { get } //YES
+    func getNameFor(stemNumber: Int) -> String?
+    func setName(stemNumber: Int, name: String)
+    func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String)
+    func delete(stemNumber: Int)
+    //Pass Through
+    var numChannels : Int { get } //YES
+    func getNameFor(channelId : String) -> String?
+    func getIdFor(channel: Int) -> String?
 }
 
 public protocol StemCheckboxDelegate{

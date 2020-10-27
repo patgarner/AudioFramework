@@ -8,14 +8,16 @@
 
 import Cocoa
 
-public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
+public class StemCreatorViewController: NSViewController {
     public var delegate : StemViewDelegate!
     @IBOutlet weak var collectionView: NSCollectionView!
-    let rowTitleWidth : CGFloat = 100
-    let columnTitleHeight  : CGFloat = 100
-    let rowHeight : CGFloat = 30
-    let columnWidth: CGFloat = 30
-    weak var namePrefixField : NSTextField!
+    private let rowTitleWidth : CGFloat = 100
+    private let columnTitleHeight  : CGFloat = 100
+    private let rowHeight : CGFloat = 30
+    private let columnWidth: CGFloat = 30
+    private weak var namePrefixField : NSTextField!
+    private let stemCreatorModel = AudioController.shared.stemCreatorModel
+    private let stemCreator = StemCreator()
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
         let bundle = Bundle(for: StemCreatorViewController.self)
@@ -36,18 +38,19 @@ public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
         // Do view setup here.
     }
     func initialize(){
-        let numStems = delegate.numStems
+        stemCreator.delegate = self
+        let numStems = stemCreatorModel.numStems//delegate.numStems
         let numChannels = delegate.numChannels
         let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 100
         let headerY = self.view.frame.size.height - columnTitleHeight
         let headerFrame = CGRect(x: 0, y: headerY, width: totalWidth, height: columnTitleHeight)
-        let header = StemRowView(frame: headerFrame, rowTitleWidth: rowTitleWidth, rowHeight: columnTitleHeight, columnWidth: columnWidth, delegate: delegate, type: .header)
+        let header = StemRowView(frame: headerFrame, rowTitleWidth: rowTitleWidth, rowHeight: columnTitleHeight, columnWidth: columnWidth, delegate: self, type: .header)
         self.view.addSubview(header)
         for i in 0..<numStems{
             let y = self.view.frame.size.height - columnTitleHeight - CGFloat(i+1) * rowHeight
             let rowFrame = CGRect(x: 0, y: y, width: totalWidth, height: rowHeight)
-            let stemRowView = StemRowView(frame: rowFrame, rowTitleWidth: rowTitleWidth, rowHeight: rowHeight, columnWidth: columnWidth, delegate: delegate, type: .row, number: i)
-            stemRowView.stemRowViewDelegate = self
+            let stemRowView = StemRowView(frame: rowFrame, rowTitleWidth: rowTitleWidth, rowHeight: rowHeight, columnWidth: columnWidth, delegate: self, type: .row, number: i)
+            stemRowView.delegate = self
             self.view.addSubview(stemRowView)
         }
         let buttonHeight : CGFloat = 25
@@ -71,13 +74,13 @@ public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
         let namePrefixFrame = CGRect(x: 220, y: yBuffer, width: 200, height: buttonHeight)
         let namePrefixField = NSTextField(frame: namePrefixFrame)
         self.namePrefixField = namePrefixField
-        namePrefixField.stringValue = delegate.namePrefix
+        namePrefixField.stringValue = stemCreatorModel.namePrefix//delegate.namePrefix
         namePrefixField.target = self
         namePrefixField.action = #selector(namePrefixChanged)
         self.view.addSubview(namePrefixField)
         
         let exportButtonFrame = CGRect(x: 500, y: yBuffer, width: 100, height: buttonHeight)
-        let exportButton = NSButton(title: "Export", target: self, action: #selector(exportStems))
+        let exportButton = NSButton(title: "Export", target: self, action: #selector(didSelectExportStems))
         exportButton.frame = exportButtonFrame
         self.view.addSubview(exportButton)
         
@@ -86,11 +89,6 @@ public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
             selector: #selector(setProgress),
             name: .StemProgress,
             object: nil)
-        NotificationCenter.default.addObserver(
-              self,
-              selector: #selector(stemExportComplete),
-              name: .StemExportComplete,
-              object: nil)
     }
     @objc func setProgress(notification: NSNotification){
         guard let stemProgress = notification.object as? (Int, Double) else { return }
@@ -104,7 +102,7 @@ public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
         }
     }
     @objc func addStem(){
-        delegate.addStem()
+        stemCreatorModel.addStem()
         for subview in view.subviews{
             subview.removeFromSuperview()
         }
@@ -118,9 +116,9 @@ public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
     }
     @objc private func namePrefixChanged(){
         let namePrefix = namePrefixField.stringValue
-        delegate.namePrefix = namePrefix
+        stemCreatorModel.namePrefix = namePrefix
     }
-    @objc func exportStems(_ sender: Any){ 
+    @objc func didSelectExportStems(_ sender: Any){ 
         let savePanel = NSOpenPanel()
         savePanel.canChooseFiles = false
         savePanel.canChooseDirectories = true
@@ -128,15 +126,78 @@ public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
         savePanel.begin { (result) in 
             if result == NSApplication.ModalResponse.OK {
                 guard let url = savePanel.url else { return }
-                self.delegate.exportStems(destinationFolder: url)
+                self.exportStems(destinationFolder: url)
             } else {
                 print("Problem exporting stems.")
             }
         }
     }  
+    func exportStems(destinationFolder: URL){ 
+        delegate.prepareForStemExport(destinationFolder: destinationFolder)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.stemCreator.createStems(model: self.stemCreatorModel, folder: destinationFolder)
+            self.delegate.stemExportComplete()
+        }
+    }
     @objc func stemExportComplete(notification: NSNotification){
         DispatchQueue.main.async {
             self.view.window?.close()
         }
     }
+    public func isSelected(stemNumber: Int, channelId: String) -> Bool {
+        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, channelId: channelId)
+        return selected
+    }
 }
+
+extension StemCreatorViewController : StemRowViewDelegate{
+    public func getNameFor(stemNumber: Int) -> String? {
+        let name = stemCreatorModel.getNameFor(stem: stemNumber)
+        return name
+    }
+    public func setName(stemNumber: Int, name: String){
+        stemCreatorModel.setName(stemNumber: stemNumber, name: name)
+    }
+    public var numStems: Int {
+        let stems = stemCreatorModel.numStems
+        return stems
+    }
+    public func getNameFor(stem: Int) -> String?{
+        let name = stemCreatorModel.getNameFor(stem: stem)
+        return name
+    }
+    public func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String) {
+        stemCreatorModel.selectionChangedTo(selected: selected, stemNumber: stemNumber, channelId: channelId)
+    }
+    public func delete(stemNumber: Int){
+        stemCreatorModel.delete(stemNumber: stemNumber)
+    }
+    //Pass Through
+    public var numChannels: Int {
+        let channels = delegate.numChannels
+        return channels
+    }
+    public func getNameFor(channelId: String) -> String? {
+        let name = delegate.getNameFor(channelId: channelId)
+        return name
+    }
+    public func getIdFor(channel: Int) -> String? {
+        let id = delegate.getIdFor(channel: channel)
+        return id
+    }
+}
+
+
+extension StemCreatorViewController : StemCreatorDelegate{
+    public func muteAllExcept(channelIds: [String]) {
+        delegate.muteAllExcept(channelIds: channelIds)
+    }
+    
+    public func exportStem(to url: URL, includeMP3: Bool, number: Int) {
+        delegate.exportStem(to: url, includeMP3: includeMP3, number: number)
+    }
+}
+

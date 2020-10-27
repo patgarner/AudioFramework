@@ -28,7 +28,6 @@ public class StemModel : Codable, Equatable{
                 channelIds.append(channelId)
             }
         }
-        
     }
     private func indexOf(channelId: String) -> Int?{
         for i in 0..<channelIds.count{

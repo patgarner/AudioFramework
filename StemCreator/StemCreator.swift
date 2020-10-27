@@ -10,9 +10,12 @@ import Foundation
 
 public class StemCreator{
     var delegate: StemCreatorDelegate!
-    let letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".components(separatedBy: ",")
+    private let letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".components(separatedBy: ",")
     init(delegate: StemCreatorDelegate){
         self.delegate = delegate
+    }
+    init(){
+        
     }
     func createStems(model: StemCreatorModel, folder: URL){
         for i in 0..<model.stems.count{

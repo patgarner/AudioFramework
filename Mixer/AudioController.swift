@@ -28,12 +28,11 @@ public class AudioController: NSObject {
     private let beatGenerator = BeatGenerator(tempo: 120)
     private var instrumentList : [AVAudioUnitComponent] = []
     private var effectList : [AVAudioUnitComponent] = []
-    var context : AUHostMusicalContextBlock!
-    var transportBlock : AUHostTransportStateBlock!
-    var isRendering = false
+    private var context : AUHostMusicalContextBlock!
+    private var transportBlock : AUHostTransportStateBlock!
+    private var isRendering = false
+    var stemCreatorModel = StemCreatorModel()
     
-    private var stemCreatorModel = StemCreatorModel()
-
     private override init (){
         super.init()
         initialize()
@@ -107,7 +106,7 @@ public class AudioController: NSObject {
     }
     var musicalContext : MusicalContext {
         let context = MusicalContext()
-        let barLength = 4.0 //TODO
+        let barLength = 4.0 //TODO: Use actual meter
         context.currentTempo = beatGenerator.tempo
         context.timeSignatureNumerator = 4.0 //TODO
         context.timeSignatureDenominator = 4 //TODO
@@ -116,8 +115,8 @@ public class AudioController: NSObject {
             exactBeat = sequencer.currentPositionInBeats
         }
         context.currentBeatPosition = exactBeat
-        let currentMeasure = floor(exactBeat / barLength) //TODO
-        let currentMeasureStart = currentMeasure * barLength //TODO
+        let currentMeasure = floor(exactBeat / barLength) 
+        let currentMeasureStart = currentMeasure * barLength
         context.currentMeasureDownbeatPosition = currentMeasureStart
         let beatsTillNextBeat = ceil(exactBeat) - exactBeat
         let timeTillNextBeat = 60.0 / context.currentTempo * beatsTillNextBeat
@@ -219,7 +218,7 @@ public class AudioController: NSObject {
         }
         let masterChannelData = masterController.getChannelPluginData()
         allData.masterChannel = masterChannelData
-        allData.stemCreatorModel = stemCreatorModel 
+        allData.stemCreatorModel = stemCreatorModel
         return allData
     }
     public func set(audioModel: AudioModel){
@@ -240,7 +239,6 @@ public class AudioController: NSObject {
             channelController.set(channelPluginData: channelPluginData)
         }
         stemCreatorModel = audioModel.stemCreatorModel
-//        engine.prepare()
     }
     private func removeAll(){
         for channelController in allChannelControllers{
@@ -629,7 +627,6 @@ extension AudioController : ChannelControllerDelegate {
         if !attachedNodes.contains(destinationNode){
             engine.attach(destinationNode)
         }
-        //let format = sourceNode.outputFormat(forBus: 0)
         if bus == nil {
             engine.connect(sourceNode, to: destinationNode, format: format)
         } else {
@@ -658,11 +655,7 @@ extension AudioController : ChannelControllerDelegate {
 // Stems
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-extension AudioController : StemViewDelegate { 
-    //Mark: AudioController
-    public var numChannels: Int {
-        return instrumentControllers.count
-    }
+extension AudioController : StemViewDelegate {
     public func getNameFor(channelId: String) -> String? {
         guard let channelController = getChannelControllerWith(id: channelId) else { return nil }
         let name = channelController.trackName
@@ -673,65 +666,25 @@ extension AudioController : StemViewDelegate {
         let id = channelController.id
         return id
     }
-    //MARK : StemCreatorModel
-    public func setName(stemNumber: Int, name: String){
-        stemCreatorModel.setName(stemNumber: stemNumber, name: name)
+    public var numChannels: Int {
+        return instrumentControllers.count
     }
-    public var numStems: Int {
-        let stems = stemCreatorModel.numStems
-        return stems
-    }
-    public func getNameFor(stem: Int) -> String?{
-        let name = stemCreatorModel.getNameFor(stem: stem)
-        return name
-    }
-    public func addStem(){
-        stemCreatorModel.addStem()
-    }
-    public func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String) {
-        stemCreatorModel.selectionChangedTo(selected: selected, stemNumber: stemNumber, channelId: channelId)
-    }
-    public func isSelected(stemNumber: Int, channelId: String) -> Bool {
-        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, channelId: channelId)
-        return selected
-    }
-    public func delete(stemNumber: Int){
-        stemCreatorModel.delete(stemNumber: stemNumber)
-    }
-    public func exportStems(destinationFolder: URL){
+    public func prepareForStemExport(destinationFolder: URL){
         guard let delegate = delegate else { return }
         let midiTempURL = destinationFolder.appendingPathComponent("temp.mid")
         delegate.exportMidi(to: midiTempURL)
         if !loadMidiSequence(from: midiTempURL) { return }
-        let stemCreator = StemCreator(delegate: self)
         isRendering = true
         setAllMusicalContextBlocks()
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else {
-                return
-            }
-            stemCreator.createStems(model: self.stemCreatorModel, folder: destinationFolder)
-            self.isRendering = false
-            for channelController in self.allChannelControllers{
-                channelController.mute = false
-            }
-            NotificationCenter.default.post(name: .StemExportComplete, object: nil) 
-        }
     }
-    public var namePrefix: String {
-        get {
-            return stemCreatorModel.namePrefix
-        } 
-        set {
-            stemCreatorModel.namePrefix = newValue
-        }
+    public func exportStem(to url: URL, includeMP3: Bool, number: Int){
+        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self, number: number)
     }
-}
-
-extension AudioController : StemCreatorDelegate{
-    public func set(mute: Bool, for channelId: String) {
-        guard let channelController = getChannelControllerWith(id: channelId) else { return }
-        channelController.mute = mute
+    public func stemExportComplete() {
+          self.isRendering = false
+        for channelController in self.allChannelControllers{
+            channelController.mute = false
+        }
     }
     public func muteAllExcept(channelIds: [String]) {
         for channelController in instrumentControllers{
@@ -742,11 +695,8 @@ extension AudioController : StemCreatorDelegate{
             }
         }
     }
-    public func exportStem(to url: URL, includeMP3: Bool, number: Int){
-        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self, number: number)
-    }
-
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 extension AudioController: MidiAudioExporterDelegate{

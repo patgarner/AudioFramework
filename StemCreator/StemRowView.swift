@@ -9,12 +9,11 @@
 import Cocoa
 
 public class StemRowView: NSView {
-    var delegate : StemViewDelegate!
     weak var rowTitle : NSTextField!
     var number = -1
-    var stemRowViewDelegate : StemRowViewDelegate?
+    var delegate : StemRowViewDelegate!
     private var progressBar : NSProgressIndicator!
-    init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemViewDelegate, type: RowType, number: Int = -1) {
+    init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemRowViewDelegate, type: RowType, number: Int = -1) {
         super.init(frame: frameRect)
         self.delegate = delegate
         if type == .row {
@@ -22,7 +21,7 @@ public class StemRowView: NSView {
             let rowTitle = NSTextField(frame: rowTitleFrame)
             self.rowTitle = rowTitle
             self.addSubview(rowTitle)
-            if let stemName = delegate.getNameFor(stem: number) {
+            if let stemName = delegate.getNameFor(stemNumber: number) {
                 rowTitle.stringValue = stemName
             }
             self.number = number
@@ -77,7 +76,7 @@ public class StemRowView: NSView {
     }
     @objc func deleteStem(){
         delegate.delete(stemNumber: number)
-        stemRowViewDelegate?.refresh()
+        delegate?.refresh()
     }
     public func set(progress: Double){
         progressBar.isHidden = false
