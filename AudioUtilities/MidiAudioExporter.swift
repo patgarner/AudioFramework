@@ -11,7 +11,7 @@ import AVFoundation
 import Cocoa
 
 class MidiAudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil){
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil, number: Int? = nil){
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
@@ -30,18 +30,9 @@ class MidiAudioExporter{
         delegate?.checkCallback()
         do {
             try engine.start()
-            delegate?.willStartMidiAudioExport()
-            delegate?.checkCallback()
-
             sequencer.currentPositionInSeconds = 0
             sequencer.prepareToPlay()
-            delegate?.willStartMidiAudioExport()
-            delegate?.checkCallback()
-
             try sequencer.start()
-            delegate?.willStartMidiAudioExport()
-            delegate?.checkCallback()
-
         } catch {
             fatalError("Unable to start audio engine: \(error).")
         }
@@ -55,12 +46,9 @@ class MidiAudioExporter{
             return
         }
         let sourceFileLength = AVAudioFramePosition(lengthInSeconds * buffer.format.sampleRate)
-        delegate?.willStartMidiAudioExport()
-        delegate?.checkCallback()
-
+        var progress = 0.0
         while engine.manualRenderingSampleTime < sourceFileLength {
-            delegate?.checkCallback()
-
+ 
             do {
                 let frameCount = sourceFileLength - engine.manualRenderingSampleTime
                 let framesToRender = min(AVAudioFrameCount(frameCount), buffer.frameCapacity)
@@ -79,6 +67,14 @@ class MidiAudioExporter{
                 }
             } catch {
                 fatalError("The manual rendering failed: \(error).")
+            }
+            let position = sequencer.currentPositionInSeconds
+            let newProgress = position / lengthInSeconds
+            if newProgress - progress >= 0.01 {
+                progress = newProgress
+                if let number = number {
+                    delegate?.set(progress: newProgress, number: number)
+                }
             }
         }
         engine.stop()
@@ -101,6 +97,6 @@ class MidiAudioExporter{
 
 protocol MidiAudioExporterDelegate{
     func willStartMidiAudioExport()
-    func set(progress: Double)
+    func set(progress: Double, number: Int)
     func checkCallback()
 }

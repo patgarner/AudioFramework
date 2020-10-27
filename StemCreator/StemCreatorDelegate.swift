@@ -12,5 +12,5 @@ import AVFoundation
 public protocol StemCreatorDelegate {
     func set(mute: Bool, for channelId: String)
     func muteAllExcept(channelIds: [String])
-    func exportStem(to url: URL, includeMP3: Bool)
+    func exportStem(to url: URL, includeMP3: Bool, number: Int)
 }

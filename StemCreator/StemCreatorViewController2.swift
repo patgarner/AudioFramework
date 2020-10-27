@@ -38,7 +38,7 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
     func initialize(){
         let numStems = delegate.numStems
         let numChannels = delegate.numChannels
-        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth
+        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 100
         let headerY = self.view.frame.size.height - columnTitleHeight
         let headerFrame = CGRect(x: 0, y: headerY, width: totalWidth, height: columnTitleHeight)
         let header = StemRowView(frame: headerFrame, rowTitleWidth: rowTitleWidth, rowHeight: columnTitleHeight, columnWidth: columnWidth, delegate: delegate, type: .header)
@@ -80,6 +80,23 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         let exportButton = NSButton(title: "Export", target: self, action: #selector(exportStems))
         exportButton.frame = exportButtonFrame
         self.view.addSubview(exportButton)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(setProgress),
+            name: .StemProgress,
+            object: nil)
+    }
+    @objc func setProgress(notification: NSNotification){
+        guard let stemProgress = notification.object as? (Int, Double) else { return }
+        let subviews = self.view.subviews
+        let desiredSubviewIndex = stemProgress.0 + 1
+        if subviews.count <= desiredSubviewIndex { return }
+        if let rowView = subviews[desiredSubviewIndex] as? StemRowView {
+            DispatchQueue.main.async {
+                rowView.set(progress: stemProgress.1)
+            }
+        }
     }
     @objc func addStem(){
         delegate.addStem()
@@ -106,7 +123,7 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         savePanel.begin { (result) in 
             if result == NSApplication.ModalResponse.OK {
                 guard let url = savePanel.url else { return }
-                self.view.window?.close()
+                //self.view.window?.close()
                 self.delegate.exportStems(destinationFolder: url)
             } else {
                 print("Problem exporting stems.")

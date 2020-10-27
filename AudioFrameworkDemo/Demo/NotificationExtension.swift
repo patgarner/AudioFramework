@@ -10,4 +10,5 @@ import Foundation
 
 extension Notification.Name{
     static let ExportMIDI = Notification.Name("ExportMIDI")
+    static let StemProgress = Notification.Name("StemProgress")
 }

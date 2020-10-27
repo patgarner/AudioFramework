@@ -13,6 +13,7 @@ public class StemRowView: NSView {
     weak var rowTitle : NSTextField!
     var number = -1
     var stemRowViewDelegate : StemRowViewDelegate?
+    private var progressBar : NSProgressIndicator!
     init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemViewDelegate, type: RowType, number: Int = -1) {
         super.init(frame: frameRect)
         self.delegate = delegate
@@ -42,6 +43,17 @@ public class StemRowView: NSView {
             let deleteFrame = CGRect(x: x, y: 0, width: 40, height: rowHeight) 
             deleteButton.frame = deleteFrame
             addSubview(deleteButton)
+            
+            x += 40
+            let progressFrame = CGRect(x: x, y: 0, width: 100, height: rowHeight) 
+            let progressBar = NSProgressIndicator(frame: progressFrame)
+            progressBar.minValue = 0
+            progressBar.maxValue = 1.0
+            progressBar.doubleValue = 0
+            progressBar.isIndeterminate = false
+            progressBar.isHidden = true
+            self.addSubview(progressBar)
+            self.progressBar = progressBar
         }
     }
     required init?(coder: NSCoder) {
@@ -66,6 +78,11 @@ public class StemRowView: NSView {
     @objc func deleteStem(){
         delegate.delete(stemNumber: number)
         stemRowViewDelegate?.refresh()
+    }
+    public func set(progress: Double){
+        progressBar.isHidden = false
+        progressBar.doubleValue = progress
+        progressBar.needsDisplay = true
     }
 }
 

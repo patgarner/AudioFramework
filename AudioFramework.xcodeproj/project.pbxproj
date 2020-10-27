@@ -54,6 +54,7 @@
 		843FD47525068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
 		843FD4822506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
 		843FD4832506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
+		84529AC5254782D2007BDA32 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
 		845900C92543BA6700410584 /* BeatGeneratorTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845900C82543BA6700410584 /* BeatGeneratorTest.swift */; };
 		845900E0254510D600410584 /* TestTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845900DF254510D600410584 /* TestTest.swift */; };
 		8459589B251436F20091A43E /* SendData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459589A251436F20091A43E /* SendData.swift */; };
@@ -807,6 +808,7 @@
 				8496444F252B86AE00C9802E /* UltraMixerNode.swift in Sources */,
 				84F3D119253F7122001E7ABD /* BeatInfoSource.swift in Sources */,
 				84789A352527B8AA0012B8FD /* DraggableButton.swift in Sources */,
+				84529AC5254782D2007BDA32 /* NotificationExtension.swift in Sources */,
 				8429DB6A251FB36600ADE7B0 /* StemCell.swift in Sources */,
 				84D0AB5B251EB8DF0093A081 /* StemCreatorModel.swift in Sources */,
 				84070C5924FF5D5900E572E7 /* ChannelCollectionViewItem.swift in Sources */,

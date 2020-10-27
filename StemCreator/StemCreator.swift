@@ -25,9 +25,8 @@ public class StemCreator{
         let letter = letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
         let stemPath = folder.appendingPathComponent(filename)
-        print("stem path: \(stemPath)")
         var mp3 = false
         if number == 0 { mp3 = true }
-        delegate.exportStem(to: stemPath, includeMP3: mp3)
+        delegate.exportStem(to: stemPath, includeMP3: mp3, number: number)
     }
 }

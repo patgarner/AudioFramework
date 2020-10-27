@@ -15,11 +15,10 @@ public class StemModel : Codable, Equatable{
         return false
     }
     func selectionChanged(selected: Bool, channelId: String){
-        //Four cases: 
-        //False with no channel id - don't need to delete it. Do nothing.
-        //False with channel id
-        //True with no channel id
-        //True with channel id - already have it. Do nothing.
+        //Case 1: False with no channel id - don't need to delete it. Do nothing.
+        //Case 2: False with channel id
+        //Case 3: True with no channel id
+        //Case 4: True with channel id - already have it. Do nothing.
         if let index = indexOf(channelId: channelId){
             if !selected {
                 channelIds.remove(at: index)
