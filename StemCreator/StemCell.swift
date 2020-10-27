@@ -64,30 +64,5 @@ public class StemCell: NSTextField {
         stemCheckboxDelegate.changeMultiple(to: selected, location: location)
     }
 
-    override public func mouseUp(with event: NSEvent) {
-//        let x = min(startPoint.x, endPoint.x)
-//        let y = min(startPoint.y, endPoint.y)
-//        let w = abs(endPoint.x - startPoint.x)
-//        let h = abs(endPoint.y - startPoint.y)
-//        let rect = CGRect(x: x, y: y, width: w, height: h)
-//        var descriptionIds : [String] = []
-//        for lineView in lineViews{
-//            if lineView.frame.intersects(rect) {
-//                descriptionIds.append(lineView.descriptionId)
-//            }
-//        }
-//        if descriptionIds.count > 0 { 
-//            delegate?.didSelect(descriptionIds: descriptionIds)
-//        }
-//        
-//        for lineView in lineViews{ //UGLY but only way to circumvent the dehighlighting that occurs when we call delegate
-//            if lineView.frame.intersects(rect) {
-//                lineView.selected = true
-//                lineView.needsDisplay = true
-//            }
-//        }
-//        startPoint = NSPoint()
-//        endPoint = NSPoint()
-//        self.needsDisplay = true
-    }
+    override public func mouseUp(with event: NSEvent) { } //TODO: Is this needed?
 }

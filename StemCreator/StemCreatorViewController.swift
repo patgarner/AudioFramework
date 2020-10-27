@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
+public class StemCreatorViewController: NSViewController, StemRowViewDelegate {
     public var delegate : StemViewDelegate!
     @IBOutlet weak var collectionView: NSCollectionView!
     let rowTitleWidth : CGFloat = 100
@@ -18,7 +18,7 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
     weak var namePrefixField : NSTextField!
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
-        let bundle = Bundle(for: StemCreatorViewController2.self)
+        let bundle = Bundle(for: StemCreatorViewController.self)
         super.init(nibName: nil, bundle: bundle)
         initialize()
     }
@@ -86,14 +86,19 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
             selector: #selector(setProgress),
             name: .StemProgress,
             object: nil)
+        NotificationCenter.default.addObserver(
+              self,
+              selector: #selector(stemExportComplete),
+              name: .StemExportComplete,
+              object: nil)
     }
     @objc func setProgress(notification: NSNotification){
         guard let stemProgress = notification.object as? (Int, Double) else { return }
-        let subviews = self.view.subviews
-        let desiredSubviewIndex = stemProgress.0 + 1
-        if subviews.count <= desiredSubviewIndex { return }
-        if let rowView = subviews[desiredSubviewIndex] as? StemRowView {
-            DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            let subviews = self.view.subviews
+            let desiredSubviewIndex = stemProgress.0 + 1
+            if subviews.count <= desiredSubviewIndex { return }
+            if let rowView = subviews[desiredSubviewIndex] as? StemRowView {
                 rowView.set(progress: stemProgress.1)
             }
         }
@@ -123,11 +128,15 @@ public class StemCreatorViewController2: NSViewController, StemRowViewDelegate {
         savePanel.begin { (result) in 
             if result == NSApplication.ModalResponse.OK {
                 guard let url = savePanel.url else { return }
-                //self.view.window?.close()
                 self.delegate.exportStems(destinationFolder: url)
             } else {
                 print("Problem exporting stems.")
             }
         }
     }  
+    @objc func stemExportComplete(notification: NSNotification){
+        DispatchQueue.main.async {
+            self.view.window?.close()
+        }
+    }
 }

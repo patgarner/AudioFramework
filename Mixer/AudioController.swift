@@ -715,6 +715,7 @@ extension AudioController : StemViewDelegate {
             for channelController in self.allChannelControllers{
                 channelController.mute = false
             }
+            NotificationCenter.default.post(name: .StemExportComplete, object: nil) 
         }
     }
     public var namePrefix: String {
