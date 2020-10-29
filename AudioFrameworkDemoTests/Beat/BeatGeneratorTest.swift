@@ -26,4 +26,12 @@ class BeatGeneratorTest: XCTestCase {
         beatGenerator.playOffline(until: 1.5)
         XCTAssert(del.currentBeat == 1.5)
     }
+    func testSettingCurrentBeatWhilePlaying(){
+        let beatGenerator = BeatGenerator(tempo: 60.0)
+        let del = FakeBeatDelegate()
+        beatGenerator.addListener(del)
+        beatGenerator.start()
+        beatGenerator.currentBeat = 3.0
+        
+    }
 }

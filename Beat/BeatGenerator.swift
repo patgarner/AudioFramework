@@ -9,7 +9,6 @@
 import Foundation
 
 public class BeatGenerator : BeatGeneratable{
-    public var currentBeat = 0.0 
     private var currentBeatTimesStamp : UInt64 = 0
     private var subdivisionLengthInBeats = 0.125
     private var subdivisionDurationMicroseconds : UInt32 = 0
@@ -17,6 +16,12 @@ public class BeatGenerator : BeatGeneratable{
     private var beatListeners : [BeatDelegate] = []
     private var running = false
     private var offlineMode = false
+    public var currentBeat = 0.0 {
+        didSet{
+            currentBeatTimesStamp = mach_absolute_time()
+        }
+    }
+
     public var tempo : Double = 100.0 {
         didSet{
             let divisionsPerMeasure = 32.0
@@ -41,14 +46,15 @@ public class BeatGenerator : BeatGeneratable{
                 if offset < self.subdivisionDurationMicroseconds {
                     recommendedSleepTime = self.subdivisionDurationMicroseconds - offset
                 }
+                if self.thread == nil { return }
                 usleep(recommendedSleepTime)
+                if self.thread == nil { return }
                 let postSleepTime = mach_absolute_time()
                 let diffNanoSeconds = Double(postSleepTime - preSleepTime)
                 let diffMicroSeconds = UInt32(round(diffNanoSeconds / 1000.0))
                 offset = diffMicroSeconds - recommendedSleepTime
-                if self.thread != nil {
-                    self.incrementBeat()
-                }
+                if self.thread == nil { return }
+                self.incrementBeat()
             }
         })
         thread!.qualityOfService = .userInteractive
@@ -88,6 +94,9 @@ public class BeatGenerator : BeatGeneratable{
         currentBeatTimesStamp = mach_absolute_time()
     }
     public var exactBeat: Double{
+        if subdivisionDurationMicroseconds == 0 {
+            MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationMicroseconds = 0. Divide by zero imminent.")
+        }
         let now = mach_absolute_time()
         let diffNano = now - currentBeatTimesStamp
         let numSubdivisionsElapsed = Double(diffNano / UInt64(subdivisionDurationMicroseconds)) / 1000.0

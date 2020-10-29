@@ -61,7 +61,16 @@ public class AudioController: NSObject {
              selector: #selector(handleInterruption),
              name: NSNotification.Name.AVAudioEngineConfigurationChange,
              object: engine)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(displayMessage),
+            name: .AudioControllerMessage,
+            object: nil)
         populatePluginLists()
+    }
+    @objc private func displayMessage(notification: Notification){
+        guard let string = notification.object as? String else { return }
+        delegate?.log(string)
     }
     private func populatePluginLists(){
         var desc = AudioComponentDescription()
@@ -81,6 +90,13 @@ public class AudioController: NSObject {
             if component1.manufacturerName < component2.manufacturerName { return true }
             return component1.name < component2.name
         })
+        effectList = effectList.filter { (component) -> Bool in
+            if component.manufacturerName == "Waves" {
+                return false
+            } else {
+                return true
+            }
+        }
     }
     @objc func handleInterruption(sender: Any){
         print("Engine interrupted.")

@@ -16,4 +16,8 @@ class FakeBeatDelegate : BeatDelegate{
         currentBeat = beat
         self.absoluteBeat = absoluteBeat
     }
+    func reset(){
+        currentBeat = 0
+        absoluteBeat = 0
+    }
 }

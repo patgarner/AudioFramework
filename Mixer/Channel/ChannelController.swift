@@ -433,7 +433,8 @@ public class ChannelController : ChannelViewDelegate {
             for connection in connections {
                 guard let destNode = connection.node else { continue }
                 let destIdentity = identify(node: destNode)
-                let thisConnection = sourceIdentity + " -> " + destIdentity + "\n"
+                let sampleRate = destNode.inputFormat(forBus: connection.bus).sampleRate
+                let thisConnection = sourceIdentity + " -> " + destIdentity + "\t\t\(sampleRate)\n"
                 string += thisConnection
             }
             if connections.count == 0{
