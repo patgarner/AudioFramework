@@ -290,7 +290,9 @@ public class AudioController: NSObject {
         if channel >= instrumentControllers.count { return }
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
-        channelController.noteOn(note, withVelocity: velocity, channel: channel)
+//        DispatchQueue.main.async {
+            channelController.noteOn(note, withVelocity: velocity, channel: channel)
+//        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -662,7 +664,7 @@ extension AudioController : ChannelControllerDelegate {
         }
     }
     private var format : AVAudioFormat{
-        let format = AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2)!
+        let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
         return format
     }
 }

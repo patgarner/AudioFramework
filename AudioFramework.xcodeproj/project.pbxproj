@@ -12,9 +12,6 @@
 		84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
 		84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */; };
 		84070C5E24FF5D5900E572E7 /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController.swift */; };
-		840D4B142537914A00E841F0 /* PassThroughNodeAudioUnit.m in Sources */ = {isa = PBXBuildFile; fileRef = 840D4AFC253777DA00E841F0 /* PassThroughNodeAudioUnit.m */; };
-		840D4B152537914F00E841F0 /* PassThroughNodeAudioUnit.h in Headers */ = {isa = PBXBuildFile; fileRef = 840D4AFB253777DA00E841F0 /* PassThroughNodeAudioUnit.h */; };
-		840D4B162537915600E841F0 /* PassThroughNode-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 840D4B04253777DA00E841F0 /* PassThroughNode-Bridging-Header.h */; };
 		841BFE6D2526B8A000FA0276 /* VUMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE6C2526B8A000FA0276 /* VUMeterView.swift */; };
 		841BFE6E2526B8A000FA0276 /* VUMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841BFE6C2526B8A000FA0276 /* VUMeterView.swift */; };
 		841D0A7A24FED209008F6305 /* AudioFileConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A7824FED209008F6305 /* AudioFileConverter.swift */; };
@@ -117,8 +114,6 @@
 		84A9AFEA25101ED500816F7F /* MixerFillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8479715524FFE66600AAC4A3 /* MixerFillView.swift */; };
 		84A9AFEB25101ED500816F7F /* MixerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5624FF5D5900E572E7 /* MixerViewController.swift */; };
 		84A9AFEC25101EDB00816F7F /* AudioControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */; };
-		84A9CF20250C25680065A7CC /* AudioUnitPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */; };
-		84A9CF21250C25680065A7CC /* AudioUnitPassthrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */; };
 		84A9CF23250D35F70065A7CC /* MasterChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF22250D35F70065A7CC /* MasterChannelController.swift */; };
 		84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */; };
 		84A9CF58250D93D50065A7CC /* AudioNodeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */; };
@@ -201,13 +196,6 @@
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
 		84070C5524FF5D5900E572E7 /* ChannelDelegates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelDelegates.swift; sourceTree = "<group>"; };
 		84070C5624FF5D5900E572E7 /* MixerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixerViewController.swift; sourceTree = "<group>"; };
-		840D4AFB253777DA00E841F0 /* PassThroughNodeAudioUnit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PassThroughNodeAudioUnit.h; sourceTree = "<group>"; };
-		840D4AFC253777DA00E841F0 /* PassThroughNodeAudioUnit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PassThroughNodeAudioUnit.m; sourceTree = "<group>"; };
-		840D4AFE253777DA00E841F0 /* AudioUnitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioUnitViewController.swift; sourceTree = "<group>"; };
-		840D4B01253777DA00E841F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/AudioUnitViewController.xib; sourceTree = "<group>"; };
-		840D4B03253777DA00E841F0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		840D4B04253777DA00E841F0 /* PassThroughNode-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PassThroughNode-Bridging-Header.h"; sourceTree = "<group>"; };
-		840D4B05253777DA00E841F0 /* PassThroughNode.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PassThroughNode.entitlements; sourceTree = "<group>"; };
 		840D4B0E2537849F00E841F0 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		841BFE6C2526B8A000FA0276 /* VUMeterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VUMeterView.swift; sourceTree = "<group>"; };
 		841D0A7824FED209008F6305 /* AudioFileConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioFileConverter.swift; sourceTree = "<group>"; };
@@ -259,7 +247,6 @@
 		849C6B88251A653300164DE1 /* Demo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo.swift; sourceTree = "<group>"; };
 		849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationExtension.swift; sourceTree = "<group>"; };
 		849C6B8F251A712800164DE1 /* test.mid */ = {isa = PBXFileReference; lastKnownFileType = audio.midi; path = test.mid; sourceTree = "<group>"; };
-		84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AudioUnitPassthrough.swift; path = AudioUnit/AudioUnitPassthrough.swift; sourceTree = SOURCE_ROOT; };
 		84A9CF22250D35F70065A7CC /* MasterChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterChannelController.swift; sourceTree = "<group>"; };
 		84A9CF32250D4E5A0065A7CC /* InstrumentChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentChannelController.swift; sourceTree = "<group>"; };
 		84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioNodeFactory.swift; sourceTree = "<group>"; };
@@ -342,22 +329,8 @@
 		840D4A78253763D900E841F0 /* Plugin */ = {
 			isa = PBXGroup;
 			children = (
-				840D4AFB253777DA00E841F0 /* PassThroughNodeAudioUnit.h */,
-				840D4AFC253777DA00E841F0 /* PassThroughNodeAudioUnit.m */,
 			);
 			path = Plugin;
-			sourceTree = "<group>";
-		};
-		840D4AFA253777DA00E841F0 /* PassThroughNode */ = {
-			isa = PBXGroup;
-			children = (
-				840D4AFE253777DA00E841F0 /* AudioUnitViewController.swift */,
-				840D4B00253777DA00E841F0 /* AudioUnitViewController.xib */,
-				840D4B03253777DA00E841F0 /* Info.plist */,
-				840D4B04253777DA00E841F0 /* PassThroughNode-Bridging-Header.h */,
-				840D4B05253777DA00E841F0 /* PassThroughNode.entitlements */,
-			);
-			path = PassThroughNode;
 			sourceTree = "<group>";
 		};
 		840D4B0D2537849F00E841F0 /* Frameworks */ = {
@@ -373,7 +346,6 @@
 			children = (
 				841D0A7824FED209008F6305 /* AudioFileConverter.swift */,
 				841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */,
-				84A9CF1F250C25680065A7CC /* AudioUnitPassthrough.swift */,
 				84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */,
 				841E57D2251C262F009B7E7C /* MidiAudioExporter.swift */,
 				8495128B252CF2A7008C5C47 /* MusicalContext.swift */,
@@ -409,7 +381,6 @@
 				842369B524FEC2BC001266BE /* AudioFrameworkTests */,
 				84ACE02625191008003963FD /* AudioFrameworkDemo */,
 				84ACE03C2519100B003963FD /* AudioFrameworkDemoTests */,
-				840D4AFA253777DA00E841F0 /* PassThroughNode */,
 				842369A924FEC2BC001266BE /* Products */,
 				9617728FADD13898116E6918 /* Pods */,
 				840D4B0D2537849F00E841F0 /* Frameworks */,
@@ -593,8 +564,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				840D4B162537915600E841F0 /* PassThroughNode-Bridging-Header.h in Headers */,
-				840D4B152537914F00E841F0 /* PassThroughNodeAudioUnit.h in Headers */,
 				842369B924FEC2BC001266BE /* AudioFramework.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -787,7 +756,6 @@
 				8460307B250803FA00CB9844 /* ChannelModel.swift in Sources */,
 				84DF4105252FBC8E0084AE61 /* PluginFactory.swift in Sources */,
 				842369F724FEC44C001266BE /* PluginData.swift in Sources */,
-				840D4B142537914A00E841F0 /* PassThroughNodeAudioUnit.m in Sources */,
 				846D648D253E404F0097F345 /* BeatDelegate.swift in Sources */,
 				8461C119252EA72400147933 /* AudioUnitGenericView.swift in Sources */,
 				84A9CF33250D4E5A0065A7CC /* InstrumentChannelController.swift in Sources */,
@@ -814,7 +782,6 @@
 				84070C5A24FF5D5900E572E7 /* ChannelRouter.swift in Sources */,
 				8479715624FFE66600AAC4A3 /* MixerFillView.swift in Sources */,
 				843FD4822506A3B500189936 /* AudioModel.swift in Sources */,
-				84A9CF20250C25680065A7CC /* AudioUnitPassthrough.swift in Sources */,
 				8487F51925111FC1003DC1D6 /* AuxChannelController.swift in Sources */,
 				843FD47525068E9200189936 /* ChannelController.swift in Sources */,
 				8459589B251436F20091A43E /* SendData.swift in Sources */,
@@ -859,7 +826,6 @@
 				84A9CF59250D93D50065A7CC /* AudioNodeFactory.swift in Sources */,
 				84ACDFDF25166219003963FD /* PluginSelection.swift in Sources */,
 				842369F624FEC44C001266BE /* AudioController.swift in Sources */,
-				84A9CF21250C25680065A7CC /* AudioUnitPassthrough.swift in Sources */,
 				841E57FE251D9D11009B7E7C /* StemCreatorViewController.swift in Sources */,
 				8461C117252EA6A000147933 /* AudioUnitGenericWindow.swift in Sources */,
 				84A9AFEA25101ED500816F7F /* MixerFillView.swift in Sources */,
@@ -935,14 +901,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		840D4B00253777DA00E841F0 /* AudioUnitViewController.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				840D4B01253777DA00E841F0 /* Base */,
-			);
-			name = AudioUnitViewController.xib;
-			sourceTree = "<group>";
-		};
 		84ACE0302519100B003963FD /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
