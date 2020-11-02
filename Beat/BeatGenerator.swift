@@ -21,7 +21,6 @@ public class BeatGenerator : BeatGeneratable{
             currentBeatTimesStamp = mach_absolute_time()
         }
     }
-
     public var tempo : Double = 100.0 {
         didSet{
             let divisionsPerMeasure = 32.0
@@ -95,7 +94,8 @@ public class BeatGenerator : BeatGeneratable{
     }
     public var exactBeat: Double{
         if subdivisionDurationMicroseconds == 0 {
-            MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationMicroseconds = 0. Divide by zero imminent.")
+            MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationMicroseconds = 0. Divide by zero imminent.", displayFormat: [.file])
+            return currentBeat
         }
         let now = mach_absolute_time()
         let diffNano = now - currentBeatTimesStamp

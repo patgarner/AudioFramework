@@ -36,7 +36,6 @@ class AudioFileConverter{
                 try fileManager.removeItem(at: outURL)
             }
             let writer = try AVAssetWriter(outputURL: outURL, fileType: AVFileType.wav)
-            //Need to delete output file if it exists
             let writerInput = AVAssetWriterInput(mediaType: AVMediaType.audio, outputSettings: compressionSettings)
             writer.add(writerInput)
             writer.startWriting()

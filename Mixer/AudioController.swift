@@ -51,16 +51,19 @@ public class AudioController: NSObject {
         }
     }
     private func initialize(){
+        MessageHandler.log("Test message", displayFormat: [.file])
+        MessageHandler.log("Banana", displayFormat: [.file])
+
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
         context = getMusicalContext
         transportBlock = getTransportState
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
         sequencer = AVAudioSequencer(audioEngine: engine)
         NotificationCenter.default.addObserver(
-             self,
-             selector: #selector(handleInterruption),
-             name: NSNotification.Name.AVAudioEngineConfigurationChange,
-             object: engine)
+            self,
+            selector: #selector(handleInterruption),
+            name: NSNotification.Name.AVAudioEngineConfigurationChange,
+            object: engine)
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(displayMessage),
@@ -290,9 +293,9 @@ public class AudioController: NSObject {
         if channel >= instrumentControllers.count { return }
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
-//        DispatchQueue.main.async {
-            channelController.noteOn(note, withVelocity: velocity, channel: channel)
-//        }
+        //        DispatchQueue.main.async {
+        channelController.noteOn(note, withVelocity: velocity, channel: channel)
+        //        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -450,9 +453,9 @@ public class AudioController: NSObject {
                 if let node = input?.node {
                     if let ultraMixer = node as? UltraMixerNode {
                         string += "      \(inputNumber): \(ultraMixer.name)\n"
-                      } else {
+                    } else {
                         string += "      \(inputNumber): NoName\n"
-                      }
+                    }
                 } 
             }
             string += "   =====OUTPUTS=====\n"
@@ -470,10 +473,10 @@ public class AudioController: NSObject {
         }
         log(string)
     }
-//    public var sampleRate : Double {
-//        //let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
-//        return 48000
-//    }
+    //    public var sampleRate : Double {
+    //        //let sr = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
+    //        return 48000
+    //    }
     func getSendDestination(sendNumber: Int, channelNumber: Int, channelType: ChannelType) -> BusInfo? { 
         guard let channelController = getChannelController(type: channelType, channel: channelNumber) else { return nil}
         guard let sendNode = channelController.get(sendNumber: sendNumber) else { return nil }
@@ -537,7 +540,7 @@ extension AudioController : ChannelControllerDelegate {
         connections.append(newConnection)
         engine.connect(sourceBus, to: connections, fromBus: 0, format: format)
         if engine.isRunning { engine.pause() }
-
+        
         if !isConnected(sourceNode: sourceBus, destinationNode: destinationNode){
             delegate?.log("Error: AudioController unable to connect bus to destination node.")
             for i in 0..<destinationNode.numberOfInputs{
@@ -699,7 +702,7 @@ extension AudioController : StemViewDelegate {
         MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self, number: number)
     }
     public func stemExportComplete() {
-          self.isRendering = false
+        self.isRendering = false
         for channelController in self.allChannelControllers{
             channelController.mute = false
         }
@@ -725,16 +728,6 @@ extension AudioController: MidiAudioExporterDelegate{
         let numberProgress = (number, progress)
         NotificationCenter.default.post(name: .StemProgress, object: numberProgress) 
     }
-    func checkCallback(){ //TODO: Remove
-        let channelController = instrumentControllers[0]
-        guard let inputNode = channelController.inputNode else { return }
-        let block = inputNode.auAudioUnit.musicalContextBlock
-        if block == nil {
-            print("Context is NIL.")
-        } else {
-            print("Context is good!")
-        }
-    }
 }
 
 extension AudioController : BeatInfoSource {
@@ -758,6 +751,9 @@ extension AudioController : BeatInfoSource {
     }
     public func stop(){
         beatGenerator.stop()
+        for channelController in allChannelControllers{
+            channelController.resetMeter()
+        }
     }
     public func add(beatListener: BeatDelegate){
         beatGenerator.addListener(beatListener)
@@ -765,7 +761,7 @@ extension AudioController : BeatInfoSource {
     public func removeBeatListeners(){
         beatGenerator.removeListeners()
     }
-
+    
     public func playOffline(numBars: Int, barLength: Double){
         beatGenerator.playOffline(numBars: numBars, barLength: barLength)
     }

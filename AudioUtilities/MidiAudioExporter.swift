@@ -27,7 +27,6 @@ class MidiAudioExporter{
             fatalError("Enabling manual rendering mode failed: \(error).")
         }
         delegate?.willStartMidiAudioExport()
-        delegate?.checkCallback()
         do {
             try engine.start()
             sequencer.currentPositionInSeconds = 0
@@ -48,7 +47,6 @@ class MidiAudioExporter{
         let sourceFileLength = AVAudioFramePosition(lengthInSeconds * buffer.format.sampleRate)
         var progress = 0.0
         while engine.manualRenderingSampleTime < sourceFileLength {
- 
             do {
                 let frameCount = sourceFileLength - engine.manualRenderingSampleTime
                 let framesToRender = min(AVAudioFrameCount(frameCount), buffer.frameCapacity)
@@ -68,8 +66,7 @@ class MidiAudioExporter{
             } catch {
                 fatalError("The manual rendering failed: \(error).")
             }
-            let position = sequencer.currentPositionInSeconds
-            let newProgress = position / lengthInSeconds
+            let newProgress = sequencer.currentPositionInSeconds / lengthInSeconds
             if newProgress - progress >= 0.01 {
                 progress = newProgress
                 if let number = number {
@@ -79,7 +76,6 @@ class MidiAudioExporter{
         }
         engine.stop()
         engine.disableManualRenderingMode()
-        print("AVAudioEngine offline rendering finished.")  
         let wavUrl = audioDestinationURL.appendingPathExtension("wav")
         AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
         if includeMP3{
@@ -98,5 +94,4 @@ class MidiAudioExporter{
 protocol MidiAudioExporterDelegate{
     func willStartMidiAudioExport()
     func set(progress: Double, number: Int)
-    func checkCallback()
 }

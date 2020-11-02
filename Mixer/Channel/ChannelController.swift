@@ -481,6 +481,9 @@ public class ChannelController : ChannelViewDelegate {
             effect.auAudioUnit.transportStateBlock = transportBlock
         }
     }
+    func resetMeter(){
+        channelView?.updateVUMeter(level: 0)
+    }
 }
 
 public enum PluginType{
