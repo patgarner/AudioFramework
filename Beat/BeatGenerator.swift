@@ -46,7 +46,7 @@ public class BeatGenerator : BeatGeneratable{
                     recommendedSleepTime = self.subdivisionDurationMicroseconds - offset
                 }
                 if self.thread == nil { return }
-                usleep(recommendedSleepTime)
+                usleep(recommendedSleepTime) //<----------------------------
                 if self.thread == nil { return }
                 let postSleepTime = mach_absolute_time()
                 let diffNanoSeconds = Double(postSleepTime - preSleepTime)

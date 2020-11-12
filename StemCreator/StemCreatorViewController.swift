@@ -38,10 +38,14 @@ public class StemCreatorViewController: NSViewController {
         // Do view setup here.
     }
     func initialize(){
+        self.title = "Export Stems"
         stemCreator.delegate = self
         let numStems = stemCreatorModel.numStems//delegate.numStems
         let numChannels = delegate.numChannels
         let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 100
+        let currentFrame = self.view.frame
+        let newSize = CGSize(width: totalWidth, height: currentFrame.height)
+        self.view.setFrameSize(newSize)
         let headerY = self.view.frame.size.height - columnTitleHeight
         let headerFrame = CGRect(x: 0, y: headerY, width: totalWidth, height: columnTitleHeight)
         let header = StemRowView(frame: headerFrame, rowTitleWidth: rowTitleWidth, rowHeight: columnTitleHeight, columnWidth: columnWidth, delegate: self, type: .header)
@@ -140,6 +144,9 @@ public class StemCreatorViewController: NSViewController {
             }
             self.stemCreator.createStems(model: self.stemCreatorModel, folder: destinationFolder)
             self.delegate.stemExportComplete()
+            DispatchQueue.main.async {
+                self.view.window?.close()
+            }
         }
     }
     @objc func stemExportComplete(notification: NSNotification){
