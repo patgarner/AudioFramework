@@ -58,6 +58,11 @@ public class AudioController: NSObject {
         context = getMusicalContext
         transportBlock = getTransportState
         createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
+        var channelIds : [String] = []
+        for instrumentController in instrumentControllers {
+            channelIds.append(instrumentController.id)
+        }
+        stemCreatorModel.addDefaultStem(channelIds: channelIds)
         sequencer = AVAudioSequencer(audioEngine: engine)
         NotificationCenter.default.addObserver(
             self,

@@ -39,7 +39,8 @@ class MidiAudioExporter{
         let outputFile: AVAudioFile
         let cafURL = audioDestinationURL.appendingPathExtension("caf")
         do {
-            outputFile = try AVAudioFile(forWriting: cafURL, settings: buffer.format.settings)
+            let bufferSettings = buffer.format.settings
+            outputFile = try AVAudioFile(forWriting: cafURL, settings: bufferSettings)
         } catch {
             print("Unable to open output audio file: \(error).")
             return

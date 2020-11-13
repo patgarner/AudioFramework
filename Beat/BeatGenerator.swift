@@ -36,7 +36,7 @@ public class BeatGenerator : BeatGeneratable{
             return
         }
         currentBeatTimesStamp = mach_absolute_time()
-        self.thread = Thread(block: { 
+        let thread = Thread(block: { 
             var offset : UInt32 = 0
             while (self.thread != nil){
                 self.playBeat()
@@ -56,8 +56,9 @@ public class BeatGenerator : BeatGeneratable{
                 self.incrementBeat()
             }
         })
-        thread!.qualityOfService = .userInteractive
-        thread!.start()
+        self.thread = thread
+        thread.qualityOfService = .userInteractive
+        thread.start()
     }
     public func stop() {
         if thread == nil { return }

@@ -45,4 +45,10 @@ public class StemCreatorModel : Codable, Equatable {
         if stemNumber < 0 || stemNumber >= stems.count { return }
         stems.remove(at: stemNumber)
     }
+    func addDefaultStem(channelIds : [String]){
+        let stemModel = StemModel()
+        stemModel.channelIds = channelIds
+        stemModel.stemShortName = "FULL"
+        stems.append(stemModel)
+    }
 }
