@@ -7,63 +7,61 @@
 //
 
 import Foundation
+import CoreServices
 
-public class BeatGenerator : BeatGeneratable{
+public class BeatGenerator : BeatGeneratable, PulseDelegate{
     private var currentBeatTimesStamp : UInt64 = 0
     private var subdivisionLengthInBeats = 0.125
-    private var subdivisionDurationMicroseconds : UInt32 = 0
-    private var thread : Thread? = nil
+    private var subdivisionDurationNano : UInt64 = 0
     private var beatListeners : [BeatDelegate] = []
-    private var running = false
     private var offlineMode = false
-    public var currentBeat = 0.0 {
-        didSet{
-            currentBeatTimesStamp = mach_absolute_time()
-        }
+    private var currentBeat = 0.0
+    private var nextBeat = 0.0
+    private let pulseGenerator = PulseGenerator()
+    public var isPlaying = false
+    public func getCurrentBeat() -> Double {
+        return currentBeat
     }
-    public var tempo : Double = 100.0 {
-        didSet{
-            let divisionsPerMeasure = 32.0
-            let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
-            subdivisionDurationMicroseconds = UInt32(subdivisionDurationSeconds * 1000000.0)
-        }
+    private var tempo : Double = 100.0
+    public func set(tempo: Double) {
+        self.tempo = tempo
+        calculateValues()
+    }
+    public func getTempo() -> Double {
+        return tempo
     }
     public init(tempo: Double){
         self.tempo = tempo
+        calculateValues()
+        pulseGenerator.delegate = self
+    }
+
+    private func calculateValues(){
+        let divisionsPerMeasure = 32.0
+        let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
+        subdivisionDurationNano = UInt64(subdivisionDurationSeconds * 1000000000.0)
+        pulseGenerator.subdivisionDurationNano = subdivisionDurationNano
     }
     public func start() {
-        if thread != nil {
-            return
-        }
+        isPlaying = true
+        pulseGenerator.start()
+    }
+    public func triggerPulse() {
+        if !isPlaying { return }
+        playBeatCycle()
+    }
+    func playBeatCycle(){
+        currentBeat = nextBeat
+        nextBeat = currentBeat + subdivisionLengthInBeats
+        playBeat()
+    }
+    private func incrementBeat(){
+        currentBeat = nextBeat
+        nextBeat = currentBeat + subdivisionLengthInBeats
         currentBeatTimesStamp = mach_absolute_time()
-        let thread = Thread(block: { 
-            var offset : UInt32 = 0
-            while (self.thread != nil){
-                self.playBeat()
-                let preSleepTime = mach_absolute_time()
-                var recommendedSleepTime : UInt32 = 0
-                if offset < self.subdivisionDurationMicroseconds {
-                    recommendedSleepTime = self.subdivisionDurationMicroseconds - offset
-                }
-                if self.thread == nil { return }
-                usleep(recommendedSleepTime) //<----------------------------
-                if self.thread == nil { return }
-                let postSleepTime = mach_absolute_time()
-                let diffNanoSeconds = Double(postSleepTime - preSleepTime)
-                let diffMicroSeconds = UInt32(round(diffNanoSeconds / 1000.0))
-                offset = diffMicroSeconds - recommendedSleepTime
-                if self.thread == nil { return }
-                self.incrementBeat()
-            }
-        })
-        self.thread = thread
-        thread.qualityOfService = .userInteractive
-        thread.start()
     }
     public func stop() {
-        if thread == nil { return }
-        self.thread!.cancel()
-        self.thread = nil
+        isPlaying = false
     }
     public func playOffline(numBars: Int, barLength: Double) {
         offlineMode = true
@@ -89,18 +87,14 @@ public class BeatGenerator : BeatGeneratable{
             beatListener.didPlayBeat(currentBeat, absoluteBeat: currentBeat)
         }
     }
-    private func incrementBeat(){
-        currentBeat += self.subdivisionLengthInBeats
-        currentBeatTimesStamp = mach_absolute_time()
-    }
     public var exactBeat: Double{
-        if subdivisionDurationMicroseconds == 0 {
-            MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationMicroseconds = 0. Divide by zero imminent.", displayFormat: [.file])
+        if subdivisionDurationNano == 0 {
+            MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationNanoseconds = 0. Divide by zero imminent.", displayFormat: [.file])
             return currentBeat
         }
         let now = mach_absolute_time()
         let diffNano = now - currentBeatTimesStamp
-        let numSubdivisionsElapsed = Double(diffNano / UInt64(subdivisionDurationMicroseconds)) / 1000.0
+        let numSubdivisionsElapsed = Double(diffNano / subdivisionDurationNano) / 1000.0
         let beatsElapsed = numSubdivisionsElapsed * subdivisionLengthInBeats
         let beat = currentBeat + beatsElapsed
         return beat
@@ -111,17 +105,7 @@ public class BeatGenerator : BeatGeneratable{
     public func removeListeners() {
         beatListeners.removeAll()
     }
-    func goto(beat: Double){
-        self.currentBeat = beat
-    }
-    
-    public var isPlaying: Bool {
-        if thread != nil {
-            return true
-        } else if offlineMode {
-            return true
-        } else {
-            return false
-        }
+    public func goto(beat: Double){
+        nextBeat = beat
     }
 }

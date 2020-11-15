@@ -3,11 +3,11 @@
 //
 /*
  Copyright 2020 David Mann Music LLC
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
 import Foundation
@@ -67,11 +67,38 @@ class AudioFileConverter{
         }
         
     }
+    class func convertSimple(sourceURL: URL, destinationURL: URL, deleteSource: Bool){
+        let task = Process()
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.launchPath = "/usr/bin/afconvert"
+        let sourcePath = sourceURL.path
+        let destPath = destinationURL.path
+        
+        //afconvert -f WAVE -d LEI16@48000 "MANN-Beneath the Surface A(Full).wav" "Audio File.wav"
+        task.arguments = ["-f",  "WAVE", "-d", "LEI16@48000", sourcePath, destPath, ]
+        task.launch()
+        let handle = pipe.fileHandleForReading
+        let data = handle.readDataToEndOfFile()
+        guard let result_s = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
+            print("Couldn't get WAV conversion results")
+            return
+        }
+        print(result_s)
+        if deleteSource{
+            let fileManager = FileManager()
+            do {
+                try fileManager.removeItem(at: sourceURL)
+            } catch {
+                print(error)
+            }
+        }
+    }
     class func convertToMP3(sourceURL: URL, destinationURL: URL, deleteSource: Bool){
         let task = Process()
         let pipe = Pipe()
         task.standardOutput = pipe
-        task.launchPath = "/usr/local/bin/lame" //The location where the mp3 codec is located
+        task.launchPath = "/usr/local/bin/lame"
         let sourcePath = sourceURL.path
         let destPath = destinationURL.path
         task.arguments = [sourcePath, destPath, "-b 192"]

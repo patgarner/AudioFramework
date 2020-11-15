@@ -9,17 +9,16 @@
 import Foundation
 
 public protocol BeatGeneratable {
-   // func set(tempo: Double)
-    var tempo : Double { get set }
+    func set(tempo: Double)
+    func getTempo() -> Double
     func start()
     func stop()
     func playOffline(numBars: Int, barLength: Double)
     func addListener(_ listener : BeatDelegate)
     func removeListeners()
     func playOffline(until end: Double)
-//    func back()
-//    func forward()
     var isPlaying : Bool { get }
-    var currentBeat : Double { get set }
+    func goto(beat: Double)
     var exactBeat : Double { get }
+    func getCurrentBeat() -> Double
 }

@@ -131,7 +131,7 @@ public class AudioController: NSObject {
     var musicalContext : MusicalContext {
         let context = MusicalContext()
         let barLength = 4.0 //TODO: Use actual meter
-        context.currentTempo = beatGenerator.tempo
+        context.currentTempo = beatGenerator.getTempo()
         context.timeSignatureNumerator = 4.0 //TODO
         context.timeSignatureDenominator = 4 //TODO
         var exactBeat = beatGenerator.exactBeat
@@ -160,7 +160,7 @@ public class AudioController: NSObject {
                            cycleEndBeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
         let exactBeat = beatGenerator.exactBeat
         let sampleRate = format.sampleRate
-        let samplePosition = exactBeat / beatGenerator.tempo * 60.0 * sampleRate
+        let samplePosition = exactBeat / beatGenerator.getTempo() * 60.0 * sampleRate
         if beatGenerator.isPlaying || isRendering {
             transportStateFlags?.pointee = .moving
         } 
@@ -737,7 +737,7 @@ extension AudioController: MidiAudioExporterDelegate{
 
 extension AudioController : BeatInfoSource {
     public func set(tempo: Double){
-        beatGenerator.tempo = tempo
+        beatGenerator.set(tempo: tempo)
     }
     public var isPlaying : Bool { 
         return beatGenerator.isPlaying
@@ -775,10 +775,10 @@ extension AudioController : BeatInfoSource {
     }
     public var currentBeat : Double { 
         get {
-            return beatGenerator.currentBeat
+            return beatGenerator.getCurrentBeat()
         }
         set {
-            beatGenerator.currentBeat = newValue
+            beatGenerator.goto(beat: newValue)
         }
     }
     public var exactBeat : Double { 

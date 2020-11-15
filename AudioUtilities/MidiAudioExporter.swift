@@ -78,7 +78,8 @@ class MidiAudioExporter{
         engine.stop()
         engine.disableManualRenderingMode()
         let wavUrl = audioDestinationURL.appendingPathExtension("wav")
-        AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
+        //AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
+        AudioFileConverter.convertSimple(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
         if includeMP3{
             let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
             AudioFileConverter.convertToMP3(sourceURL: wavUrl, destinationURL: mp3Url, deleteSource: false)

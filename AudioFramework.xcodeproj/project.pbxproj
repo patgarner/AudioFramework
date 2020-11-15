@@ -88,6 +88,10 @@
 		849216BB253A74DB005982C3 /* FakeAudioControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849216BA253A74DB005982C3 /* FakeAudioControllerDelegate.swift */; };
 		849216BD253A86DC005982C3 /* FakeChannelControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849216BC253A86DC005982C3 /* FakeChannelControllerDelegate.swift */; };
 		849216BF253A8848005982C3 /* FakeMusicalContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849216BE253A8848005982C3 /* FakeMusicalContext.swift */; };
+		8493BD25256075BC00C55A49 /* StemDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D83D3A2548974E00CC1D51 /* StemDelegates.swift */; };
+		8493BD26256075DC00C55A49 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
+		8493BD282560A96200C55A49 /* PulseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8493BD272560A96200C55A49 /* PulseGenerator.swift */; };
+		8493BD292560A96200C55A49 /* PulseGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8493BD272560A96200C55A49 /* PulseGenerator.swift */; };
 		84951278252CC9D4008C5C47 /* PluginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84951276252CC9D4008C5C47 /* PluginVC.swift */; };
 		84951279252CC9D4008C5C47 /* PluginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84951276252CC9D4008C5C47 /* PluginVC.swift */; };
 		8495127A252CC9D4008C5C47 /* PluginVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84951277252CC9D4008C5C47 /* PluginVC.xib */; };
@@ -240,6 +244,7 @@
 		849216BA253A74DB005982C3 /* FakeAudioControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeAudioControllerDelegate.swift; sourceTree = "<group>"; };
 		849216BC253A86DC005982C3 /* FakeChannelControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeChannelControllerDelegate.swift; sourceTree = "<group>"; };
 		849216BE253A8848005982C3 /* FakeMusicalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeMusicalContext.swift; sourceTree = "<group>"; };
+		8493BD272560A96200C55A49 /* PulseGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseGenerator.swift; sourceTree = "<group>"; };
 		84951276252CC9D4008C5C47 /* PluginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PluginVC.swift; path = Waves/PluginVC.swift; sourceTree = "<group>"; };
 		84951277252CC9D4008C5C47 /* PluginVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = PluginVC.xib; path = Waves/PluginVC.xib; sourceTree = "<group>"; };
 		8495128B252CF2A7008C5C47 /* MusicalContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicalContext.swift; sourceTree = "<group>"; };
@@ -451,6 +456,7 @@
 				846D6483253E404F0097F345 /* BeatGenerator.swift */,
 				846D6485253E404F0097F345 /* BeatTools.swift */,
 				84F3D118253F7122001E7ABD /* BeatInfoSource.swift */,
+				8493BD272560A96200C55A49 /* PulseGenerator.swift */,
 			);
 			path = Beat;
 			sourceTree = "<group>";
@@ -751,6 +757,7 @@
 				841E57D3251C262F009B7E7C /* MidiAudioExporter.swift in Sources */,
 				841BFE6D2526B8A000FA0276 /* VUMeterView.swift in Sources */,
 				8480DB082532161E00A40CEB /* PluginDisplayDelegate.swift in Sources */,
+				8493BD282560A96200C55A49 /* PulseGenerator.swift in Sources */,
 				84070C5D24FF5D5900E572E7 /* ChannelDelegates.swift in Sources */,
 				84D0AB5E251EB9210093A081 /* StemModel.swift in Sources */,
 				8460307B250803FA00CB9844 /* ChannelModel.swift in Sources */,
@@ -798,6 +805,7 @@
 				8461C11A252EA72400147933 /* AudioUnitGenericView.swift in Sources */,
 				84A9AFEB25101ED500816F7F /* MixerViewController.swift in Sources */,
 				8429DB91252011EC00ADE7B0 /* StemCreator.swift in Sources */,
+				8493BD25256075BC00C55A49 /* StemDelegates.swift in Sources */,
 				84A9AFE325101ED500816F7F /* MasterChannelController.swift in Sources */,
 				84789A2E2527B73C0012B8FD /* ButtonExtension.swift in Sources */,
 				84D0AB5F251EB9210093A081 /* StemModel.swift in Sources */,
@@ -806,6 +814,7 @@
 				84DF4106252FBC8E0084AE61 /* PluginFactory.swift in Sources */,
 				842369B724FEC2BC001266BE /* AudioFrameworkTests.swift in Sources */,
 				845900E0254510D600410584 /* TestTest.swift in Sources */,
+				8493BD26256075DC00C55A49 /* NotificationExtension.swift in Sources */,
 				841D0A7C24FED216008F6305 /* AudioFileConverter.swift in Sources */,
 				843FD4832506A3B500189936 /* AudioModel.swift in Sources */,
 				84A9AFE525101ED500816F7F /* ChannelRouter.swift in Sources */,
@@ -837,6 +846,7 @@
 				84A9AFE125101ED500816F7F /* ChannelController.swift in Sources */,
 				8480DB092532161E00A40CEB /* PluginDisplayDelegate.swift in Sources */,
 				8459589C251436F20091A43E /* SendData.swift in Sources */,
+				8493BD292560A96200C55A49 /* PulseGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
