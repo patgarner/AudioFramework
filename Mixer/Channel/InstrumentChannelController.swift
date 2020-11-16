@@ -58,8 +58,10 @@ public class InstrumentChannelController : ChannelController{
             au.fullState = newValue
         }
     }
-    func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
+    func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8, omniMode : Bool = true) {
         guard let instrumentNode = inputNode as? AVAudioUnitMIDIInstrument else { return }
+        var channel = channel
+        if omniMode { channel = 0 }
         instrumentNode.startNote(note, withVelocity: velocity, onChannel: channel)
     }
     func noteOff(_ note: UInt8, channel: UInt8) {
