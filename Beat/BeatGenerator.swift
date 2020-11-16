@@ -77,7 +77,7 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
         currentBeat = 0
         while(currentBeat <= end){
             playBeat()
-            incrementBeat()
+            currentBeat += subdivisionLengthInBeats
         }
         offlineMode = false
     }
