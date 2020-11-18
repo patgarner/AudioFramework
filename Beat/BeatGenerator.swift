@@ -13,6 +13,7 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
     private var currentBeatTimesStamp : UInt64 = 0
     private var subdivisionLengthInBeats = 0.125
     private var subdivisionDurationNano : UInt64 = 0
+    private var subdivisionDurationSeconds = 0.0
     private var beatListeners : [BeatDelegate] = []
     private var offlineMode = false
     private var currentBeat = 0.0
@@ -38,9 +39,9 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
 
     private func calculateValues(){
         let divisionsPerMeasure = 32.0
-        let subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
+        subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure
         subdivisionDurationNano = UInt64(subdivisionDurationSeconds * 1000000000.0)
-        pulseGenerator.subdivisionDurationNano = subdivisionDurationNano
+        pulseGenerator.subdivisionDurationNano = subdivisionDurationNano //TODO: Storing in 2 places. BAD.
     }
     public func start() {
         isPlaying = true
@@ -52,6 +53,7 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
     }
     func playBeatCycle(){
         currentBeat = nextBeat
+        currentBeatTimesStamp = mach_absolute_time()
         nextBeat = currentBeat + subdivisionLengthInBeats
         playBeat()
     }
@@ -88,13 +90,19 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
         }
     }
     public var exactBeat: Double{
+        let now = mach_absolute_time()
         if subdivisionDurationNano == 0 {
             MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationNanoseconds = 0. Divide by zero imminent.", displayFormat: [.file])
             return currentBeat
         }
-        let now = mach_absolute_time()
+        if currentBeatTimesStamp > now {
+            MessageHandler.log("Error: BeatGenerator.exactBeat currentBeatTimestamp > now", displayFormat: [.print])
+            print("Error: BeatGenerator.exactBeat currentBeatTimestamp > now")
+            return 0
+        }
         let diffNano = now - currentBeatTimesStamp
-        let numSubdivisionsElapsed = Double(diffNano / subdivisionDurationNano) / 1000.0
+        let diffSeconds = Double(diffNano & 0xFFFFFFFF) / 1000000000.0
+        let numSubdivisionsElapsed = Double(diffSeconds / subdivisionDurationSeconds)
         let beatsElapsed = numSubdivisionsElapsed * subdivisionLengthInBeats
         let beat = currentBeat + beatsElapsed
         return beat

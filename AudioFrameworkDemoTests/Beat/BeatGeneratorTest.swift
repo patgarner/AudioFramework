@@ -118,4 +118,37 @@ class BeatGeneratorTest: XCTestCase {
         beatGenerator.triggerPulse()
         XCTAssert(del.allCurrentBeats.count == 0)
     }
+    func testExactBeat(){
+        let tempo = 60.0
+        let beatGenerator = BeatGenerator(tempo: tempo)
+        let expectation = XCTestExpectation(description: "Test complete")
+        beatGenerator.start()
+        let beatLengthSeconds = 60.0 / tempo
+        let numBeats = 1.0625
+        let time = beatLengthSeconds * numBeats
+        Timer.scheduledTimer(withTimeInterval: time, repeats: false) { (timer) in
+            let exactBeat = beatGenerator.exactBeat
+            let diff = abs(exactBeat - numBeats)
+            XCTAssert(diff < 0.01)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.25)
+    }
+    func testExactBeatWithTempoChange(){
+        let tempo = 70.0
+        let beatGenerator = BeatGenerator(tempo: tempo)
+        beatGenerator.set(tempo: 70)
+        let expectation = XCTestExpectation(description: "Test complete")
+        beatGenerator.start()
+        let beatLengthSeconds = 60.0 / tempo
+        let numBeats = 1.0625
+        let time = beatLengthSeconds * numBeats
+        Timer.scheduledTimer(withTimeInterval: time, repeats: false) { (timer) in
+            let exactBeat = beatGenerator.exactBeat
+            let diff = abs(exactBeat - numBeats)
+            XCTAssert(diff < 0.01)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.25)
+    }
 }

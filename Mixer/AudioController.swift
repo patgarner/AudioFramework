@@ -118,7 +118,6 @@ public class AudioController: NSObject {
                            currentBeatPosition: UnsafeMutablePointer<Double>?,
                            sampleOffsetToNextBeat : UnsafeMutablePointer<Int>?,
                            currentMeasureDownbeatPosition: UnsafeMutablePointer<Double>?) -> Bool {
-        //if && !isRendering { return false }
         let context = musicalContext
         currentTempo?.pointee = context.currentTempo
         timeSignatureNumerator?.pointee = context.timeSignatureNumerator
@@ -132,6 +131,7 @@ public class AudioController: NSObject {
         let context = MusicalContext()
         let barLength = 4.0 //TODO: Use actual meter
         context.currentTempo = beatGenerator.getTempo()
+        print("Musical context current tempo = \(context.currentTempo)")
         context.timeSignatureNumerator = 4.0 //TODO
         context.timeSignatureDenominator = 4 //TODO
         var exactBeat = beatGenerator.exactBeat
