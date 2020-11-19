@@ -64,8 +64,11 @@ public class InstrumentChannelController : ChannelController{
         if omniMode { channel = 0 }
         instrumentNode.startNote(note, withVelocity: velocity, onChannel: channel)
     }
-    func noteOff(_ note: UInt8, channel: UInt8) {
-        instrumentNode?.stopNote(note, onChannel: channel)
+    func noteOff(_ note: UInt8, channel: UInt8, omniMode: Bool = true) {
+        guard let instrumentNode = inputNode as? AVAudioUnitMIDIInstrument else { return }
+        var channel = channel
+        if omniMode { channel = 0 }
+        instrumentNode.stopNote(note, onChannel: channel)
     }
     func set(volume: UInt8, channel: UInt8){
         let controller = UInt8(7)

@@ -131,7 +131,6 @@ public class AudioController: NSObject {
         let context = MusicalContext()
         let barLength = 4.0 //TODO: Use actual meter
         context.currentTempo = beatGenerator.getTempo()
-        print("Musical context current tempo = \(context.currentTempo)")
         context.timeSignatureNumerator = 4.0 //TODO
         context.timeSignatureDenominator = 4 //TODO
         var exactBeat = beatGenerator.exactBeat
@@ -298,9 +297,7 @@ public class AudioController: NSObject {
         if channel >= instrumentControllers.count { return }
         startEngineIfNeeded()
         let channelController = instrumentControllers[Int(channel)]
-        //        DispatchQueue.main.async {
         channelController.noteOn(note, withVelocity: velocity, channel: channel)
-        //        }
     }
     
     public func noteOff(_ note: UInt8, channel: UInt8) {
@@ -619,7 +616,7 @@ extension AudioController : ChannelControllerDelegate {
         do {
             try engine.start()
         } catch {
-            print("Boo.")
+            print("AudioController.connect(...) Coudn't start engine.")
         }
     }
     private func locateDestinationNode(type: BusType, number: Int) -> AVAudioNode? {
