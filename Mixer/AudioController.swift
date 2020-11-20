@@ -395,7 +395,6 @@ public class AudioController: NSObject {
             let tempoTrackOffset = 1 //If no tempo track, set to zero.
             for i in tempoTrackOffset..<sequencer.tracks.count{
                 let track = sequencer.tracks[i]
-                
                 guard let channel = getChannelController(type: .midiInstrument, channel: i - tempoTrackOffset) else { continue }
                 let destination = channel.midiIn
                 track.destinationAudioUnit = destination
@@ -406,7 +405,7 @@ public class AudioController: NSObject {
         }
         return sequencer
     }
-    func loadMidiSequence(from url: URL) -> Bool{
+    func loadMidiSequence(from url: URL) -> Bool{ //TODO: These are mostly identical. Refactor.
         do {
             try sequencer.load(from: url)
             if sequencer.tracks.count < 1 { return false }
@@ -416,6 +415,8 @@ public class AudioController: NSObject {
                 guard let channel = getChannelController(type: .midiInstrument, channel: i - tempoTrackOffset) else { continue }
                 let destination = channel.midiIn
                 track.destinationAudioUnit = destination
+                let trackDestinationAudioUnit = track.destinationAudioUnit
+                print("")
             }
         } catch {
             print("Connecting sequencer tracks to midi instrument channels failed: \(error)")

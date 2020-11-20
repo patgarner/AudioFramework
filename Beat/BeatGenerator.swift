@@ -1,5 +1,5 @@
 //
-//  BeatGenerator2.swift
+//  BeatGenerator.swift
 //  Composer Bot Desktop
 //
 //  Created by Admin on 7/31/20.
@@ -36,7 +36,6 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
         calculateValues()
         pulseGenerator.delegate = self
     }
-
     private func calculateValues(){
         let divisionsPerMeasure = 32.0
         subdivisionDurationSeconds =  240.0 / tempo / divisionsPerMeasure

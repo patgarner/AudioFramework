@@ -27,6 +27,7 @@ class MidiAudioExporter{
             fatalError("Enabling manual rendering mode failed: \(error).")
         }
         delegate?.willStartMidiAudioExport()
+        
         do {
             try engine.start()
             sequencer.currentPositionInSeconds = 0
@@ -78,7 +79,6 @@ class MidiAudioExporter{
         engine.stop()
         engine.disableManualRenderingMode()
         let wavUrl = audioDestinationURL.appendingPathExtension("wav")
-        //AudioFileConverter.convert(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
         AudioFileConverter.convertSimple(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
         if includeMP3{
             let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
