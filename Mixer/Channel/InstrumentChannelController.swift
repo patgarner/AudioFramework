@@ -43,7 +43,9 @@ public class InstrumentChannelController : ChannelController{
     }
     override public func deselectInstrument() {
         if inputNode != nil {
+            delegate.engine.disconnectNodeOutput(inputNode)
             delegate.engine.detach(inputNode)
+            inputNode = nil
             reconnectNodes()
         }
     }
