@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 
 public class InstrumentChannelController : ChannelController{
-    override func set(channelPluginData: ChannelModel){
+    override public func set(channelPluginData: ChannelModel){
         super.set(channelPluginData: channelPluginData)
         loadInstrument(pluginData: channelPluginData.instrumentPlugin)
     }
@@ -88,7 +88,7 @@ public class InstrumentChannelController : ChannelController{
     public func allNotesOff(){
         
     }
-    override func getChannelPluginData() -> ChannelModel{
+    override public func getChannelPluginData() -> ChannelModel{
         let channelPluginData = super.getChannelPluginData()
         let state = fullState
         let desc = audioComponentDescription

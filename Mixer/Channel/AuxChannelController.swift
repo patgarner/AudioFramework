@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 
 public class AuxChannelController : ChannelController{
-    override func getChannelPluginData() -> ChannelModel {
+    override public func getChannelPluginData() -> ChannelModel {
         let pluginData = super.getChannelPluginData()
         guard let input = inputNode else {
             return pluginData
@@ -22,7 +22,7 @@ public class AuxChannelController : ChannelController{
         }
         return pluginData
     }
-    override func set(channelPluginData: ChannelModel) {
+    override public func set(channelPluginData: ChannelModel) {
         super.set(channelPluginData: channelPluginData)
         guard let inputNode = inputNode else { return }
         delegate.connect(busNumber:channelPluginData.busInput, destinationNode: inputNode)

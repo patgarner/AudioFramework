@@ -52,7 +52,7 @@ public class ChannelController : ChannelViewDelegate {
     }
     public init(){
     }
-    func getChannelPluginData() -> ChannelModel{
+    public func getChannelPluginData() -> ChannelModel{
         let channelPluginData = ChannelModel()
         for effect in effects{
             let effectPluginData = PluginData()
@@ -74,9 +74,11 @@ public class ChannelController : ChannelViewDelegate {
         channelPluginData.pan = outputNode.pan
         channelPluginData.trackName = trackName
         channelPluginData.id = id
+        channelPluginData.mute = mute
+        channelPluginData.solo = solo
         return channelPluginData
     }
-    func set(channelPluginData: ChannelModel){
+    public func set(channelPluginData: ChannelModel){
         for effectNumber in 0..<channelPluginData.effectPlugins.count{
             let pluginData = channelPluginData.effectPlugins[effectNumber]
             loadEffect(pluginData: pluginData, number: effectNumber)
@@ -93,6 +95,8 @@ public class ChannelController : ChannelViewDelegate {
         outputNode.pan = channelPluginData.pan
         trackName = channelPluginData.trackName
         id = channelPluginData.id
+        mute = channelPluginData.mute
+        solo = channelPluginData.solo
     }
     func reconnectNodes(){
         let audioUnits = allAudioUnits()

@@ -24,4 +24,24 @@ class ChannelControllerTest: XCTestCase {
         let delegate = FakeChannelControllerDelegate()
         let controller = InstrumentChannelController(delegate: delegate)
     }
+    func testSerialization(){
+        let delegate = FakeChannelControllerDelegate()
+        let controller = InstrumentChannelController(delegate: delegate)
+        controller.solo = true
+        controller.mute = true
+        controller.volume = 0.75
+        controller.pan = 0.1
+        let model = controller.getChannelPluginData()
+        XCTAssert(model.mute == true)
+        XCTAssert(model.solo == true)
+        XCTAssert(model.volume == 0.75)
+        XCTAssert(model.pan == 0.1)
+        
+        let controller2 = InstrumentChannelController(delegate: delegate)
+        controller2.set(channelPluginData: model)
+        XCTAssert(controller2.mute == true)
+        XCTAssert(controller2.solo == true)
+        XCTAssert(controller2.volume == 0.75)
+        XCTAssert(controller2.pan == 0.1)
+    }
 }

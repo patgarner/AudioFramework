@@ -49,13 +49,15 @@ class ChannelModelTest: XCTestCase {
         channelModel2.volume = 0.91
         XCTAssert(channelModel1 == channelModel2)
         
+        channelModel1.solo = true
+        XCTAssert(channelModel1 != channelModel2)
+        channelModel2.solo = true
+        XCTAssert(channelModel1 == channelModel2)
         
-    
-
-//        public var instrumentPlugin = PluginData()
-//        public var effectPlugins : [PluginData] = []
-//        public var sends : [SendData] = []
-//        public var output = BusData(number: -1, type: .none)
+        channelModel1.mute = true
+        XCTAssert(channelModel1 != channelModel2)
+        channelModel2.mute = true
+        XCTAssert(channelModel1 == channelModel2)
     }
 
     func testSerialization() {
@@ -64,6 +66,16 @@ class ChannelModelTest: XCTestCase {
         let channelModel = ChannelModel()
         channelModel.busInput = 9
         channelModel.id = "orange"
+        channelModel.mute = true
+        channelModel.solo = true
+        channelModel.volume = 0.75
+        do {
+            let data = try encoder.encode(channelModel)
+            let channelModel2 = try decoder.decode(ChannelModel.self, from: data)
+            XCTAssert(channelModel == channelModel2)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 
     func testPerformanceExample() {

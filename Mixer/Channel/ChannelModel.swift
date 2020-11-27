@@ -22,6 +22,8 @@ public class ChannelModel : Codable, Equatable{
     public var trackName = ""
     public var busInput = -1
     public var id = ""
+    public var solo = false
+    public var mute = false
     enum CodingKeys: CodingKey{
         case instrumentPlugin
         case effectPlugins
@@ -32,6 +34,8 @@ public class ChannelModel : Codable, Equatable{
         case busInput
         case id
         case output
+        case mute
+        case solo
     }
     public init(){
         
@@ -65,6 +69,12 @@ public class ChannelModel : Codable, Equatable{
         do {
             output = try container.decode(BusInfo.self, forKey: .output)
         } catch {}
+        do {
+            mute = try container.decode(Bool.self, forKey: .mute)
+        } catch {}
+        do {
+            solo = try container.decode(Bool.self, forKey: .solo)
+        } catch {}
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -77,6 +87,8 @@ public class ChannelModel : Codable, Equatable{
         try container.encode(busInput, forKey: .busInput)
         try container.encode(id, forKey: .id)
         try container.encode(output, forKey: .output)
+        try container.encode(mute, forKey: .mute)
+        try container.encode(solo, forKey: .solo)
     }
     public static func == (lhs: ChannelModel, rhs: ChannelModel) -> Bool {
         if lhs.busInput != rhs.busInput { return false }
@@ -84,6 +96,8 @@ public class ChannelModel : Codable, Equatable{
         if lhs.trackName != rhs.trackName { return false }
         if lhs.pan != rhs.pan { return false }
         if lhs.volume != rhs.volume { return false }
+        if lhs.solo != rhs.solo { return false }
+        if lhs.mute != rhs.mute { return false }
         return true
     }
 }
