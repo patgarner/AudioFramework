@@ -51,9 +51,6 @@ public class AudioController: NSObject {
         }
     }
     private func initialize(){
-        MessageHandler.log("Test message", displayFormat: [.file])
-        MessageHandler.log("Banana", displayFormat: [.file])
-
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
         context = getMusicalContext
         transportBlock = getTransportState
@@ -62,7 +59,7 @@ public class AudioController: NSObject {
         for instrumentController in instrumentControllers {
             channelIds.append(instrumentController.id)
         }
-        stemCreatorModel.addDefaultStem(channelIds: channelIds)
+        stemCreatorModel.addDefaultStem(channelIds: [])
         sequencer = AVAudioSequencer(audioEngine: engine)
         NotificationCenter.default.addObserver(
             self,
@@ -387,6 +384,15 @@ public class AudioController: NSObject {
         if !loadMidiSequence(from: midiSourceURL) { return }
         MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, includeMP3: true)
     }
+    public func playFromSequence(midiSourceURL: URL){
+        if !loadMidiSequence(from: midiSourceURL) { return }
+        sequencer.prepareToPlay()
+        do {
+            try sequencer.start()
+        } catch {
+            delegate?.log("AudioConroller.playFromSequence failed.")
+        }
+    }
     func createMidiSequencer(url: URL) ->AVAudioSequencer?{
         let sequencer = AVAudioSequencer(audioEngine: engine)
         do {
@@ -695,6 +701,10 @@ extension AudioController : StemViewDelegate {
     }
     public func prepareForStemExport(destinationFolder: URL){
         guard let delegate = delegate else { return }
+        for channelController in allChannelControllers{
+            channelController.solo = false
+            channelController.mute = false
+        }
         let midiTempURL = destinationFolder.appendingPathComponent("temp.mid")
         delegate.exportMidi(to: midiTempURL)
         if !loadMidiSequence(from: midiTempURL) { return }
@@ -754,6 +764,7 @@ extension AudioController : BeatInfoSource {
     }
     public func stop(){
         beatGenerator.stop()
+        sequencer.stop()
         for channelController in allChannelControllers{
             channelController.resetMeter()
         }

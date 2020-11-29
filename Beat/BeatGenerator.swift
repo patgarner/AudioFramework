@@ -90,16 +90,17 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
     }
     public var exactBeat: Double{
         let now = mach_absolute_time()
+        let beatTimesStamp = currentBeatTimesStamp
         if subdivisionDurationNano == 0 {
             MessageHandler.log("Error: BeatGenerator.exactBeat subdivisionDurationNanoseconds = 0. Divide by zero imminent.", displayFormat: [.file])
             return currentBeat
         }
-        if currentBeatTimesStamp > now {
+        if beatTimesStamp > now {
             MessageHandler.log("Error: BeatGenerator.exactBeat currentBeatTimestamp > now", displayFormat: [.print])
             print("Error: BeatGenerator.exactBeat currentBeatTimestamp > now")
             return 0
         }
-        let diffNano = now - currentBeatTimesStamp
+        let diffNano = now - beatTimesStamp
         let diffSeconds = Double(diffNano & 0xFFFFFFFF) / 1000000000.0
         let numSubdivisionsElapsed = Double(diffSeconds / subdivisionDurationSeconds)
         let beatsElapsed = numSubdivisionsElapsed * subdivisionLengthInBeats
