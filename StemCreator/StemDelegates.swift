@@ -32,6 +32,8 @@ public protocol StemRowViewDelegate{
     func setName(stemNumber: Int, name: String)
     func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String)
     func delete(stemNumber: Int)
+    func stemIncludedDidChangeTo(include: Bool, stemNumber: Int)
+    func isIncluded(stemNumber: Int) -> Bool
     //Pass Through
     var numChannels : Int { get } //YES
     func getNameFor(channelId : String) -> String?

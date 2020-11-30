@@ -16,7 +16,7 @@ public class StemCreatorViewController: NSViewController {
     private let rowHeight : CGFloat = 30
     private let columnWidth: CGFloat = 30
     private weak var namePrefixField : NSTextField!
-    private let stemCreatorModel = AudioController.shared.stemCreatorModel
+    private weak var stemCreatorModel : StemCreatorModel! = AudioController.shared.stemCreatorModel
     private let stemCreator = StemCreator()
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
@@ -181,6 +181,13 @@ extension StemCreatorViewController : StemRowViewDelegate{
     }
     public func delete(stemNumber: Int){
         stemCreatorModel.delete(stemNumber: stemNumber)
+    }
+    public func stemIncludedDidChangeTo(include: Bool, stemNumber: Int) {
+        stemCreatorModel.stemIncludedDidChangeTo(include: include, stemNumber: stemNumber) 
+    }
+    public func isIncluded(stemNumber: Int) -> Bool {
+        let include = stemCreatorModel.isIncluded(stemNumber: stemNumber)
+        return include
     }
     //Pass Through
     public var numChannels: Int {

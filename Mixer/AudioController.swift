@@ -685,7 +685,7 @@ extension AudioController : ChannelControllerDelegate {
 // Stems
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-extension AudioController : StemViewDelegate {
+extension AudioController : StemViewDelegate { 
     public func getNameFor(channelId: String) -> String? {
         guard let channelController = getChannelControllerWith(id: channelId) else { return nil }
         let name = channelController.trackName

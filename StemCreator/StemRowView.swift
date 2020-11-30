@@ -9,15 +9,27 @@
 import Cocoa
 
 public class StemRowView: NSView {
-    weak var rowTitle : NSTextField!
+    private weak var rowTitle : NSTextField!
     var number = -1
     var delegate : StemRowViewDelegate!
-    private var progressBar : NSProgressIndicator!
+    private weak var progressBar : NSProgressIndicator!
+    private weak var includeCheckbox : NSButton!
     init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemRowViewDelegate, type: RowType, number: Int = -1) {
         super.init(frame: frameRect)
         self.delegate = delegate
+        var x : CGFloat = 0
+        let includeCheckboxWidth : CGFloat = 25
         if type == .row {
-            let rowTitleFrame = CGRect(x: 0, y: 0, width: rowTitleWidth, height: rowHeight)
+            let includeCheckboxFrame = CGRect(x: 0, y: 0, width: includeCheckboxWidth, height: rowHeight)
+            let includeCheckbox = NSButton(checkboxWithTitle: "", target: self, action: #selector(includeDidChange))
+            includeCheckbox.frame = includeCheckboxFrame
+            self.addSubview(includeCheckbox)
+            self.includeCheckbox = includeCheckbox
+            if delegate.isIncluded(stemNumber: number){
+                includeCheckbox.state = .on
+            }
+            
+            let rowTitleFrame = CGRect(x: includeCheckboxWidth, y: 0, width: rowTitleWidth, height: rowHeight)
             let rowTitle = NSTextField(frame: rowTitleFrame)
             self.rowTitle = rowTitle
             self.addSubview(rowTitle)
@@ -28,8 +40,8 @@ public class StemRowView: NSView {
             rowTitle.target = self
             rowTitle.action = #selector(rowTitleChanged)
         }
+        x = rowTitleWidth + includeCheckboxWidth
         let numChannels = delegate.numChannels
-        var x : CGFloat = rowTitleWidth
         for i in 0..<numChannels{
             let checkboxFrame = CGRect(x: x, y: 0, width: columnWidth, height: rowHeight)
             guard let id = delegate.getIdFor(channel: i) else { continue }
@@ -68,7 +80,6 @@ public class StemRowView: NSView {
     var isSelected : Bool {
         if let rowTitle = rowTitle{
             let result = rowTitle.isHighlighted
-            
             return result
         } else {
             return false
@@ -82,6 +93,11 @@ public class StemRowView: NSView {
         progressBar.isHidden = false
         progressBar.doubleValue = progress
         progressBar.needsDisplay = true
+    }
+    @objc func includeDidChange(){
+        let state = includeCheckbox.state
+        let selected = (state == .on)
+        delegate.stemIncludedDidChangeTo(include: selected, stemNumber: number)
     }
 }
 

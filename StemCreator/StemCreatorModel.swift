@@ -51,4 +51,14 @@ public class StemCreatorModel : Codable, Equatable {
         stemModel.stemShortName = "FULL"
         stems.append(stemModel)
     }
+    func stemIncludedDidChangeTo(include: Bool, stemNumber: Int) {
+        if stemNumber < 0 || stemNumber >= stems.count { return }
+        let stem = stems[stemNumber]
+        stem.include = include
+    }
+    func isIncluded(stemNumber: Int) -> Bool {
+        if stemNumber < 0 || stemNumber >= stems.count { return false }
+        let stem = stems[stemNumber]
+        return stem.include
+    }
 }

@@ -20,6 +20,7 @@ public class StemCreator{
     func createStems(model: StemCreatorModel, folder: URL){
         for i in 0..<model.stems.count{
             let stem = model.stems[i]
+            if !stem.include { continue }
             createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i)
         }
     }

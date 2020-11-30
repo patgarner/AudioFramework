@@ -11,6 +11,7 @@ import Foundation
 public class StemModel : Codable, Equatable{
     var stemShortName = ""
     var channelIds : [String] = []
+    var include = true
     public static func == (lhs: StemModel, rhs: StemModel) -> Bool {
         return false
     }
