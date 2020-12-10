@@ -11,6 +11,7 @@ import Foundation
 public class StemCreatorModel : Codable, Equatable {
     var namePrefix = ""
     var stems : [StemModel] = []
+    var sampleRate = 44100
     public static func == (lhs: StemCreatorModel, rhs: StemCreatorModel) -> Bool {
         return false
     }
@@ -60,5 +61,9 @@ public class StemCreatorModel : Codable, Equatable {
         if stemNumber < 0 || stemNumber >= stems.count { return false }
         let stem = stems[stemNumber]
         return stem.include
+    }
+    func removeAll(){
+        stems.removeAll()
+        namePrefix = ""
     }
 }

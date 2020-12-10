@@ -11,7 +11,7 @@ import AVFoundation
 import Cocoa
 
 class MidiAudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil, number: Int? = nil){
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil, number: Int? = nil, sampleRate: Int = 44100){
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
@@ -79,7 +79,7 @@ class MidiAudioExporter{
         engine.stop()
         engine.disableManualRenderingMode()
         let wavUrl = audioDestinationURL.appendingPathExtension("wav")
-        AudioFileConverter.convertSimple(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false)
+        AudioFileConverter.convertSimple(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false, sampleRate: sampleRate)
         if includeMP3{
             let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
             AudioFileConverter.convertToMP3(sourceURL: wavUrl, destinationURL: mp3Url, deleteSource: false)

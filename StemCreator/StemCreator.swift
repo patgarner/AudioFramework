@@ -21,16 +21,16 @@ public class StemCreator{
         for i in 0..<model.stems.count{
             let stem = model.stems[i]
             if !stem.include { continue }
-            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i)
+            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, sampleRate: model.sampleRate)
         }
     }
-    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int){
+    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, sampleRate: Int){
         delegate.muteAllExcept(channelIds: stemModel.channelIds)
         let letter = letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
         let stemPath = folder.appendingPathComponent(filename)
         var mp3 = false
         if number == 0 { mp3 = true }
-        delegate.exportStem(to: stemPath, includeMP3: mp3, number: number)
+        delegate.exportStem(to: stemPath, includeMP3: mp3, number: number, sampleRate: sampleRate)
     }
 }

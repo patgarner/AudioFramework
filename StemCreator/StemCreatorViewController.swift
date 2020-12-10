@@ -18,6 +18,8 @@ public class StemCreatorViewController: NSViewController {
     private weak var namePrefixField : NSTextField!
     private weak var stemCreatorModel : StemCreatorModel! = AudioController.shared.stemCreatorModel
     private let stemCreator = StemCreator()
+    private weak var sampleRatePopup : NSPopUpButton!
+
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
         let bundle = Bundle(for: StemCreatorViewController.self)
@@ -83,16 +85,34 @@ public class StemCreatorViewController: NSViewController {
         namePrefixField.action = #selector(namePrefixChanged)
         self.view.addSubview(namePrefixField)
         
-        let exportButtonFrame = CGRect(x: 500, y: yBuffer, width: 100, height: buttonHeight)
+        let sampleRateButtonFrame = CGRect(x: 430, y: yBuffer, width: 100, height: buttonHeight)
+        let sampleRateButton = NSPopUpButton(frame: sampleRateButtonFrame)
+        sampleRateButton.target = self
+        sampleRateButton.action = #selector(didChangeSampleRate)
+        self.sampleRatePopup = sampleRateButton
+        self.view.addSubview(sampleRateButton)
+        sampleRateButton.addItem(withTitle: "44100")
+        sampleRateButton.addItem(withTitle: "48000")
+        let sampleRate = stemCreatorModel.sampleRate
+        sampleRateButton.selectItem(withTitle: String(sampleRate))
+
+        let exportButtonFrame = CGRect(x: 540, y: yBuffer, width: 100, height: buttonHeight)
         let exportButton = NSButton(title: "Export", target: self, action: #selector(didSelectExportStems))
         exportButton.frame = exportButtonFrame
         self.view.addSubview(exportButton)
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(setProgress),
             name: .StemProgress,
             object: nil)
+    }
+    @objc func didChangeSampleRate(){
+        if let title = sampleRatePopup.titleOfSelectedItem {
+            if let sampleRate = Int(title){
+                stemCreatorModel.sampleRate = sampleRate
+            }
+        }
     }
     @objc func setProgress(notification: NSNotification){
         guard let stemProgress = notification.object as? (Int, Double) else { return }
@@ -210,8 +230,8 @@ extension StemCreatorViewController : StemCreatorDelegate{
         delegate.muteAllExcept(channelIds: channelIds)
     }
     
-    public func exportStem(to url: URL, includeMP3: Bool, number: Int) {
-        delegate.exportStem(to: url, includeMP3: includeMP3, number: number)
+    public func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int) {
+        delegate.exportStem(to: url, includeMP3: includeMP3, number: number, sampleRate: sampleRate)
     }
 }
 

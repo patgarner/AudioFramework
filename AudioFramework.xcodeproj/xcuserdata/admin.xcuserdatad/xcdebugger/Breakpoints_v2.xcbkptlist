@@ -16,7 +16,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "43"
             endingLineNumber = "43"
-            landmarkName = "renderMidiOffline(sequencer:engine:audioDestinationURL:includeMP3:delegate:number:)"
+            landmarkName = "renderMidiOffline(sequencer:engine:audioDestinationURL:includeMP3:delegate:number:sampleRate:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -32,7 +32,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "71"
             endingLineNumber = "71"
-            landmarkName = "convertSimple(sourceURL:destinationURL:deleteSource:)"
+            landmarkName = "convertSimple(sourceURL:destinationURL:deleteSource:sampleRate:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -160,8 +160,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "308"
             endingLineNumber = "308"
-            landmarkName = "set(pan:channel:)"
-            landmarkType = "7">
+            landmarkName = "AudioController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -192,7 +192,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "416"
             endingLineNumber = "416"
-            landmarkName = "loadMidiSequence(from:)"
+            landmarkName = "createMidiSequencer(url:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -302,41 +302,9 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
-            landmarkName = "exportStems(destinationFolder:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "712AE49C-81B2-4083-82BA-7543DC742933"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "StemCreator/StemCreatorViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
-            landmarkName = "addStem()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FA25926E-7488-4E9D-BA0B-669D0683476D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "StemCreator/StemCreatorViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "113"
-            endingLineNumber = "113"
-            landmarkName = "addStem()"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "didSelectExportStems(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -353,6 +321,22 @@
             startingLineNumber = "18"
             endingLineNumber = "18"
             landmarkName = "init(frame:rowTitleWidth:rowHeight:columnWidth:delegate:type:number:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "71DE9357-EBBC-4106-90B2-70936A73A08E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "StemCreator/StemCreatorViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "didChangeSampleRate()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

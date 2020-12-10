@@ -67,7 +67,7 @@ class AudioFileConverter{
         }
         
     }
-    class func convertSimple(sourceURL: URL, destinationURL: URL, deleteSource: Bool){
+    class func convertSimple(sourceURL: URL, destinationURL: URL, deleteSource: Bool, sampleRate: Int = 44100){
         let task = Process()
         let pipe = Pipe()
         task.standardOutput = pipe
@@ -76,7 +76,9 @@ class AudioFileConverter{
         let destPath = destinationURL.path
         
         //afconvert -f WAVE -d LEI16@48000 "MANN-Beneath the Surface A(Full).wav" "Audio File.wav"
-        task.arguments = ["-f",  "WAVE", "-d", "LEI16@48000", sourcePath, destPath, ]
+        let bitRate = 16
+        let sampleFormatString = "LEI\(bitRate)@\(sampleRate)"
+        task.arguments = ["-f",  "WAVE", "-d", sampleFormatString, sourcePath, destPath, ]
         task.launch()
         let handle = pipe.fileHandleForReading
         let data = handle.readDataToEndOfFile()

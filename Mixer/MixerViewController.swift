@@ -18,7 +18,8 @@ public class MixerViewController: NSViewController, KeyDelegate {
     @IBOutlet weak var channelCollectionView: NSCollectionView!
     private var instrumentWindowController: NSWindowController?    
     private var interfaceInstance : InterfaceInstance? = nil
-    init(){
+    public static var shared = MixerViewController()
+    private init(){
         let bundle = Bundle(for: MixerViewController.self)
         super.init(nibName: nil, bundle: bundle)
     }

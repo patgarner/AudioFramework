@@ -273,6 +273,9 @@ public class AudioController: NSObject {
         }
         busses.removeAll()
     }
+    public func clearStems(){
+        stemCreatorModel.removeAll()
+    }
     private var allChannelControllers : [ChannelController]{
         var allControllers : [ChannelController] = []
         allControllers.append(contentsOf: instrumentControllers)
@@ -711,8 +714,8 @@ extension AudioController : StemViewDelegate {
         isRendering = true
         setAllMusicalContextBlocks()
     }
-    public func exportStem(to url: URL, includeMP3: Bool, number: Int){
-        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self, number: number)
+    public func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int){
+        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self, number: number, sampleRate: sampleRate)
     }
     public func stemExportComplete() {
         self.isRendering = false
