@@ -3,7 +3,7 @@
 //  AudioFramework
 //
 //  Created by Admin on 9/25/20.
-//  Copyright © 2020 UltraMusician. All rights reserved.
+//  Copyright © 2020 David Mann Music LLC. All rights reserved.
 //
 
 import Foundation
@@ -12,6 +12,7 @@ public class StemCreatorModel : Codable, Equatable {
     var namePrefix = ""
     var stems : [StemModel] = []
     var sampleRate = 44100
+    var audioFormats : [AudioFormat] = []
     public static func == (lhs: StemCreatorModel, rhs: StemCreatorModel) -> Bool {
         return false
     }

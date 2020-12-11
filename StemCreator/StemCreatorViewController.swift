@@ -3,7 +3,7 @@
 //  AudioFramework
 //
 //  Created by Admin on 9/24/20.
-//  Copyright © 2020 UltraMusician. All rights reserved.
+//  Copyright © 2020 David Mann Music LLC. All rights reserved.
 //
 
 import Cocoa
@@ -43,9 +43,9 @@ public class StemCreatorViewController: NSViewController {
     func initialize(){
         self.title = "Export Stems"
         stemCreator.delegate = self
-        let numStems = stemCreatorModel.numStems//delegate.numStems
+        let numStems = stemCreatorModel.numStems
         let numChannels = delegate.numChannels
-        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 100
+        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 150
         let currentFrame = self.view.frame
         let newSize = CGSize(width: totalWidth, height: currentFrame.height)
         self.view.setFrameSize(newSize)

@@ -2,8 +2,8 @@
 //  BeatGenerator.swift
 //  Composer Bot Desktop
 //
-//  Created by Admin on 7/31/20.
-//  Copyright © 2020 UltraMusician. All rights reserved.
+//  Created by David Mann on 7/31/20.
+//  Copyright © 2020 David Mann Music LLC. All rights reserved.
 //
 
 import Foundation

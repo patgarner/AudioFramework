@@ -3,7 +3,7 @@
 //  AudioFramework
 //
 //  Created by Admin on 9/15/20.
-//  Copyright © 2020 UltraMusician. All rights reserved.
+//  Copyright © 2020 David Mann Music LLC. All rights reserved.
 //
 
 import Foundation

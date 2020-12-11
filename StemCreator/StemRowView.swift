@@ -3,7 +3,7 @@
 //  AudioFramework
 //
 //  Created by Admin on 9/26/20.
-//  Copyright © 2020 UltraMusician. All rights reserved.
+//  Copyright © 2020 David Mann Music LLC. All rights reserved.
 //
 
 import Cocoa
@@ -14,11 +14,19 @@ public class StemRowView: NSView {
     var delegate : StemRowViewDelegate!
     private weak var progressBar : NSProgressIndicator!
     private weak var includeCheckbox : NSButton!
+    //Dimensions
+    private let includeCheckboxWidth : CGFloat = 25
+    private var rowTitleWidth : CGFloat = 100
+    private var columnWidth : CGFloat = 25
+    private let deleteButtonWidth : CGFloat = 40
+    private let progressBarWidth : CGFloat = 100
     init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemRowViewDelegate, type: RowType, number: Int = -1) {
         super.init(frame: frameRect)
+        self.rowTitleWidth = rowTitleWidth
+        self.columnWidth = columnWidth
         self.delegate = delegate
         var x : CGFloat = 0
-        let includeCheckboxWidth : CGFloat = 25
+        //Include Checkbox and Title
         if type == .row {
             let includeCheckboxFrame = CGRect(x: 0, y: 0, width: includeCheckboxWidth, height: rowHeight)
             let includeCheckbox = NSButton(checkboxWithTitle: "", target: self, action: #selector(includeDidChange))
@@ -40,6 +48,7 @@ public class StemRowView: NSView {
             rowTitle.target = self
             rowTitle.action = #selector(rowTitleChanged)
         }
+        //Actual Cells for each Channel
         x = rowTitleWidth + includeCheckboxWidth
         let numChannels = delegate.numChannels
         for i in 0..<numChannels{
@@ -49,14 +58,27 @@ public class StemRowView: NSView {
             self.addSubview(checkboxText)
             x += columnWidth
         }
+        //File Types
+        let fileTypeStrings = ["WAV", "MP3"]
+        for i in 0..<fileTypeStrings.count{
+            let frame = CGRect(x: x, y: 0, width: columnWidth, height: rowHeight)
+           // guard let id = delegate.getIdFor(channel: i) else { continue }
+            let filetypeCell = StemCell(frame: frame, type: type, delegate: self, channelId: "")
+            filetypeCell.backgroundColor = NSColor.lightGray
+            if type == .header {
+                filetypeCell.stringValue = fileTypeStrings[i]
+            }
+            self.addSubview(filetypeCell)
+            x += columnWidth
+        }
+        //Delete Button and Progress Bar
         if type == .row{
             let deleteButton = NSButton(title: "X", target: self, action: #selector(deleteStem))
-            let deleteFrame = CGRect(x: x, y: 0, width: 40, height: rowHeight) 
+            let deleteFrame = CGRect(x: x, y: 0, width: deleteButtonWidth, height: rowHeight) 
             deleteButton.frame = deleteFrame
             addSubview(deleteButton)
-            
-            x += 40
-            let progressFrame = CGRect(x: x, y: 0, width: 100, height: rowHeight) 
+            x += deleteButtonWidth
+            let progressFrame = CGRect(x: x, y: 0, width: progressBarWidth, height: rowHeight) 
             let progressBar = NSProgressIndicator(frame: progressFrame)
             progressBar.minValue = 0
             progressBar.maxValue = 1.0
@@ -66,6 +88,7 @@ public class StemRowView: NSView {
             self.addSubview(progressBar)
             self.progressBar = progressBar
         }
+
     }
     required init?(coder: NSCoder) {
         super.init(coder: coder)
