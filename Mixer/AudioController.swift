@@ -732,6 +732,9 @@ extension AudioController : StemViewDelegate {
             }
         }
     }
+    public func cancelStemExport(){
+        MidiAudioExporter.cancelOfflineRender(engine: engine)
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////

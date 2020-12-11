@@ -66,7 +66,8 @@ class MidiAudioExporter{
                     print("Unknown error.")
                 }
             } catch {
-                fatalError("The manual rendering failed: \(error).")
+                //fatalError("The manual rendering failed: \(error).")
+                return
             }
             let newProgress = sequencer.currentPositionInSeconds / lengthInSeconds
             if newProgress - progress >= 0.01 {
@@ -90,6 +91,10 @@ class MidiAudioExporter{
         } catch {
             print(error)
         }
+    }
+    class func cancelOfflineRender(engine: AVAudioEngine){
+        engine.stop()
+        engine.disableManualRenderingMode()
     }
 }
 

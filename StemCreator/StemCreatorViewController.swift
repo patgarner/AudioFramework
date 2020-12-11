@@ -19,6 +19,7 @@ public class StemCreatorViewController: NSViewController {
     private weak var stemCreatorModel : StemCreatorModel! = AudioController.shared.stemCreatorModel
     private let stemCreator = StemCreator()
     private weak var sampleRatePopup : NSPopUpButton!
+    private weak var exportCancelButton : NSButton!
 
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
@@ -97,9 +98,10 @@ public class StemCreatorViewController: NSViewController {
         sampleRateButton.selectItem(withTitle: String(sampleRate))
 
         let exportButtonFrame = CGRect(x: 540, y: yBuffer, width: 100, height: buttonHeight)
-        let exportButton = NSButton(title: "Export", target: self, action: #selector(didSelectExportStems))
+        let exportButton = NSButton(title: "Export", target: self, action: #selector(didClickExportCancelButton))
         exportButton.frame = exportButtonFrame
         self.view.addSubview(exportButton)
+        self.exportCancelButton = exportButton
 
         NotificationCenter.default.addObserver(
             self,
@@ -142,7 +144,12 @@ public class StemCreatorViewController: NSViewController {
         let namePrefix = namePrefixField.stringValue
         stemCreatorModel.namePrefix = namePrefix
     }
-    @objc func didSelectExportStems(_ sender: Any){ 
+    @objc func didClickExportCancelButton(_ sender: Any){ 
+        let buttonTitle = exportCancelButton.title
+        if buttonTitle == "Export" { export() }
+        if buttonTitle == "Cancel" { cancel() }
+    }  
+    private func export(){
         let savePanel = NSOpenPanel()
         savePanel.canChooseFiles = false
         savePanel.canChooseDirectories = true
@@ -155,8 +162,13 @@ public class StemCreatorViewController: NSViewController {
                 print("Problem exporting stems.")
             }
         }
-    }  
+    }
+    private func cancel(){
+        stemCreator.cancelStemExport()
+        delegate.cancelStemExport()
+    }
     func exportStems(destinationFolder: URL){ 
+        exportCancelButton.title = "Cancel"
         delegate.prepareForStemExport(destinationFolder: destinationFolder)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else {
@@ -170,6 +182,7 @@ public class StemCreatorViewController: NSViewController {
         }
     }
     @objc func stemExportComplete(notification: NSNotification){
+        exportCancelButton.title = "Export"
         DispatchQueue.main.async {
             self.view.window?.close()
         }
@@ -229,7 +242,6 @@ extension StemCreatorViewController : StemCreatorDelegate{
     public func muteAllExcept(channelIds: [String]) {
         delegate.muteAllExcept(channelIds: channelIds)
     }
-    
     public func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int) {
         delegate.exportStem(to: url, includeMP3: includeMP3, number: number, sampleRate: sampleRate)
     }

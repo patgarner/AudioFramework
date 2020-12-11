@@ -22,6 +22,7 @@ public protocol StemViewDelegate{
     func muteAllExcept(channelIds: [String]) 
     func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int)
     func stemExportComplete()
+    func cancelStemExport()
 }
 
 public protocol StemRowViewDelegate{
