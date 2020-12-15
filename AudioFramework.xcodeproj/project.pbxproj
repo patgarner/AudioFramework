@@ -45,6 +45,9 @@
 		8429DB96252017AD00ADE7B0 /* StemCreatorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController.xib */; };
 		8429DB97252017AD00ADE7B0 /* StemCreatorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController.xib */; };
 		8429DB98252017AD00ADE7B0 /* StemCreatorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8429DB94252017AD00ADE7B0 /* StemCreatorViewController.xib */; };
+		84302935258558CC005913A8 /* AudioFormatTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84302934258558CC005913A8 /* AudioFormatTest.swift */; };
+		8430293725855C31005913A8 /* WavFormatTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8430293625855C31005913A8 /* WavFormatTest.swift */; };
+		8430293925856DB8005913A8 /* Mp3FormatTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8430293825856DB8005913A8 /* Mp3FormatTest.swift */; };
 		843D4189251E661200E57CF5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ACE02725191008003963FD /* AppDelegate.swift */; };
 		843FD47525068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
 		843FD4822506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
@@ -142,6 +145,9 @@
 		84DF4106252FBC8E0084AE61 /* PluginFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84DF4104252FBC8E0084AE61 /* PluginFactory.swift */; };
 		84E7A24B258319C10089D527 /* AudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E7A24A258319C10089D527 /* AudioFormat.swift */; };
 		84E7A24C258319C10089D527 /* AudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E7A24A258319C10089D527 /* AudioFormat.swift */; };
+		84ED7F712585AB44005A124F /* StemCreatorModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ED7F702585AB44005A124F /* StemCreatorModelTest.swift */; };
+		84ED7F7725883104005A124F /* AudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E7A24A258319C10089D527 /* AudioFormat.swift */; };
+		84ED7F782588313A005A124F /* AudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E7A24A258319C10089D527 /* AudioFormat.swift */; };
 		84F3D119253F7122001E7ABD /* BeatInfoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F3D118253F7122001E7ABD /* BeatInfoSource.swift */; };
 		84F3D11A253F7122001E7ABD /* BeatInfoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F3D118253F7122001E7ABD /* BeatInfoSource.swift */; };
 		84F3D14025420B0F001E7ABD /* BeatToolsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F3D13F25420B0F001E7ABD /* BeatToolsTest.swift */; };
@@ -222,6 +228,9 @@
 		8429DB69251FB36600ADE7B0 /* StemCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCell.swift; sourceTree = "<group>"; };
 		8429DB7D2520011B00ADE7B0 /* StemCreator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreator.swift; sourceTree = "<group>"; };
 		8429DB94252017AD00ADE7B0 /* StemCreatorViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = StemCreatorViewController.xib; path = StemCreator/StemCreatorViewController.xib; sourceTree = SOURCE_ROOT; };
+		84302934258558CC005913A8 /* AudioFormatTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFormatTest.swift; sourceTree = "<group>"; };
+		8430293625855C31005913A8 /* WavFormatTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WavFormatTest.swift; sourceTree = "<group>"; };
+		8430293825856DB8005913A8 /* Mp3FormatTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mp3FormatTest.swift; sourceTree = "<group>"; };
 		843FD47425068E9200189936 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		843FD4812506A3B500189936 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
 		845900C82543BA6700410584 /* BeatGeneratorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatGeneratorTest.swift; sourceTree = "<group>"; };
@@ -274,6 +283,7 @@
 		84D83D3A2548974E00CC1D51 /* StemDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemDelegates.swift; sourceTree = "<group>"; };
 		84DF4104252FBC8E0084AE61 /* PluginFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginFactory.swift; sourceTree = "<group>"; };
 		84E7A24A258319C10089D527 /* AudioFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFormat.swift; sourceTree = "<group>"; };
+		84ED7F702585AB44005A124F /* StemCreatorModelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StemCreatorModelTest.swift; sourceTree = "<group>"; };
 		84F3D118253F7122001E7ABD /* BeatInfoSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatInfoSource.swift; sourceTree = "<group>"; };
 		84F3D13F25420B0F001E7ABD /* BeatToolsTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeatToolsTest.swift; sourceTree = "<group>"; };
 		84F3D14125420B3E001E7ABD /* FakeBeatDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeBeatDelegate.swift; sourceTree = "<group>"; };
@@ -352,6 +362,7 @@
 		841D0A7624FED209008F6305 /* AudioUtilities */ = {
 			isa = PBXGroup;
 			children = (
+				84E7A24A258319C10089D527 /* AudioFormat.swift */,
 				841D0A7824FED209008F6305 /* AudioFileConverter.swift */,
 				841D0A8524FED796008F6305 /* AudioControllerDelegate.swift */,
 				84A9CF57250D93D50065A7CC /* AudioNodeFactory.swift */,
@@ -373,7 +384,6 @@
 				8429DB64251FAA7600ADE7B0 /* StemRowView.swift */,
 				8429DB7D2520011B00ADE7B0 /* StemCreator.swift */,
 				84D83D3A2548974E00CC1D51 /* StemDelegates.swift */,
-				84E7A24A258319C10089D527 /* AudioFormat.swift */,
 			);
 			path = StemCreator;
 			sourceTree = "<group>";
@@ -442,6 +452,16 @@
 				843FD4812506A3B500189936 /* AudioModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		84302933258558B2005913A8 /* AudioUtilities */ = {
+			isa = PBXGroup;
+			children = (
+				84302934258558CC005913A8 /* AudioFormatTest.swift */,
+				8430293625855C31005913A8 /* WavFormatTest.swift */,
+				8430293825856DB8005913A8 /* Mp3FormatTest.swift */,
+			);
+			path = AudioUtilities;
 			sourceTree = "<group>";
 		};
 		845900DE2545106A00410584 /* Test */ = {
@@ -542,12 +562,22 @@
 		84ACE03C2519100B003963FD /* AudioFrameworkDemoTests */ = {
 			isa = PBXGroup;
 			children = (
+				84ED7F6F2585AB26005A124F /* StemCreator */,
+				84302933258558B2005913A8 /* AudioUtilities */,
 				84F3D13E25420A61001E7ABD /* Beat */,
 				8480DAFA2530FFD000A40CEB /* Channel */,
 				84ACE03D2519100B003963FD /* AudioFrameworkDemoTests.swift */,
 				84ACE03F2519100B003963FD /* Info.plist */,
 			);
 			path = AudioFrameworkDemoTests;
+			sourceTree = "<group>";
+		};
+		84ED7F6F2585AB26005A124F /* StemCreator */ = {
+			isa = PBXGroup;
+			children = (
+				84ED7F702585AB44005A124F /* StemCreatorModelTest.swift */,
+			);
+			path = StemCreator;
 			sourceTree = "<group>";
 		};
 		84F3D13E25420A61001E7ABD /* Beat */ = {
@@ -867,6 +897,7 @@
 				84D0AB6A251EDAD50093A081 /* AudioFileConverter.swift in Sources */,
 				84ACE02A25191008003963FD /* ViewController.swift in Sources */,
 				841E57D5251C262F009B7E7C /* MidiAudioExporter.swift in Sources */,
+				84ED7F782588313A005A124F /* AudioFormat.swift in Sources */,
 				849C6B89251A653300164DE1 /* Demo.swift in Sources */,
 				84ACE02825191008003963FD /* AppDelegate.swift in Sources */,
 			);
@@ -891,8 +922,13 @@
 				846D6481253E2EB20097F345 /* PluginDataTest.swift in Sources */,
 				849C6B8A251A653300164DE1 /* Demo.swift in Sources */,
 				84D0AB6B251EDAD60093A081 /* AudioFileConverter.swift in Sources */,
+				8430293725855C31005913A8 /* WavFormatTest.swift in Sources */,
+				84302935258558CC005913A8 /* AudioFormatTest.swift in Sources */,
 				84ACE03E2519100B003963FD /* AudioFrameworkDemoTests.swift in Sources */,
 				84F3D14225420B3E001E7ABD /* FakeBeatDelegate.swift in Sources */,
+				8430293925856DB8005913A8 /* Mp3FormatTest.swift in Sources */,
+				84ED7F712585AB44005A124F /* StemCreatorModelTest.swift in Sources */,
+				84ED7F7725883104005A124F /* AudioFormat.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

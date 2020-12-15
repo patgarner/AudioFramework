@@ -9,17 +9,20 @@
 import Foundation
 
 public class StemCreatorModel : Codable, Equatable {
-    var namePrefix = ""
-    var stems : [StemModel] = []
-    var sampleRate = 44100
-    var audioFormats : [AudioFormat] = []
+    public var namePrefix = ""
+    public var stems : [StemModel] = []
+//    var sampleRate = 44100
+    public var audioFormats : [AudioFormat] = [WavFormat(), Mp3Format()]
+    public init(){
+        
+    }
     public static func == (lhs: StemCreatorModel, rhs: StemCreatorModel) -> Bool {
-        return false
+        return true
     }
     var numStems : Int {
         return stems.count
     }
-    func addStem(){
+    public func addStem(){
         let stem = StemModel()
         stems.append(stem)
     }
@@ -32,7 +35,7 @@ public class StemCreatorModel : Codable, Equatable {
         if stemNumber < 0 || stemNumber >= stems.count { return }
         stems[stemNumber].stemShortName = name
     }
-    func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String) {
+    public func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String) {
         if stemNumber < 0 || stemNumber >= stems.count { return }
         let stem = stems[stemNumber]
         stem.selectionChanged(selected: selected, channelId: channelId)
@@ -66,5 +69,16 @@ public class StemCreatorModel : Codable, Equatable {
     func removeAll(){
         stems.removeAll()
         namePrefix = ""
+    }
+    public func getFormatsWith(ids: [String]) -> [AudioFormat]{
+        var matchingFormats : [AudioFormat] = []
+        for id in ids {
+            for audioFormat in audioFormats{
+                if audioFormat.id == id {
+                    matchingFormats.append(audioFormat)
+                }
+            }
+        }
+        return matchingFormats
     }
 }

@@ -59,24 +59,27 @@ public class StemRowView: NSView {
             x += columnWidth
         }
         //File Types
-        let fileTypeStrings = ["WAV", "MP3"]
-        for i in 0..<fileTypeStrings.count{
+        let fileFormats = delegate.audioFormats
+        for i in 0..<fileFormats.count{
+            let fileFormat = fileFormats[i]
+            let formatName = fileFormat.name
             let frame = CGRect(x: x, y: 0, width: columnWidth, height: rowHeight)
-           // guard let id = delegate.getIdFor(channel: i) else { continue }
-            let filetypeCell = StemCell(frame: frame, type: type, delegate: self, channelId: "")
+            let filetypeCell = StemCell(frame: frame, type: type, delegate: self, channelId: fileFormat.id)
             filetypeCell.backgroundColor = NSColor.lightGray
             if type == .header {
-                filetypeCell.stringValue = fileTypeStrings[i]
+                filetypeCell.stringValue = formatName
             }
             self.addSubview(filetypeCell)
             x += columnWidth
         }
         //Delete Button and Progress Bar
         if type == .row{
+            //Delete Button
             let deleteButton = NSButton(title: "X", target: self, action: #selector(deleteStem))
             let deleteFrame = CGRect(x: x, y: 0, width: deleteButtonWidth, height: rowHeight) 
             deleteButton.frame = deleteFrame
             addSubview(deleteButton)
+            //Progress Bar
             x += deleteButtonWidth
             let progressFrame = CGRect(x: x, y: 0, width: progressBarWidth, height: rowHeight) 
             let progressBar = NSProgressIndicator(frame: progressFrame)

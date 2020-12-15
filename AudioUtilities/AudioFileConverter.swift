@@ -14,6 +14,92 @@ import Foundation
 import AVFoundation
 
 class AudioFileConverter{
+    class func convert(sourceURL: URL, destinationURL: URL, formats: [AudioFormat], deleteSource: Bool){
+        for format in formats {
+            if let wavFormat = format as? WavFormat{
+                let destinationURL = destinationURL.appendingPathExtension("wav")
+                convertToWav(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, sampleRate: wavFormat.sampleRate, bitRate: wavFormat.bitRate)
+            } else if let mp3Format = format as? Mp3Format{
+                let destinationURL = destinationURL.appendingPathExtension("mp3")
+                //TODO: add bitRate to mp3 func
+                convertToMP3(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, bitRate: mp3Format.bitRate)
+            }
+        }
+        if deleteSource{
+            let fileManager = FileManager()
+            do {
+                try fileManager.removeItem(at: sourceURL)
+            } catch {
+                print(error)
+            }
+        }
+    }
+    class func convertToWav(sourceURL: URL, destinationURL: URL, deleteSource: Bool, sampleRate: Int = 44100, bitRate: Int = 16){
+        let task = Process()
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.launchPath = "/usr/bin/afconvert"
+        let sourcePath = sourceURL.path
+        let destPath = destinationURL.path
+        
+        let sampleFormatString = "LEI\(bitRate)@\(sampleRate)"
+        task.arguments = ["-f",  "WAVE", "-d", sampleFormatString, sourcePath, destPath, ]
+        task.launch()
+        let handle = pipe.fileHandleForReading
+        let data = handle.readDataToEndOfFile()
+        guard let result_s = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
+            print("Couldn't get WAV conversion results")
+            return
+        }
+        print(result_s)
+        if deleteSource{
+            let fileManager = FileManager()
+            do {
+                try fileManager.removeItem(at: sourceURL)
+            } catch {
+                print(error)
+            }
+        }
+    }
+    class func convertToMP3(sourceURL: URL, destinationURL: URL, deleteSource: Bool, bitRate: Int = 320){
+        var sourceURL = sourceURL
+        var wavTempURL : URL? = nil
+        if sourceURL.pathExtension == "caf"{ //Uses 0.05 seconds but reliable
+            wavTempURL = destinationURL.appendingPathExtension("wav")
+            convertToWav(sourceURL: sourceURL, destinationURL: wavTempURL!, deleteSource: false, sampleRate: 44100, bitRate: 16)
+            sourceURL = wavTempURL!
+        }
+        let task = Process()
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.launchPath = "/usr/local/bin/lame"
+        let sourcePath = sourceURL.path
+        let destPath = destinationURL.path
+        task.arguments = [sourcePath, destPath, "-b \(bitRate)"]
+        task.launch()
+        let handle = pipe.fileHandleForReading
+        let data = handle.readDataToEndOfFile()
+        guard let result_s = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
+            print("Couldn't get mp3 conversion results")
+            return
+        }
+        print(result_s)
+        let fileManager = FileManager()
+        if deleteSource{
+            do {
+                try fileManager.removeItem(at: sourceURL)
+            } catch {
+                print(error)
+            }
+        }
+        if let wavTempURL = wavTempURL{
+            do {
+                try fileManager.removeItem(at: wavTempURL)
+            } catch {
+                print(error)
+            }
+        }
+    }
     class func convert(sourceURL: URL, destinationURL: URL, deleteSource: Bool){
         let asset = AVAsset(url: sourceURL)
         let fileManager = FileManager()
@@ -64,61 +150,6 @@ class AudioFileConverter{
             }
         } catch {
             print(error)
-        }
-        
-    }
-    class func convertSimple(sourceURL: URL, destinationURL: URL, deleteSource: Bool, sampleRate: Int = 44100){
-        let task = Process()
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.launchPath = "/usr/bin/afconvert"
-        let sourcePath = sourceURL.path
-        let destPath = destinationURL.path
-        
-        //afconvert -f WAVE -d LEI16@48000 "MANN-Beneath the Surface A(Full).wav" "Audio File.wav"
-        let bitRate = 16
-        let sampleFormatString = "LEI\(bitRate)@\(sampleRate)"
-        task.arguments = ["-f",  "WAVE", "-d", sampleFormatString, sourcePath, destPath, ]
-        task.launch()
-        let handle = pipe.fileHandleForReading
-        let data = handle.readDataToEndOfFile()
-        guard let result_s = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
-            print("Couldn't get WAV conversion results")
-            return
-        }
-        print(result_s)
-        if deleteSource{
-            let fileManager = FileManager()
-            do {
-                try fileManager.removeItem(at: sourceURL)
-            } catch {
-                print(error)
-            }
-        }
-    }
-    class func convertToMP3(sourceURL: URL, destinationURL: URL, deleteSource: Bool){
-        let task = Process()
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.launchPath = "/usr/local/bin/lame"
-        let sourcePath = sourceURL.path
-        let destPath = destinationURL.path
-        task.arguments = [sourcePath, destPath, "-b 320"]
-        task.launch()
-        let handle = pipe.fileHandleForReading
-        let data = handle.readDataToEndOfFile()
-        guard let result_s = NSString(data: data, encoding: String.Encoding.utf8.rawValue) else {
-            print("Couldn't get mp3 conversion results")
-            return
-        }
-        print(result_s)
-        if deleteSource{
-            let fileManager = FileManager()
-            do {
-                try fileManager.removeItem(at: sourceURL)
-            } catch {
-                print(error)
-            }
         }
         
     }

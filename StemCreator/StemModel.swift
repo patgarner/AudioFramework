@@ -12,6 +12,7 @@ public class StemModel : Codable, Equatable{
     var stemShortName = ""
     var channelIds : [String] = []
     var include = true
+    var audioFormats : [String] = []
     public static func == (lhs: StemModel, rhs: StemModel) -> Bool {
         return false
     }
@@ -37,7 +38,7 @@ public class StemModel : Codable, Equatable{
         }
         return nil
     }
-    func isSelected(channelId: String) -> Bool{
+    public func isSelected(channelId: String) -> Bool{
         if let _ = indexOf(channelId: channelId){
             return true
         } else { 

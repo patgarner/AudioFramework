@@ -11,7 +11,8 @@ import AVFoundation
 import Cocoa
 
 class MidiAudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil, number: Int? = nil, sampleRate: Int = 44100){
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, delegate: MidiAudioExporterDelegate?, number: Int?, formats: [AudioFormat]){
+        //TODO: put all code from renderMidiOffline here. have it call this func
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
@@ -79,18 +80,33 @@ class MidiAudioExporter{
         }
         engine.stop()
         engine.disableManualRenderingMode()
-        let wavUrl = audioDestinationURL.appendingPathExtension("wav")
-        AudioFileConverter.convertSimple(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false, sampleRate: sampleRate)
-        if includeMP3{
-            let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
-            AudioFileConverter.convertToMP3(sourceURL: wavUrl, destinationURL: mp3Url, deleteSource: false)
+        ////////////////////////////////////////////////////////////////////////////////////
+        // Now Convert
+        ///////////////////////////////////////////////////////////////////////////////////
+        AudioFileConverter.convert(sourceURL: cafURL, destinationURL: audioDestinationURL, formats: formats, deleteSource: true)
+//        let wavUrl = audioDestinationURL.appendingPathExtension("wav")
+//        AudioFileConverter.convertSimple(sourceURL: cafURL, destinationURL: wavUrl, deleteSource: false, sampleRate: sampleRate)
+//        if includeMP3{
+//            let mp3Url = audioDestinationURL.appendingPathExtension("mp3")
+//            AudioFileConverter.convertToMP3(sourceURL: wavUrl, destinationURL: mp3Url, deleteSource: false)
+//        }
+//        do {
+//            let fileManager = FileManager()
+//            try fileManager.removeItem(at: cafURL)
+//        } catch {
+//            print(error)
+//        }
+    }
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil, number: Int? = nil, sampleRate: Int = 44100){
+        let wavFormat = WavFormat()
+        wavFormat.sampleRate = sampleRate
+        var audioFormats : [AudioFormat] = [wavFormat]
+        if includeMP3 {
+            let mp3Format = Mp3Format()
+            audioFormats.append(mp3Format)
         }
-        do {
-            let fileManager = FileManager()
-            try fileManager.removeItem(at: cafURL)
-        } catch {
-            print(error)
-        }
+        renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, delegate: delegate, number: number, formats: audioFormats)
+        
     }
     class func cancelOfflineRender(engine: AVAudioEngine){
         engine.stop()
