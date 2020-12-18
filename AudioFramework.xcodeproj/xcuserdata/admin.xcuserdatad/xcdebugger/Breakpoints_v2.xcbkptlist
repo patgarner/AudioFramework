@@ -398,8 +398,8 @@
             filePath = "StemCreator/StemRowView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
             landmarkName = "changeMultiple(to:location:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -558,8 +558,8 @@
             filePath = "StemCreator/StemCreator.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "46"
-            endingLineNumber = "46"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
             landmarkName = "createStem(stemModel:prefix:folder:number:audioFormats:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -568,14 +568,14 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "8B08DA3F-01EB-417C-A0B6-CB71C1FE9288"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "StemCreator/StemCreator.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
+            startingLineNumber = "31"
+            endingLineNumber = "31"
             landmarkName = "createStem(stemModel:prefix:folder:number:audioFormats:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -599,32 +599,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "3705B1BF-D91E-4671-95CA-AFC8CB657463"
+            uuid = "77ED1657-C5D4-4508-9CD5-E4E9F4F32A32"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "StemCreator/StemModel.swift"
+            filePath = "StemCreator/StemCell.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
-            landmarkName = "isSelected(id:)"
+            startingLineNumber = "44"
+            endingLineNumber = "44"
+            landmarkName = "mouseDown(with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "8FB9703B-A449-4B45-9630-3F50D120696E"
-            shouldBeEnabled = "Yes"
+            uuid = "5173503D-597C-4934-9E5E-1B35370F7A5B"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "StemCreator/StemModel.swift"
+            filePath = "StemCreator/StemCreator.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "isSelected(id:)"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "createStem(stemModel:prefix:folder:number:audioFormats:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

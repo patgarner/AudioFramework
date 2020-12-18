@@ -134,14 +134,8 @@ extension StemRowView : StemCheckboxDelegate{
     public func selectionChangedTo(selected: Bool, id: String, type: ColumnType) {
         delegate.selectionChangedTo(selected: selected, stemNumber: number, id: id, type: type)
     }
-//    public func channelSelectionChangedTo(selected: Bool, channelId: String) {
-//        delegate.selectionChangedTo(selected: selected, stemNumber: number, id: channelId)
-//    }
-//    public func audioFormatSelectionChangedTo(selected: Bool, audioFormatId: String) {
-//        delegate.audioFormatSelectionChangedTo(selected: selected, stemNumber: number, audioFormatId: audioFormatId)
-//    }
-    public func isSelected(id: String) -> Bool{
-        let selected = delegate.isSelected(stemNumber: number, channelId: id)
+    public func isSelected(id: String, type: ColumnType) -> Bool{
+        let selected = delegate.isSelected(stemNumber: number, id: id, type: type)
         return selected
     }
     public func changeMultiple(to selected: Bool, location: NSPoint) {

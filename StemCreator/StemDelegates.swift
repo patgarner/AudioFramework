@@ -29,7 +29,7 @@ public protocol StemViewDelegate{
 
 public protocol StemRowViewDelegate{
     func refresh()
-    func isSelected(stemNumber: Int, channelId: String) -> Bool
+    func isSelected(stemNumber: Int, id: String, type: ColumnType) -> Bool
     var numStems : Int { get } //YES
     func getNameFor(stemNumber: Int) -> String?
     func setName(stemNumber: Int, name: String)
@@ -43,14 +43,12 @@ public protocol StemRowViewDelegate{
     func getNameFor(channelId : String) -> String?
     func getIdFor(channel: Int) -> String?
     func didSelect(audioFormatId: String)
-//    func audioFormatSelectionChangedTo(selected: Bool, stemNumber: Int, audioFormatId: String)
 }
 
 public protocol StemCheckboxDelegate{
     func getNameFor(channelId : String) -> String?
     func selectionChangedTo(selected: Bool, id: String, type: ColumnType)
-//    func audioFormatSelectionChangedTo(selected: Bool, audioFormatId: String)
-    func isSelected(id: String) -> Bool
+    func isSelected(id: String, type: ColumnType) -> Bool
     func changeMultiple(to selected: Bool, location: NSPoint)
     func didSelect(audioFormatId: String)
 

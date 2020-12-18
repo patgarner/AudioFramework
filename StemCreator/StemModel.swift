@@ -65,11 +65,11 @@ public class StemModel : Codable, Equatable{
         }
         return nil
     }
-    public func isSelected(id: String) -> Bool{
-        if let _ = indexOf(channelId: id){
+    public func isSelected(id: String, type: ColumnType) -> Bool{
+        if type == .channel, indexOf(channelId: id) != nil {
             return true
-        } 
-        if let _ = indexOf(audioFormatId: id){
+        }
+        if type == .fileType, indexOf(audioFormatId: id) != nil {
             return true
         }
         return false

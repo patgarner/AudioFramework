@@ -70,10 +70,10 @@ public class StemCreatorModel : Codable, Equatable {
         let stem = stems[stemNumber]
         stem.selectionChanged(selected: selected, id: id, type: type)
     }
-    func isSelected(stemNumber: Int, id: String) -> Bool{
+    func isSelected(stemNumber: Int, id: String, type: ColumnType) -> Bool{
         if stemNumber < 0 || stemNumber >= stems.count { return false }
         let stem = stems[stemNumber]
-        let result = stem.isSelected(id: id)
+        let result = stem.isSelected(id: id, type: type)
         return result
     }
     func delete(stemNumber: Int){

@@ -23,6 +23,7 @@ public class StemCreator{
             if shouldCancel { return }
             let stem = model.stems[i]
             if !stem.include { continue }
+            if stem.audioFormatIds.count == 0 { continue }
             createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats)
         }
     }
@@ -31,10 +32,6 @@ public class StemCreator{
         let letter = letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
         let stemPath = folder.appendingPathComponent(filename)
-//        var mp3 = true
-//        if number == 0 { mp3 = true }
-        
-//        delegate.exportStem(to: stemPath, includeMP3: mp3, number: number, sampleRate: 44100)
         var selectedAudioFormats : [AudioFormat] = []
         for audioFormatId in stemModel.audioFormatIds{
             for audioFormat in audioFormats{

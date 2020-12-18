@@ -25,7 +25,7 @@ public class StemCell: NSTextField {
             let font = NSFont(name: "Helvetica", size: 20)
             self.font = font
             self.alignment = NSTextAlignment.center
-            selected = delegate.isSelected(id: id)
+            selected = delegate.isSelected(id: id, type: columnType)
         } else if rowType == .header{
             self.rotate(byDegrees: 270)
             if let title = delegate.getNameFor(channelId: id){
@@ -57,7 +57,6 @@ public class StemCell: NSTextField {
         if self.selected == selected { return }
         self.selected = selected
         refresh()
-//        stemCheckboxDelegate.channelSelectionChangedTo(selected: selected, channelId: id)
         stemCheckboxDelegate.selectionChangedTo(selected: selected, id: id, type: columnType)
     }
     private func refresh(){

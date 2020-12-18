@@ -178,8 +178,8 @@ public class StemCreatorViewController: NSViewController {
             self.view.window?.close()
         }
     }
-    public func isSelected(stemNumber: Int, channelId: String) -> Bool {
-        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, id: channelId)
+    public func isSelected(stemNumber: Int, id: String, type: ColumnType) -> Bool {
+        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, id: id, type: type)
         return selected
     }
 }
