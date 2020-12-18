@@ -26,8 +26,8 @@ public class StemRowView: NSView {
         self.columnWidth = columnWidth
         self.delegate = delegate
         var x : CGFloat = 0
-        //Include Checkbox and Title
         if type == .row {
+            //Include Checkbox
             let includeCheckboxFrame = CGRect(x: 0, y: 0, width: includeCheckboxWidth, height: rowHeight)
             let includeCheckbox = NSButton(checkboxWithTitle: "", target: self, action: #selector(includeDidChange))
             includeCheckbox.frame = includeCheckboxFrame
@@ -36,7 +36,7 @@ public class StemRowView: NSView {
             if delegate.isIncluded(stemNumber: number){
                 includeCheckbox.state = .on
             }
-            
+            //Row Title
             let rowTitleFrame = CGRect(x: includeCheckboxWidth, y: 0, width: rowTitleWidth, height: rowHeight)
             let rowTitle = NSTextField(frame: rowTitleFrame)
             self.rowTitle = rowTitle
@@ -48,14 +48,14 @@ public class StemRowView: NSView {
             rowTitle.target = self
             rowTitle.action = #selector(rowTitleChanged)
         }
-        //Actual Cells for each Channel
+        //Channels
         x = rowTitleWidth + includeCheckboxWidth
         let numChannels = delegate.numChannels
         for i in 0..<numChannels{
             let checkboxFrame = CGRect(x: x, y: 0, width: columnWidth, height: rowHeight)
             guard let id = delegate.getIdFor(channel: i) else { continue }
-            let checkboxText = StemCell(frame: checkboxFrame, type: type, delegate: self, channelId: id)
-            self.addSubview(checkboxText)
+            let checkboxCell = StemCell(frame: checkboxFrame, rowType: type, columnType: .channel, delegate: self, id: id)
+            self.addSubview(checkboxCell)
             x += columnWidth
         }
         //File Types
@@ -64,7 +64,7 @@ public class StemRowView: NSView {
             let fileFormat = fileFormats[i]
             let formatName = fileFormat.name
             let frame = CGRect(x: x, y: 0, width: columnWidth, height: rowHeight)
-            let filetypeCell = StemCell(frame: frame, type: type, delegate: self, channelId: fileFormat.id)
+            let filetypeCell = StemCell(frame: frame, rowType: type, columnType: .fileType, delegate: self, id: fileFormat.id)
             filetypeCell.backgroundColor = NSColor.lightGray
             if type == .header {
                 filetypeCell.stringValue = formatName
@@ -72,7 +72,6 @@ public class StemRowView: NSView {
             self.addSubview(filetypeCell)
             x += columnWidth
         }
-        //Delete Button and Progress Bar
         if type == .row{
             //Delete Button
             let deleteButton = NSButton(title: "X", target: self, action: #selector(deleteStem))
@@ -127,16 +126,22 @@ public class StemRowView: NSView {
     }
 }
 
-extension StemRowView : StemCheckboxDelegate{  
+extension StemRowView : StemCheckboxDelegate{
     public func getNameFor(channelId : String) -> String?{
         let name = delegate.getNameFor(channelId: channelId)
         return name
     }
-    public func checkboxChangedTo(selected: Bool, channelId: String) {
-        delegate.selectionChangedTo(selected: selected, stemNumber: number, channelId: channelId)
+    public func selectionChangedTo(selected: Bool, id: String, type: ColumnType) {
+        delegate.selectionChangedTo(selected: selected, stemNumber: number, id: id, type: type)
     }
-    public func isSelected(channelId: String) -> Bool{
-        let selected = delegate.isSelected(stemNumber: number, channelId: channelId)
+//    public func channelSelectionChangedTo(selected: Bool, channelId: String) {
+//        delegate.selectionChangedTo(selected: selected, stemNumber: number, id: channelId)
+//    }
+//    public func audioFormatSelectionChangedTo(selected: Bool, audioFormatId: String) {
+//        delegate.audioFormatSelectionChangedTo(selected: selected, stemNumber: number, audioFormatId: audioFormatId)
+//    }
+    public func isSelected(id: String) -> Bool{
+        let selected = delegate.isSelected(stemNumber: number, channelId: id)
         return selected
     }
     public func changeMultiple(to selected: Bool, location: NSPoint) {
@@ -149,9 +154,18 @@ extension StemRowView : StemCheckboxDelegate{
             }
         }
     }
+    public func didSelect(audioFormatId: String) {
+        delegate.didSelect(audioFormatId: audioFormatId)
+    }
 }
 
 enum RowType {
     case header
     case row
+}
+
+public enum ColumnType {
+    case title
+    case channel
+    case fileType
 }

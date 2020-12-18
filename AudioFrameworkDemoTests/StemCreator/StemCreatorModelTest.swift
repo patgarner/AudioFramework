@@ -22,21 +22,47 @@ class StemCreatorModelTest: XCTestCase {
         let stemCreatorModel1 = StemCreatorModel()
         let stemCreatorModel2 = StemCreatorModel()
         XCTAssert(stemCreatorModel1 == stemCreatorModel2)
-        stemCreatorModel1.name = "Bob"
+        stemCreatorModel1.namePrefix = "Bob"
         XCTAssert(stemCreatorModel1 != stemCreatorModel2)
+        stemCreatorModel2.namePrefix = "Bob"
+        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
 
-//        stemCreatorModel.addStem()
-//        stemCreatorModel.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
-//        let audioFormat = WavFormat()
-//        stemCreatorModel.audioFormats.append(audioFormat)
+        stemCreatorModel1.addStem()
+        XCTAssert(stemCreatorModel1 != stemCreatorModel2)
+        stemCreatorModel2.addStem()
+        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
+        
+        stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
+        XCTAssert(stemCreatorModel1 != stemCreatorModel2)
+        stemCreatorModel2.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
+        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
+
+//        let audioFormat = AudioFormat()
+//        stemCreatorModel1.audioFormats.append(audioFormat)
+//        XCTAssert(stemCreatorModel1 != stemCreatorModel2)
+//        stemCreatorModel2.audioFormats.append(audioFormat)
+//        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
     }
-    func testSelectingChannelId() {
-        let stemCreatorModel = StemCreatorModel()
-        stemCreatorModel.addStem()
-        let audioFormats = stemCreatorModel.audioFormats
-        let format0 = audioFormats[0]
-        stemCreatorModel.selectionChangedTo(selected: true, stemNumber: 0, channelId: format0.id)
-        let stemModel = stemCreatorModel.stems[0]
-        XCTAssert(stemModel.isSelected(channelId: format0.id))
+    func testSerialization(){
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        
+        let stemCreatorModel1 = StemCreatorModel()
+        stemCreatorModel1.namePrefix = "Bob"
+        stemCreatorModel1.addStem()
+        stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
+        stemCreatorModel1.audioFormats.removeAll()
+        //TODO: Add Audio Formats
+        do {
+            let data = try encoder.encode(stemCreatorModel1)
+            let stemCreatorModel2 = try decoder.decode(StemCreatorModel.self, from: data)
+            XCTAssert(stemCreatorModel1 == stemCreatorModel2)
+        } catch {
+            XCTFail("\(error)")
+        }
+        
+    }
+    func testDeleteAudioFormats(){
+        
     }
 }

@@ -18,7 +18,6 @@ public class StemCreatorViewController: NSViewController {
     private weak var namePrefixField : NSTextField!
     private weak var stemCreatorModel : StemCreatorModel! = AudioController.shared.stemCreatorModel
     private let stemCreator = StemCreator()
-//    private weak var sampleRatePopup : NSPopUpButton!
     private weak var exportCancelButton : NSButton!
 
     public init(delegate: StemViewDelegate){
@@ -86,23 +85,9 @@ public class StemCreatorViewController: NSViewController {
         namePrefixField.action = #selector(namePrefixChanged)
         self.view.addSubview(namePrefixField)
         
-//        let sampleRateButtonFrame = CGRect(x: 430, y: yBuffer, width: 100, height: buttonHeight)
-//        let sampleRateButton = NSPopUpButton(frame: sampleRateButtonFrame)
-//        sampleRateButton.target = self
-//        sampleRateButton.action = #selector(didChangeSampleRate)
-//        self.sampleRatePopup = sampleRateButton
-//        self.view.addSubview(sampleRateButton)
-//        sampleRateButton.addItem(withTitle: "44100")
-//        sampleRateButton.addItem(withTitle: "48000")
-//        let sampleRate = stemCreatorModel.sampleRate
-//        sampleRateButton.selectItem(withTitle: String(sampleRate))
-        
         let addFormatButtonFrame = CGRect(x: 540, y: yBuffer, width: 100, height: buttonHeight)
         let addFormatButton = NSButton(title: "Add Format", target: self, action: #selector(addFormat))
         addFormatButton.frame = addFormatButtonFrame
-//        addFormatButton.title = "Add Format"
-//        addFormatButton.target = self
-//        addFormatButton.action = #selector(addFormat)
         self.view.addSubview(addFormatButton)
 
         let exportButtonFrame = CGRect(x: 650, y: yBuffer, width: 100, height: buttonHeight)
@@ -111,7 +96,6 @@ public class StemCreatorViewController: NSViewController {
         self.view.addSubview(exportButton)
         self.exportCancelButton = exportButton
         
-
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(setProgress),
@@ -119,15 +103,10 @@ public class StemCreatorViewController: NSViewController {
             object: nil)
     }
     @objc func addFormat(){
-        print("yay!")
+        let format = AudioFormatFactory.wav44_16
+        stemCreatorModel.audioFormats.append(format)
+        refresh()
     }
-//    @objc func didChangeSampleRate(){
-//        if let title = sampleRatePopup.titleOfSelectedItem {
-//            if let sampleRate = Int(title){
-//                stemCreatorModel.sampleRate = sampleRate
-//            }
-//        }
-//    }
     @objc func setProgress(notification: NSNotification){
         guard let stemProgress = notification.object as? (Int, Double) else { return }
         DispatchQueue.main.async {
@@ -200,7 +179,7 @@ public class StemCreatorViewController: NSViewController {
         }
     }
     public func isSelected(stemNumber: Int, channelId: String) -> Bool {
-        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, channelId: channelId)
+        let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, id: channelId)
         return selected
     }
 }
@@ -221,8 +200,8 @@ extension StemCreatorViewController : StemRowViewDelegate{
         let name = stemCreatorModel.getNameFor(stem: stem)
         return name
     }
-    public func selectionChangedTo(selected: Bool, stemNumber: Int, channelId: String) {
-        stemCreatorModel.selectionChangedTo(selected: selected, stemNumber: stemNumber, channelId: channelId)
+    public func selectionChangedTo(selected: Bool, stemNumber: Int, id: String, type: ColumnType) {
+        stemCreatorModel.selectionChangedTo(selected: selected, stemNumber: stemNumber, id: id, type: type)
     }
     public func delete(stemNumber: Int){
         stemCreatorModel.delete(stemNumber: stemNumber)
@@ -239,6 +218,13 @@ extension StemCreatorViewController : StemRowViewDelegate{
             return stemCreatorModel.audioFormats
         }
     }
+    public func didSelect(audioFormatId: String) {
+        guard let audioFormat = stemCreatorModel.getFormatWith(id: audioFormatId) else { return }
+        let audioFormatVC = AudioFormatViewController(nibName: nil, bundle: nil)
+        presentAsModalWindow(audioFormatVC)
+        audioFormatVC.set(audioFormat: audioFormat)
+        audioFormatVC.delegate = self
+    }
     //Pass Through
     public var numChannels: Int {
         let channels = delegate.numChannels
@@ -252,6 +238,10 @@ extension StemCreatorViewController : StemRowViewDelegate{
         let id = delegate.getIdFor(channel: channel)
         return id
     }
+//    public func audioFormatSelectionChangedTo(selected: Bool, stemNumber: Int, audioFormatId: String) {
+//         stemCreatorModel.audioFormatSelectionChangedTo(selected: selected, stemNumber: stemNumber, channelId: audioFormatId)
+//     }
+    
 }
 
 
@@ -264,6 +254,18 @@ extension StemCreatorViewController : StemCreatorDelegate{
     }
     public func exportStem(to url: URL, number: Int, formats: [AudioFormat]){
         delegate.exportStem(to: url, number: number, formats: formats)
+    }
+}
+
+extension StemCreatorViewController : AudioFormatViewControllerDelegate{
+    func deleteAudioFormatWith(id: String) {
+        stemCreatorModel.deleteAudioFormatWith(id: id)
+        refresh()
+    }
+    
+    func updateValuesFor(audioFormatId: String, newAudioFormat: AudioFormat) {
+        stemCreatorModel.updateValuesFor(audioFormatId: audioFormatId, newAudioFormat: newAudioFormat)
+        refresh()
     }
 }
 

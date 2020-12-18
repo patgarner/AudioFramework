@@ -12,8 +12,12 @@ public class AudioFormat : Codable, Equatable{
     public var id = UUID().uuidString
     public var type = AudioFormatType.none
     public var name = ""
+    public var sampleRate = 44100
+    public var bitRate = 16
+    public var mp3BitRate = 320
+    public var constantBitRate = true
     enum AudioFormatCodingKeys : CodingKey{
-        case id, type, name
+        case id, type, name, sampleRate, bitRate, constantBitRate, mp3BitRate
     }
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: AudioFormatCodingKeys.self)
@@ -23,29 +27,50 @@ public class AudioFormat : Codable, Equatable{
             self.type = type
         }
         name = try container.decode(String.self, forKey: .name)
+        sampleRate = try container.decode(Int.self, forKey: .sampleRate)
+        bitRate = try container.decode(Int.self, forKey: .bitRate)
+        mp3BitRate = try container.decode(Int.self, forKey: .mp3BitRate)
+        constantBitRate = try container.decode(Bool.self, forKey: .constantBitRate)
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: AudioFormatCodingKeys.self)
         try container.encode(id, forKey: .id)
         try container.encode(type.rawValue, forKey: .type)
         try container.encode(name, forKey: .name)
+        try container.encode(bitRate, forKey: .bitRate)
+        try container.encode(sampleRate, forKey: .sampleRate)
+        try container.encode(constantBitRate, forKey: .constantBitRate)
+        try container.encode(mp3BitRate, forKey: .mp3BitRate)
     }
     public init(){
         
     }
-    
+    public init(type: AudioFormatType){
+        self.type = type
+    }
     func equals(_ other: Any) -> Bool {
         guard let other = other as? AudioFormat else { return false }
         if self.id != other.id { return false }
         if self.type != other.type { return false }
         if self.name != other.name { return false }
+        if self.bitRate != other.bitRate { return false }
+        if self.mp3BitRate != other.mp3BitRate { return false }
+        if self.constantBitRate != other.constantBitRate { return false }
         return true
     }
     public static func == (lhs: AudioFormat, rhs: AudioFormat) -> Bool {
         return lhs.equals(rhs)
     }
+    func updateValuesWith(audioFormat: AudioFormat){
+        type = audioFormat.type
+        name = audioFormat.name
+        sampleRate = audioFormat.sampleRate
+        bitRate = audioFormat.bitRate
+        constantBitRate = audioFormat.constantBitRate
+        mp3BitRate = audioFormat.mp3BitRate
+    }
 }
-
+/*
 public class WavFormat : AudioFormat{
     public var sampleRate = 44100
     public var bitRate = 16
@@ -127,9 +152,9 @@ public class Mp3Format : AudioFormat{
         return true
     }
 }
-
+*/
 public enum AudioFormatType : Int, Codable{
+    case none
     case wav
     case mp3
-    case none
 }

@@ -98,11 +98,14 @@ class MidiAudioExporter{
 //        }
     }
     class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, includeMP3: Bool, delegate: MidiAudioExporterDelegate? = nil, number: Int? = nil, sampleRate: Int = 44100){
-        let wavFormat = WavFormat()
+//        let wavFormat = WavFormat()
+        let wavFormat = AudioFormat()
         wavFormat.sampleRate = sampleRate
+        wavFormat.type = .wav
         var audioFormats : [AudioFormat] = [wavFormat]
         if includeMP3 {
-            let mp3Format = Mp3Format()
+            let mp3Format = AudioFormat()
+            mp3Format.type = .mp3
             audioFormats.append(mp3Format)
         }
         renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, delegate: delegate, number: number, formats: audioFormats)

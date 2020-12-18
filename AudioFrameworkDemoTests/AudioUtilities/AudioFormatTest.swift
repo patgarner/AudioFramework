@@ -36,6 +36,21 @@ class AudioFormatTest: XCTestCase {
         XCTAssert(format1 != format2)
         format2.type = .mp3
         XCTAssert(format1 == format2)
+        
+        format1.bitRate = 56
+        XCTAssert(format1 != format2)
+        format2.bitRate = 56
+        XCTAssert(format1 == format2)
+        
+        format1.constantBitRate = false
+        XCTAssert(format1 != format2)
+        format2.constantBitRate = false
+        XCTAssert(format1 == format2)
+        
+        format1.mp3BitRate = 500
+        XCTAssert(format1 != format2)
+        format2.mp3BitRate = 500
+        XCTAssert(format1 == format2)
     }
     func testSerialization(){
         let encoder = JSONEncoder()
@@ -44,6 +59,9 @@ class AudioFormatTest: XCTestCase {
         format1.id = "Apple"
         format1.name = "Orange"
         format1.type = .wav
+        format1.bitRate = 50
+        format1.mp3BitRate = 444
+        format1.constantBitRate = false
         do {
             let data = try encoder.encode(format1)
             let format2 = try decoder.decode(AudioFormat.self, from: data)

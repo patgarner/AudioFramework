@@ -11,22 +11,24 @@ import Cocoa
 public class StemCell: NSTextField {
     var selected = false
     var stemCheckboxDelegate : StemCheckboxDelegate!
-    var channelId = ""
-    var type : RowType = .row
-    init(frame frameRect: NSRect, type: RowType, delegate: StemCheckboxDelegate, channelId: String) {
+    var id = ""
+    var rowType : RowType = .row
+    var columnType : ColumnType = .channel
+    init(frame frameRect: NSRect, rowType: RowType, columnType: ColumnType, delegate: StemCheckboxDelegate, id: String) {
         super.init(frame: frameRect)
         stemCheckboxDelegate = delegate
-        self.channelId = channelId
-        self.type = type
+        self.id = id
+        self.rowType = rowType
+        self.columnType = columnType
         self.isSelectable = false
-        if type == .row {
+        if rowType == .row {
             let font = NSFont(name: "Helvetica", size: 20)
             self.font = font
             self.alignment = NSTextAlignment.center
-            selected = delegate.isSelected(channelId: channelId)
-        } else if type == .header{
+            selected = delegate.isSelected(id: id)
+        } else if rowType == .header{
             self.rotate(byDegrees: 270)
-            if let title = delegate.getNameFor(channelId: channelId){
+            if let title = delegate.getNameFor(channelId: id){
                 self.stringValue = title
             }
         }
@@ -39,20 +41,27 @@ public class StemCell: NSTextField {
         super.draw(dirtyRect)
     }
     override public func mouseDown(with event: NSEvent) {
-        if type == .header { return }
+        if rowType == .header {
+            if columnType == .fileType {
+                stemCheckboxDelegate.didSelect(audioFormatId: id)
+            } else {
+                return
+            }
+        }
         selected = !selected
         refresh()
-        stemCheckboxDelegate.checkboxChangedTo(selected: selected, channelId: channelId)
+        stemCheckboxDelegate.selectionChangedTo(selected: selected, id: id, type: columnType)
     }
     func changeSelection(to selected: Bool){
-        if type == .header { return }
+        if rowType == .header { return }
         if self.selected == selected { return }
         self.selected = selected
         refresh()
-        stemCheckboxDelegate.checkboxChangedTo(selected: selected, channelId: channelId)
+//        stemCheckboxDelegate.channelSelectionChangedTo(selected: selected, channelId: id)
+        stemCheckboxDelegate.selectionChangedTo(selected: selected, id: id, type: columnType)
     }
     private func refresh(){
-        if type == .header { return }
+        if rowType == .header { return }
         if selected {
             self.stringValue = "X"
         } else {

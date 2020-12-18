@@ -23,19 +23,27 @@ public class StemCreator{
             if shouldCancel { return }
             let stem = model.stems[i]
             if !stem.include { continue }
-            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i)
+            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats)
         }
     }
-    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int){
+    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, audioFormats: [AudioFormat]){
         delegate.muteAllExcept(channelIds: stemModel.channelIds)
         let letter = letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
         let stemPath = folder.appendingPathComponent(filename)
-        var mp3 = true
-        if number == 0 { mp3 = true }
-        delegate.exportStem(to: stemPath, includeMP3: mp3, number: number, sampleRate: 44100)
-//        let audioFormats = 
-//        delegate.exportStem(to: stemPath, number: number, formats: stemModel.audioFormats)
+//        var mp3 = true
+//        if number == 0 { mp3 = true }
+        
+//        delegate.exportStem(to: stemPath, includeMP3: mp3, number: number, sampleRate: 44100)
+        var selectedAudioFormats : [AudioFormat] = []
+        for audioFormatId in stemModel.audioFormatIds{
+            for audioFormat in audioFormats{
+                if audioFormat.id == audioFormatId {
+                    selectedAudioFormats.append(audioFormat)
+                }
+            }
+        }
+        delegate.exportStem(to: stemPath, number: number, formats: selectedAudioFormats)
     }
     func cancelStemExport(){
         shouldCancel = true

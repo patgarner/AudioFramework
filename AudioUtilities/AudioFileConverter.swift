@@ -16,13 +16,20 @@ import AVFoundation
 class AudioFileConverter{
     class func convert(sourceURL: URL, destinationURL: URL, formats: [AudioFormat], deleteSource: Bool){
         for format in formats {
-            if let wavFormat = format as? WavFormat{
+            //            if let wavFormat = format as? WavFormat{
+            //                let destinationURL = destinationURL.appendingPathExtension("wav")
+            //                convertToWav(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, sampleRate: wavFormat.sampleRate, bitRate: wavFormat.bitRate)
+            //            } else if let mp3Format = format as? Mp3Format{
+            //                let destinationURL = destinationURL.appendingPathExtension("mp3")
+            //                //TODO: add bitRate to mp3 func
+            //                convertToMP3(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, bitRate: mp3Format.bitRate)
+            //            }
+            if format.type == .wav{
                 let destinationURL = destinationURL.appendingPathExtension("wav")
-                convertToWav(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, sampleRate: wavFormat.sampleRate, bitRate: wavFormat.bitRate)
-            } else if let mp3Format = format as? Mp3Format{
+                convertToWav(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, sampleRate: format.sampleRate, bitRate: format.bitRate)
+            } else if format.type == .mp3 {
                 let destinationURL = destinationURL.appendingPathExtension("mp3")
-                //TODO: add bitRate to mp3 func
-                convertToMP3(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, bitRate: mp3Format.bitRate)
+                convertToMP3(sourceURL: sourceURL, destinationURL: destinationURL, deleteSource: false, bitRate: format.mp3BitRate)
             }
         }
         if deleteSource{
