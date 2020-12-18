@@ -11,7 +11,7 @@ import Foundation
 public class StemCreatorModel : Codable, Equatable {
     public var namePrefix = ""
     public var stems : [StemModel] = []
-    public var audioFormats : [AudioFormat] = []
+    var audioFormats : [AudioFormat] = []
     public init(){
         audioFormats.append(AudioFormatFactory.wav48_16)
         audioFormats.append(AudioFormatFactory.mp3_320)

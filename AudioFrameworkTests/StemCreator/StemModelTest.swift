@@ -28,14 +28,14 @@ class StemModelTest: XCTestCase {
         stemModel2.stemShortName = "Bob"
         XCTAssert(stemModel1 == stemModel2)
         
-        stemModel1.selectionChanged(selected: true, channelId: "Apple")
+        stemModel1.selectionChanged(selected: true, id: "Apple", type: .channel)
         XCTAssert(stemModel1 != stemModel2)
-        stemModel2.selectionChanged(selected: true, channelId: "Apple")
+        stemModel2.selectionChanged(selected: true, id: "Apple", type: .channel)
         XCTAssert(stemModel1 == stemModel2)
         
-        stemModel1.selectionChanged(selected: false, channelId: "Apple")
+        stemModel1.selectionChanged(selected: false, id: "Apple", type: .channel)
         XCTAssert(stemModel1 != stemModel2)
-        stemModel2.selectionChanged(selected: false, channelId: "Apple")
+        stemModel2.selectionChanged(selected: false, id: "Apple", type: .channel)
         XCTAssert(stemModel1 == stemModel2)
         
         stemModel1.include = false

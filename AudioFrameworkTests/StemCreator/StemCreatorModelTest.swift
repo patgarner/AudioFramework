@@ -32,16 +32,16 @@ class StemCreatorModelTest: XCTestCase {
         stemCreatorModel2.addStem()
         XCTAssert(stemCreatorModel1 == stemCreatorModel2)
         
-        stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
+        stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, id: "DAVE", type: .channel)
         XCTAssert(stemCreatorModel1 != stemCreatorModel2)
-        stemCreatorModel2.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
+        stemCreatorModel2.selectionChangedTo(selected: true, stemNumber: 0, id: "DAVE", type: .channel)
         XCTAssert(stemCreatorModel1 == stemCreatorModel2)
 
-//        let audioFormat = AudioFormat()
-//        stemCreatorModel1.audioFormats.append(audioFormat)
-//        XCTAssert(stemCreatorModel1 != stemCreatorModel2)
-//        stemCreatorModel2.audioFormats.append(audioFormat)
-//        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
+        let audioFormat = AudioFormat()
+        stemCreatorModel1.audioFormats.append(audioFormat)
+        XCTAssert(stemCreatorModel1 != stemCreatorModel2)
+        stemCreatorModel2.audioFormats.append(audioFormat)
+        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
     }
     func testSerialization(){
         let encoder = JSONEncoder()
@@ -50,7 +50,7 @@ class StemCreatorModelTest: XCTestCase {
         let stemCreatorModel1 = StemCreatorModel()
         stemCreatorModel1.namePrefix = "Bob"
         stemCreatorModel1.addStem()
-        stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, channelId: "DAVE")
+        stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, id: "DAVE", type: .channel)
         stemCreatorModel1.audioFormats.removeAll()
         //TODO: Add Audio Formats
         do {

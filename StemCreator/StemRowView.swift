@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class StemRowView: NSView {
+public class StemRowView: NSView, NSTextFieldDelegate {
     private weak var rowTitle : NSTextField!
     var number = -1
     var delegate : StemRowViewDelegate!
@@ -47,6 +47,7 @@ public class StemRowView: NSView {
             self.number = number
             rowTitle.target = self
             rowTitle.action = #selector(rowTitleChanged)
+            rowTitle.delegate = self
         }
         //Channels
         x = rowTitleWidth + includeCheckboxWidth
@@ -123,6 +124,12 @@ public class StemRowView: NSView {
         let state = includeCheckbox.state
         let selected = (state == .on)
         delegate.stemIncludedDidChangeTo(include: selected, stemNumber: number)
+    }
+    public func controlTextDidEndEditing(_ obj: Notification) {
+        let object = obj.object
+        if let sender = object as? NSTextField, sender === rowTitle{
+            rowTitleChanged(sender: self)
+        }
     }
 }
 
