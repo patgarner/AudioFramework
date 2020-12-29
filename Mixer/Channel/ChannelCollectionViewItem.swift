@@ -31,11 +31,11 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var trackNameField: NSTextField!
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var soloPanGestureRecognizer: NSPanGestureRecognizer!
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
     private var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
-//    private var instrumentsFlat : [AVAudioUnitComponent] = []
     
     @IBOutlet weak var vuMeterView: VUMeterView!
     override public func viewDidLoad() {
@@ -69,7 +69,14 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         soloButton.action = #selector(soloChanged)
         trackNameField.target = self
         trackNameField.action = #selector(trackNameChanged)
+        soloPanGestureRecognizer.delegate = self
+        soloPanGestureRecognizer.target = self
+        soloPanGestureRecognizer.action = #selector(soloPanGestureReceived)
         refresh()
+    }
+    @objc func soloPanGestureReceived(sender: Any){
+        let point = soloPanGestureRecognizer.translation(in: self.view)
+        print("solo gesture received. point = \(point)")
     }
     public func refresh(){
         if type == .labels{
@@ -260,11 +267,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     ////////////////////////////////////////////////////////
     // Instruments
     /////////////////////////////////////////////////////////
-//    var instrumentsFlat : [AVAudioUnitComponent] {
-//        return getAudioComponentList(type: .instrument)
-//    }
     private func reloadInstruments() {
-//        instrumentsFlat = getAudioComponentList(type: .instrument)
         fillInputPopup()
     }
     private func fillInputPopup(){
@@ -425,6 +428,10 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             }
         }
     }
+}
+
+extension ChannelCollectionViewItem : NSGestureRecognizerDelegate{
+    
 }
 
 public enum ChannelType {

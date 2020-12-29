@@ -21,6 +21,7 @@
                 <outlet property="sendPopup1" destination="Joq-kQ-cdh" id="e3e-xs-yWI"/>
                 <outlet property="sendPopup2" destination="M2Y-xQ-tcg" id="s8Y-rT-x0n"/>
                 <outlet property="soloButton" destination="6Ry-xu-gBn" id="9p4-60-m5X"/>
+                <outlet property="soloPanGestureRecognizer" destination="dLh-y6-1PC" id="XWA-og-by9"/>
                 <outlet property="trackNameField" destination="4Gh-6W-30O" id="a8T-FZ-bkX"/>
                 <outlet property="view" destination="Hz6-mo-xeY" id="0bl-1N-x8E"/>
                 <outlet property="volumeSlider" destination="rTB-d8-KWM" id="2ZW-f9-kuW"/>
@@ -237,6 +238,9 @@
                         <constraint firstAttribute="height" constant="21" id="6zS-jg-fRg"/>
                         <constraint firstAttribute="width" constant="30" id="Bp3-wF-OH1"/>
                     </constraints>
+                    <gestureRecognizers>
+                        <panGestureRecognizer delaysPrimaryMouseButtonEvents="YES" id="dLh-y6-1PC"/>
+                    </gestureRecognizers>
                     <buttonCell key="cell" type="push" title="S" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uUI-si-Sfy">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                         <font key="font" metaFont="system"/>
