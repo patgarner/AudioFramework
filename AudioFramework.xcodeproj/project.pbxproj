@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4324730E259D430D00A6DD86 /* AFPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */; };
+		4324730F259D430D00A6DD86 /* AFPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */; };
 		84070C5924FF5D5900E572E7 /* ChannelCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */; };
 		84070C5A24FF5D5900E572E7 /* ChannelRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5224FF5D5900E572E7 /* ChannelRouter.swift */; };
 		84070C5C24FF5D5900E572E7 /* ChannelCollectionViewItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */; };
@@ -226,6 +228,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AFPanGestureRecognizer.swift; sourceTree = "<group>"; };
 		84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelCollectionViewItem.swift; sourceTree = "<group>"; };
 		84070C5224FF5D5900E572E7 /* ChannelRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChannelRouter.swift; sourceTree = "<group>"; };
 		84070C5424FF5D5900E572E7 /* ChannelCollectionViewItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ChannelCollectionViewItem.xib; sourceTree = "<group>"; };
@@ -549,6 +552,7 @@
 			children = (
 				84789A342527B8AA0012B8FD /* DraggableButton.swift */,
 				84789A2C2527B73C0012B8FD /* ButtonExtension.swift */,
+				4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */,
 			);
 			path = WIP;
 			sourceTree = "<group>";
@@ -855,6 +859,7 @@
 				84951278252CC9D4008C5C47 /* PluginVC.swift in Sources */,
 				8496444F252B86AE00C9802E /* UltraMixerNode.swift in Sources */,
 				84F3D119253F7122001E7ABD /* BeatInfoSource.swift in Sources */,
+				4324730E259D430D00A6DD86 /* AFPanGestureRecognizer.swift in Sources */,
 				84789A352527B8AA0012B8FD /* DraggableButton.swift in Sources */,
 				84529AC5254782D2007BDA32 /* NotificationExtension.swift in Sources */,
 				8429DB6A251FB36600ADE7B0 /* StemCell.swift in Sources */,
@@ -930,6 +935,7 @@
 				84A9AFE125101ED500816F7F /* ChannelController.swift in Sources */,
 				8480DB092532161E00A40CEB /* PluginDisplayDelegate.swift in Sources */,
 				8459589C251436F20091A43E /* SendData.swift in Sources */,
+				4324730F259D430D00A6DD86 /* AFPanGestureRecognizer.swift in Sources */,
 				8493BD292560A96200C55A49 /* PulseGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

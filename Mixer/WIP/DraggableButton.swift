@@ -17,14 +17,29 @@ class DraggableButton: NSButton {
 //        let buttonState = (state == .on)
 //        delegate?.changeMultiple(to: buttonState, location: location, buttonType: type)
 //    }
-    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        print("drag started")
-        return NSDragOperation()
-    }
+//    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+//        print("drag started")
+//        return NSDragOperation()
+//    }
 //    override func mouseDown(with event: NSEvent) {
 //        super.mouseDown(with: event)
 //    }
     
+    static var buttons = Set<DraggableButton>()
+    
+    public override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        Self.buttons.insert(self)
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        Self.buttons.insert(self)
+    }
+    
+    deinit {
+        Self.buttons.remove(self)
+    }
 }
 
 protocol DraggableButtonDelegate {
