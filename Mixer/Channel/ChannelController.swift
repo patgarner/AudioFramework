@@ -22,6 +22,7 @@ public class ChannelController : ChannelViewDelegate {
     private weak var muteNode : UltraMixerNode!
     private weak var sendSplitterNode : UltraMixerNode!
     private var sendOutputs : [UltraMixerNode] = []
+    weak var volumeNode : UltraMixerNode!
     weak var outputNode : UltraMixerNode!
     //Model
     public var trackName = ""
@@ -129,19 +130,20 @@ public class ChannelController : ChannelViewDelegate {
         }
     }
     private func allAudioUnits(includeSends: Bool = false) -> [AVAudioNode] {
+        //The order determines the order in which they will be connected
         var audioUnits : [AVAudioNode] = []
-        
         if inputNode != nil {
             audioUnits.append(inputNode!)
         }
-        
         audioUnits.append(contentsOf: effects)
-        
         if muteNode != nil {
             audioUnits.append(muteNode!)
         }
         if soloNode != nil{
             audioUnits.append(soloNode!)
+        }
+        if volumeNode != nil{
+            audioUnits.append(volumeNode)
         }
         if sendSplitterNode != nil{
             audioUnits.append(sendSplitterNode!)
@@ -183,6 +185,10 @@ public class ChannelController : ChannelViewDelegate {
             sendOutputs.append(sendOutput)
             sendOutput.outputVolume = 0.0
         }
+        
+        let volumeNode = AudioNodeFactory.mixerNode(name: "Volume")
+        delegate.engine.attach(volumeNode)
+        self.volumeNode = volumeNode
         
         let channelOutput = AudioNodeFactory.mixerNode(name: "ChannelOutput")
         delegate.engine.attach(channelOutput)
@@ -323,10 +329,10 @@ public class ChannelController : ChannelViewDelegate {
     }
     public var volume : Float {
         get {
-            return outputNode.outputVolume
+            return volumeNode.outputVolume
         }
         set {
-            outputNode.outputVolume = newValue
+            volumeNode.outputVolume = newValue
         }
     }
     public func deselectEffect(number: Int){

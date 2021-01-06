@@ -76,9 +76,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         
         soloButton.type = .solo
         soloPanGestureRecognizer.mouseDownEvent = { [self] in
-            soloButton.state = soloButton.state == .on ? .off : .on
-            soloButton.isHighlighted = (soloButton.state == .on)
-            soloChanged()
+            self.soloButton.state = self.soloButton.state == .on ? .off : .on
+            self.soloButton.isHighlighted = (self.soloButton.state == .on)
+            self.soloChanged()
         }
     }
     @objc func soloPanGestureReceived(sender: Any){
