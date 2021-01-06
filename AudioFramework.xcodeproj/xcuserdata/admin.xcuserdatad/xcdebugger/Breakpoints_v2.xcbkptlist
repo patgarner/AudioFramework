@@ -146,6 +146,38 @@
             endingLineNumber = "415"
             landmarkName = "createMidiSequencer(url:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "43DF9793-8A4B-4A30-9F9A-7604157F77E1 - 618db50fee6e4a0b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AudioFrameworkTests.AudioController.createMidiSequencer(url: Foundation.URL) -&gt; Swift.Optional&lt;__C.AVAudioSequencer&gt;"
+                  moduleName = "AudioFrameworkTests"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/AudioController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "415"
+                  endingLineNumber = "415"
+                  offsetFromSymbolStart = "2045">
+               </Location>
+               <Location
+                  uuid = "43DF9793-8A4B-4A30-9F9A-7604157F77E1 - f3a739e2100469e8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AudioFramework.AudioController.createMidiSequencer(url: Foundation.URL) -&gt; Swift.Optional&lt;__C.AVAudioSequencer&gt;"
+                  moduleName = "AudioFramework"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/admin/Library/Mobile%20Documents/com~apple~CloudDocs/Programming/Programming/xcode/%20Live/AudioFramework/Mixer/AudioController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "415"
+                  endingLineNumber = "415"
+                  offsetFromSymbolStart = "2045">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -238,8 +270,8 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
             landmarkName = "addFormat()"
             landmarkType = "7">
          </BreakpointContent>
@@ -254,8 +286,8 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "addFormat()"
             landmarkType = "7">
          </BreakpointContent>
@@ -272,8 +304,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "63"
             endingLineNumber = "63"
-            landmarkName = "unknown"
-            landmarkType = "0">
+            landmarkName = "init(frame:rowTitleWidth:rowHeight:columnWidth:delegate:type:number:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -366,8 +398,8 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
             landmarkName = "initialize()"
             landmarkType = "7">
          </BreakpointContent>
@@ -382,8 +414,8 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "222"
-            endingLineNumber = "222"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "didSelect(audioFormatId:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -510,8 +542,8 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "updateValuesFor(audioFormatId:newAudioFormat:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -558,8 +590,8 @@
             filePath = "StemCreator/StemCreatorViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
             landmarkName = "exportStems(destinationFolder:)"
             landmarkType = "7">
          </BreakpointContent>
