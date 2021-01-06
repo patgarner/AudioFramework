@@ -22,9 +22,7 @@ class AudioFormatTest: XCTestCase {
     func testEquals() {
         let format1 = AudioFormat()
         let format2 = AudioFormat()
-        format1.id = "A"
-        XCTAssert(format1 != format2)
-        format2.id = "A"
+        
         XCTAssert(format1 == format2)
         
         format1.name = "A"

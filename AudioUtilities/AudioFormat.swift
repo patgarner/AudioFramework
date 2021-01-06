@@ -50,7 +50,6 @@ public class AudioFormat : Codable, Equatable{
     }
     func equals(_ other: Any) -> Bool {
         guard let other = other as? AudioFormat else { return false }
-        if self.id != other.id { return false }
         if self.type != other.type { return false }
         if self.name != other.name { return false }
         if self.bitRate != other.bitRate { return false }
