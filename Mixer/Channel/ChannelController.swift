@@ -12,6 +12,7 @@
 
 import Foundation
 import AVFoundation
+import AppKit
 
 public class ChannelController : ChannelViewDelegate {
     var delegate : ChannelControllerDelegate!
@@ -489,6 +490,12 @@ public class ChannelController : ChannelViewDelegate {
     }
     func resetMeter(){
         channelView?.updateVUMeter(level: 0)
+    }
+    public func didReceiveSoloValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+        channelView?.soloValueChanges(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
+    }
+    public func soloValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+        delegate.soloValueChanges(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
     }
 }
 
