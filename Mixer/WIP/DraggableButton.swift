@@ -11,34 +11,32 @@ import Cocoa
 class DraggableButton: NSButton {
     var delegate : DraggableButtonDelegate?
     var type : DraggableButtonType = .none
-//    override func mouseDragged(with event: NSEvent) {
-//        print("mouse dragged")
-//        let location = event.locationInWindow
-//        let buttonState = (state == .on)
-//        delegate?.changeMultiple(to: buttonState, location: location, buttonType: type)
-//    }
-//    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-//        print("drag started")
-//        return NSDragOperation()
-//    }
-//    override func mouseDown(with event: NSEvent) {
-//        super.mouseDown(with: event)
-//    }
-    
-    static var buttons = Set<DraggableButton>()
-    
-    public override init(frame frameRect: NSRect) {
-        super.init(frame: frameRect)
-        Self.buttons.insert(self)
+    // Disable default mouseEvent handling in order
+    // provide custom functionality via gesture
+    // recognizer
+    override func mouseDown(with event: NSEvent) {}
+    override func mouseUp(with event: NSEvent) {}
+    func toggle() {
+        setNewState(newState: state == .on ? .off : .on)
     }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        Self.buttons.insert(self)
+    func setNewState(newState: NSControl.StateValue) {
+        state = newState
+        isHighlighted = (newState == .on)
+        _ = target?.perform(action)
     }
-    
-    deinit {
-        Self.buttons.remove(self)
+    func setNewState(newState: NSControl.StateValue, for testRect: CGRect, buttonType: DraggableButtonType) {
+        guard let superview = superview else { return }
+        guard type == buttonType else { return }
+        guard state != newState else { return }
+        
+        var testFrame = frame
+        testFrame.origin.x = 30
+        testFrame.size.width = 30
+        testFrame = superview.convert(testFrame, to: nil)
+        
+        guard testFrame.intersects(testRect) else { return }
+        
+        setNewState(newState: newState)
     }
 }
 
@@ -46,8 +44,8 @@ protocol DraggableButtonDelegate {
     func changeMultiple(to selected: Bool, location: NSPoint, buttonType: DraggableButtonType)
 }
 
-enum DraggableButtonType {
-    case mute
+public enum DraggableButtonType: Int {
+    case mute = 101
     case solo
     case none
 }
