@@ -65,6 +65,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         volumeSlider.action = #selector(volumeSliderMoved)
         muteButton.target = self
         muteButton.action = #selector(muteChanged)
+        soloButton.type = .solo
         soloButton.target = self
         soloButton.action = #selector(soloChanged)
         trackNameField.target = self
@@ -73,54 +74,30 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         soloPanGestureRecognizer.target = self
         soloPanGestureRecognizer.action = #selector(soloPanGestureReceived)
         refresh()
-        
-        soloButton.type = .solo
-        soloPanGestureRecognizer.mouseDownEvent = { [self] in
-            soloButton.state = soloButton.state == .on ? .off : .on
-            soloButton.isHighlighted = (soloButton.state == .on)
-            soloChanged()
-        }
+    }
+    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+        soloButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
     }
     @objc func soloPanGestureReceived(sender: Any){
         guard let mainButton = soloPanGestureRecognizer.view as? DraggableButton else { return }
+        guard let window = view.window else { return }
 
-        let translation = soloPanGestureRecognizer.translation(in: self.view)
-        let start = min(mainButton.frame.maxX, mainButton.frame.maxX + translation.x)
-        let end = max(mainButton.frame.maxX, mainButton.frame.maxX + translation.x)
-        
-        var newCapturedViews = [DraggableButton]()
-        guard let oldCapturedViews = soloPanGestureRecognizer.capturedViews as? [DraggableButton] else { return }
-        
-        var state = mainButton.state
-        
-        DraggableButton.buttons.forEach { button in
-            guard button != mainButton
-                    && button.type == mainButton.type else { return }
-            
-            let frame = button.convert(button.frame,
-                                       to: self.view)
-            
-            guard frame.minX > start
-                    && frame.minX < end else { return }
+        let translation = soloPanGestureRecognizer.translation(in: view)
+        let locationInWin = window.convertPoint(fromScreen: NSEvent.mouseLocation)
+        let locationInView = view.convert(locationInWin, from: nil)
+        let startingPointX = locationInView.x - translation.x
+        let startingPointY = locationInView.y - translation.y
 
-            newCapturedViews.append(button)
+        let startX = min(startingPointX, startingPointX + translation.x)
+        let startY = min(startingPointY, startingPointY + translation.y)
+        let endX = max(startingPointX, startingPointX + translation.x)
+        let endY = max(startingPointY, startingPointY + translation.y)
+        var gestureRect = CGRect(x: startX, y: startY, width: endX - startX, height: endY - startY)
+        gestureRect = view.convert(gestureRect, to: nil)
 
-            guard button.state != state else { return }
-
-            button.state = state
-            button.isHighlighted = state == .on
-            _ = button.target?.perform(button.action)
-        }
+        let state = mainButton.state
         
-        state = state == .on ? .off : .on
-        Set(oldCapturedViews).subtracting(newCapturedViews).forEach { button in
-            guard button != mainButton else { return }
-            button.state = state
-            button.isHighlighted = state == .on
-            _ = button.target?.perform(button.action)
-        }
-        
-        soloPanGestureRecognizer.capturedViews = newCapturedViews
+        channelViewDelegate.soloValueChanged(gestureRect: gestureRect, buttonType: mainButton.type, newState: state)
     }
     public func refresh(){
         if type == .labels{
