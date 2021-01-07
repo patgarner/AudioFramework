@@ -306,7 +306,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     }
     @objc func soloChanged(){
         let solo = soloButton.state
-        channelViewDelegate.solo = (solo == .on)
+        channelViewDelegate?.solo = (solo == .on)
     }
     ////////////////////////////////////////////////////////
     // Instruments
