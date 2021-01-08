@@ -54,7 +54,7 @@ public class AudioController: NSObject {
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
         context = getMusicalContext
         transportBlock = getTransportState
-        createChannels(numInstChannels: 16, numAuxChannels: 4, numBusses: 4)
+        createChannels(numInstChannels: 16, numAuxChannels: 2, numBusses: 4)
         var channelIds : [String] = []
         for instrumentController in instrumentControllers {
             channelIds.append(instrumentController.id)
@@ -272,6 +272,10 @@ public class AudioController: NSObject {
             engine.detach(bus)
         }
         busses.removeAll()
+    }
+    public func initDefault(){
+        removeAll()
+        createChannels(numInstChannels: 16, numAuxChannels: 2, numBusses: 4)
     }
     public func clearStems(){
         stemCreatorModel.removeAll()

@@ -37,14 +37,13 @@ public class StemCreatorViewController: NSViewController {
     }
     override public func viewDidLoad() {
         super.viewDidLoad()
-        // Do view setup here.
     }
     func initialize(){
         self.title = "Export Stems"
         stemCreator.delegate = self
         let numStems = stemCreatorModel.numStems
         let numChannels = delegate.numChannels
-        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 150
+        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 200
         let currentFrame = self.view.frame
         let newSize = CGSize(width: totalWidth, height: currentFrame.height)
         self.view.setFrameSize(newSize)
