@@ -75,7 +75,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         soloPanGestureRecognizer.action = #selector(soloPanGestureReceived)
         refresh()
     }
-    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
         soloButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
     }
     @objc func soloPanGestureReceived(sender: Any){
@@ -95,7 +95,9 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         var gestureRect = CGRect(x: startX, y: startY, width: endX - startX, height: endY - startY)
         gestureRect = view.convert(gestureRect, to: nil)
 
-        let state = mainButton.state
+        //let state = mainButton.state
+        var state = false
+        if mainButton.state == .on { state = true }
         
         channelViewDelegate.soloValueChanged(gestureRect: gestureRect, buttonType: mainButton.type, newState: state)
     }

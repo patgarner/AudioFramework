@@ -497,10 +497,10 @@ public class ChannelController : ChannelViewDelegate {
     func resetMeter(){
         channelView?.updateVUMeter(level: 0)
     }
-    public func didReceiveSoloValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+    public func didReceiveSoloValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
         channelView?.soloValueChanges(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
     }
-    public func soloValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+    public func soloValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
         delegate.soloValueChanges(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
     }
 }

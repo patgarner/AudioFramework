@@ -19,6 +19,9 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
     private var currentBeat = 0.0
     private var nextBeat = 0.0
     private let pulseGenerator = PulseGenerator()
+    private var loopStart = 0.0
+    private var loopStop = 0.0
+    public var loop = LoopMode.disabled
     public var isPlaying = false
     public func getCurrentBeat() -> Double {
         return currentBeat
@@ -50,10 +53,19 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
         if !isPlaying { return }
         playBeatCycle()
     }
-    func playBeatCycle(){
+    public func playBeatCycle(){
         currentBeat = nextBeat
         currentBeatTimesStamp = mach_absolute_time()
         nextBeat = currentBeat + subdivisionLengthInBeats
+        if nextBeat == loopStop {
+            if loop == .enabled {
+                nextBeat = loopStart
+            } 
+        } else if nextBeat > loopStop{
+            if loop == .stop{
+                stop()
+            }
+        }
         playBeat()
     }
     private func incrementBeat(){
@@ -116,4 +128,14 @@ public class BeatGenerator : BeatGeneratable, PulseDelegate{
     public func goto(beat: Double){
         nextBeat = beat
     }
+    public func setLoop(start: Double, stop: Double){
+        self.loopStart = start
+        self.loopStop = stop
+    }
+}
+
+public enum LoopMode {
+    case disabled
+    case stop
+    case enabled
 }

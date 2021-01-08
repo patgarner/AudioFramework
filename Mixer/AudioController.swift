@@ -686,7 +686,7 @@ extension AudioController : ChannelControllerDelegate {
         let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
         return format
     }
-    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue) {
+    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
         allChannelControllers.forEach { channelController in
             channelController.didReceiveSoloValueChange(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
         }
@@ -786,6 +786,12 @@ extension AudioController : BeatInfoSource {
         for channelController in allChannelControllers{
             channelController.resetMeter()
         }
+    }
+    public func setLoop(start: Double, stop:Double){
+        beatGenerator.setLoop(start: start, stop:stop)
+    }
+    public func setLoop(mode: LoopMode){
+        beatGenerator.loop = mode
     }
     public func add(beatListener: BeatDelegate){
         beatGenerator.addListener(beatListener)

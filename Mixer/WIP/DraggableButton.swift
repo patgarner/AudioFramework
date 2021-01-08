@@ -17,17 +17,29 @@ class DraggableButton: NSButton {
     override func mouseDown(with event: NSEvent) {}
     override func mouseUp(with event: NSEvent) {}
     func toggle() {
-        setNewState(newState: state == .on ? .off : .on)
+        if state == .on {
+            setNewState(newState: false)
+        } else {
+            setNewState(newState: true)
+        }
+       // setNewState(newState: state == .on ? .off : .on)
     }
-    func setNewState(newState: NSControl.StateValue) {
-        state = newState
-        isHighlighted = (newState == .on)
+    func setNewState(newState: Bool/*NSControl.StateValue*/) {
+        if newState == true {
+            state = .on
+        } else {
+            state = .off
+        }
+        //state = newState
+        isHighlighted = (newState == true)
         _ = target?.perform(action)
     }
-    func setNewState(newState: NSControl.StateValue, for testRect: CGRect, buttonType: DraggableButtonType) {
+    func setNewState(newState: Bool/*NSControl.StateValue*/, for testRect: CGRect, buttonType: DraggableButtonType) {
         guard let superview = superview else { return }
         guard type == buttonType else { return }
-        guard state != newState else { return }
+       // guard state != newState else { return }
+        if newState == true, state == .on { return }
+        if newState == false, state == .off { return }
         
         var testFrame = frame
         testFrame.origin.x = 30

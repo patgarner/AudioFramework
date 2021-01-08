@@ -151,4 +151,65 @@ class BeatGeneratorTest: XCTestCase {
         }
         wait(for: [expectation], timeout: 1.25)
     }
+    func testLoopDisabled(){
+        //Should keep playing past loop end
+        let del = FakeBeatDelegate()
+        let beatGenerator = BeatGenerator(tempo: 60)
+        beatGenerator.setLoop(start: 2.0, stop: 3.0)
+        beatGenerator.goto(beat: 2.0)
+        beatGenerator.addListener(del)
+        beatGenerator.loop = .disabled
+        let expectation = XCTestExpectation(description: "Test complete")
+        beatGenerator.start()
+        let expectedBeats = [2.0, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875, 3.0, 3.125, 3.25, 3.375, 3.5]
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.75) {
+            for i in 0..<expectedBeats.count{
+                XCTAssert(expectedBeats[i] == del.allCurrentBeats[i])
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.0)
+    }
+    func testLoopStartStopNonRepeating(){
+        //It should play the last beat and stop
+        let del = FakeBeatDelegate()
+        let beatGenerator = BeatGenerator(tempo: 60)
+        beatGenerator.setLoop(start: 2.0, stop: 3.0)
+        beatGenerator.goto(beat: 2.0)
+        beatGenerator.addListener(del)
+        beatGenerator.loop = .stop
+        let expectation = XCTestExpectation(description: "Test complete")
+        beatGenerator.start()
+        let expectedBeats = [2.0, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875, 3]
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.01) {
+            if del.allCurrentBeats.count != expectedBeats.count{
+                XCTFail()
+                return
+            }
+            for i in 0..<expectedBeats.count{
+                XCTAssert(expectedBeats[i] == del.allCurrentBeats[i])
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.25)
+    }
+    func testLoopStartStopRepeating(){
+        //It should play the last beat and stop
+        let del = FakeBeatDelegate()
+        let beatGenerator = BeatGenerator(tempo: 60)
+        beatGenerator.setLoop(start: 2.0, stop: 3.0)
+        beatGenerator.goto(beat: 2.0)
+        beatGenerator.addListener(del)
+        beatGenerator.loop = .enabled
+        let expectation = XCTestExpectation(description: "Test complete")
+        beatGenerator.start()
+        let expectedBeats = [2.0, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875, 2.0, 2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875]
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            for i in 0..<expectedBeats.count{
+                XCTAssert(expectedBeats[i] == del.allCurrentBeats[i])
+            }
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 2.25)
+    }
 }

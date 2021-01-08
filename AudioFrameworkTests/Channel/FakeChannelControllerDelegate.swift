@@ -11,6 +11,10 @@ import AudioFramework
 import AVFoundation
 
 class FakeChannelControllerDelegate : ChannelControllerDelegate{
+    func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+        
+    }
+    
     let fakeContextBlock = FakeMusicalContext()
     var numBusses: Int{
         return 0
