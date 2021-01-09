@@ -274,7 +274,6 @@ public class ChannelController : ChannelViewDelegate, AudioNodeFactoryDelegate {
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, showInterface: Bool) {
         let contextBlock = AudioController.shared.contextBlock()
         AudioNodeFactory.loadEffectAsynchronously(description: desc, context: contextBlock, number: number, showInterface: showInterface, delegate: self)
-//        effectFinishedLoading(audioUnitEffect: audioUnitEffect, number: number, showInterface: showInterface)
     }
     func effectFinishedLoading(audioUnitEffect: AVAudioUnitEffect, number: Int, showInterface: Bool){
         set(effect: audioUnitEffect, number: number)

@@ -137,6 +137,14 @@ public class AudioController: NSObject {
             channelController.set(musicalContextBlock: context, transportBlock: transportBlock)
         }
     }  
+    private func clearAllMusicalContextBlocks(){
+        for channelController in allChannelControllers{
+            channelController.set(musicalContextBlock: nil, transportBlock: nil)
+        }
+    } 
+    deinit{
+        clearAllMusicalContextBlocks()
+    }
     func getTransportState(transportStateFlags : UnsafeMutablePointer<AUHostTransportStateFlags>?,
                            currentSamplePosition : UnsafeMutablePointer<Double>?,
                            cycleStartBeatPosition : UnsafeMutablePointer<Double>?,
