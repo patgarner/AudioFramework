@@ -21,17 +21,30 @@ class AudioNodeFactory{
         let plugin = AVAudioUnitEffect(audioComponentDescription: description)
         plugin.auAudioUnit.musicalContextBlock = context
         return plugin
-        
         //An audio unit accessing this property should cache it in realtime-safe storage before beginning to render.
+    }
+    class func loadEffectAsynchronously(description: AudioComponentDescription, context: AUHostMusicalContextBlock?, number: Int, showInterface: Bool, delegate: AudioNodeFactoryDelegate) {
+        AVAudioUnitEffect.instantiate(with: description, options: []) { (audioUnit, error) in
+            if let e = error { 
+                print (e) 
+            }
+            if let effect = audioUnit as? AVAudioUnitEffect {
+                effect.auAudioUnit.musicalContextBlock = context
+                delegate.effectFinishedLoading(audioUnitEffect: effect, number: number, showInterface: showInterface)
+            }
+        }
     }
     class func instrument(description: AudioComponentDescription, context: AUHostMusicalContextBlock?) -> AVAudioUnitMIDIInstrument{
         let plugin = AVAudioUnitMIDIInstrument(audioComponentDescription: description)
         plugin.auAudioUnit.musicalContextBlock = context     
-        let resultingContext = plugin.auAudioUnit.musicalContextBlock
         return plugin
     }
     class func player() -> AVAudioNode{
         let node = AVAudioPlayerNode()
         return node
     }
+}
+
+protocol AudioNodeFactoryDelegate {
+    func effectFinishedLoading(audioUnitEffect: AVAudioUnitEffect, number: Int, showInterface: Bool)
 }

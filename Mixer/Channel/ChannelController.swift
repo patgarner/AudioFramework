@@ -14,7 +14,7 @@ import Foundation
 import AVFoundation
 import AppKit
 
-public class ChannelController : ChannelViewDelegate {
+public class ChannelController : ChannelViewDelegate, AudioNodeFactoryDelegate {
     var delegate : ChannelControllerDelegate!
     weak var channelView : ChannelCollectionViewItem?
     var inputNode : AVAudioNode!
@@ -266,10 +266,17 @@ public class ChannelController : ChannelViewDelegate {
         audioUnit.fullState = pluginData.state
         
     }
+//    public func loadEffectOld(fromDescription desc: AudioComponentDescription, number: Int, showInterface: Bool) {
+//        let contextBlock = AudioController.shared.contextBlock()
+//        let audioUnitEffect = AudioNodeFactory.effect(description: desc, context: contextBlock) 
+//        effectFinishedLoading(audioUnitEffect: audioUnitEffect, number: number, showInterface: showInterface)
+//    }
     public func loadEffect(fromDescription desc: AudioComponentDescription, number: Int, showInterface: Bool) {
         let contextBlock = AudioController.shared.contextBlock()
-       // delegate.engine.stop()
-        let audioUnitEffect = AudioNodeFactory.effect(description: desc, context: contextBlock) 
+        AudioNodeFactory.loadEffectAsynchronously(description: desc, context: contextBlock, number: number, showInterface: showInterface, delegate: self)
+//        effectFinishedLoading(audioUnitEffect: audioUnitEffect, number: number, showInterface: showInterface)
+    }
+    func effectFinishedLoading(audioUnitEffect: AVAudioUnitEffect, number: Int, showInterface: Bool){
         set(effect: audioUnitEffect, number: number)
         reconnectNodes()
         if showInterface {

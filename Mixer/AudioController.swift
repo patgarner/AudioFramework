@@ -37,19 +37,6 @@ public class AudioController: NSObject {
         super.init()
         initialize()
     }
-    public func test(){
-        let inst1 = instrumentControllers[0]
-        if let instNode = inst1.inputNode as? AVAudioUnitMIDIInstrument {
-            let context = instNode.auAudioUnit.musicalContextBlock
-            if context == nil {
-                print("context is nil")
-            } else {
-                print("context is not nil")
-            }
-        } else {
-            print("Node == nil")
-        }
-    }
     private func initialize(){
         engine.connect(engine.mainMixerNode, to: engine.outputNode, format: format)
         context = getMusicalContext
