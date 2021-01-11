@@ -15,6 +15,7 @@
                 <outlet property="labelViewTrailingConstraint" destination="7oZ-fm-66n" id="e90-5d-kb5"/>
                 <outlet property="mixerFillView" destination="rba-UR-U1f" id="Uve-KQ-JtG"/>
                 <outlet property="muteButton" destination="TKq-fY-h6f" id="DsD-cO-PXw"/>
+                <outlet property="mutePanGestureRecognizer" destination="jfI-gN-Bnn" id="UUY-9i-Hy4"/>
                 <outlet property="outputPopup" destination="PfA-sz-PFv" id="VMB-fI-dA8"/>
                 <outlet property="panKnob" destination="Ar8-yd-M5r" id="IYY-RK-ouU"/>
                 <outlet property="sendLevelKnob1" destination="RXO-TX-0OP" id="B21-bh-38f"/>
@@ -222,12 +223,15 @@
                         <constraint firstAttribute="width" constant="5" id="YV2-Ta-3ei"/>
                     </constraints>
                 </customView>
-                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TKq-fY-h6f" userLabel="Mute">
+                <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="TKq-fY-h6f" userLabel="Mute" customClass="DraggableButton" customModule="AudioFramework" customModuleProvider="target">
                     <rect key="frame" x="-6" y="15" width="42" height="32"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="69X-5g-jEm"/>
                         <constraint firstAttribute="width" constant="30" id="Rz4-e8-Dnw"/>
                     </constraints>
+                    <gestureRecognizers>
+                        <panGestureRecognizer delaysPrimaryMouseButtonEvents="YES" id="jfI-gN-Bnn" customClass="AFPanGestureRecognizer" customModule="AudioFramework" customModuleProvider="target"/>
+                    </gestureRecognizers>
                     <buttonCell key="cell" type="push" title="M" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1XM-3k-TEN">
                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES" changeBackground="YES" changeGray="YES"/>
                         <font key="font" metaFont="system"/>
