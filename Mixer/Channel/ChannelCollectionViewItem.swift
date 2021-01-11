@@ -27,11 +27,12 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     @IBOutlet weak var volumeValueTextField: NSTextField!
     @IBOutlet weak var volumeSlider: NSSlider!
     @IBOutlet weak var soloButton: DraggableButton!
-    @IBOutlet weak var muteButton: NSButton!
+    @IBOutlet weak var muteButton: DraggableButton!
     @IBOutlet weak var trackNameField: NSTextField!
     @IBOutlet weak var labelView: MixerFillView!
     @IBOutlet weak var labelViewTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var soloPanGestureRecognizer: AFPanGestureRecognizer!
+    @IBOutlet weak var mutePanGestureRecognizer: AFPanGestureRecognizer!
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
@@ -63,6 +64,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         volumeValueTextField.action = #selector(volumeTextChanged)
         volumeSlider.target = self
         volumeSlider.action = #selector(volumeSliderMoved)
+        muteButton.type = .mute
         muteButton.target = self
         muteButton.action = #selector(muteChanged)
         soloButton.type = .solo
@@ -72,17 +74,27 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         trackNameField.action = #selector(trackNameChanged)
         soloPanGestureRecognizer.delegate = self
         soloPanGestureRecognizer.target = self
-        soloPanGestureRecognizer.action = #selector(soloPanGestureReceived)
+        soloPanGestureRecognizer.action = #selector(panGestureReceived)
+        mutePanGestureRecognizer.delegate = self
+        mutePanGestureRecognizer.target = self
+        mutePanGestureRecognizer.action = #selector(panGestureReceived)
         refresh()
     }
-    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
-        soloButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
+    public func channelValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+        switch buttonType {
+        case .mute:
+            muteButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
+        case .solo:
+            soloButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
+        case .none:
+            break
+        }
     }
-    @objc func soloPanGestureReceived(sender: Any){
-        guard let mainButton = soloPanGestureRecognizer.view as? DraggableButton else { return }
+    @objc func panGestureReceived(sender: AFPanGestureRecognizer){
+        guard let mainButton = sender.view as? DraggableButton else { return }
         guard let window = view.window else { return }
 
-        let translation = soloPanGestureRecognizer.translation(in: view)
+        let translation = sender.translation(in: view)
         let locationInWin = window.convertPoint(fromScreen: NSEvent.mouseLocation)
         let locationInView = view.convert(locationInWin, from: nil)
         let startingPointX = locationInView.x - translation.x
@@ -99,7 +111,7 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
         var state = false
         if mainButton.state == .on { state = true }
         
-        channelViewDelegate.soloValueChanged(gestureRect: gestureRect, buttonType: mainButton.type, newState: state)
+        channelViewDelegate.channelValueChanged(gestureRect: gestureRect, buttonType: mainButton.type, newState: state)
     }
     public func refresh(){
         if type == .labels{
