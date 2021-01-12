@@ -503,11 +503,11 @@ public class ChannelController : ChannelViewDelegate, AudioNodeFactoryDelegate {
     func resetMeter(){
         channelView?.updateVUMeter(level: 0)
     }
-    public func didReceiveSoloValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
-        channelView?.soloValueChanges(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
+    public func didReceiveChannelValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+        channelView?.channelValueChanged(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
     }
-    public func soloValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
-        delegate.soloValueChanges(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
+    public func channelValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+        delegate.channelValueChanged(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
     }
 }
 

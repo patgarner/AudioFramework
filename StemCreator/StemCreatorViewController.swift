@@ -140,11 +140,11 @@ public class StemCreatorViewController: NSViewController {
         if buttonTitle == "Cancel" { cancel() }
     }  
     private func export(){
-        let savePanel = NSOpenPanel()
-        savePanel.canChooseFiles = false
-        savePanel.canChooseDirectories = true
+        let savePanel = NSSavePanel()
+        savePanel.canCreateDirectories = true
         savePanel.title = "Choose Destination Folder"
-        savePanel.begin { (result) in 
+        guard let window = NSApp.keyWindow else { return }
+        savePanel.beginSheetModal(for: window) { (result) in
             if result == NSApplication.ModalResponse.OK {
                 guard let url = savePanel.url else { return }
                 self.exportStems(destinationFolder: url)

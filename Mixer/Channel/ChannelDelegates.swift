@@ -35,7 +35,7 @@ public protocol ChannelViewDelegate {
     func select(description: AudioComponentDescription, type: PluginType, number: Int)
     func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]
 //    func didReceiveSoloValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: NSControl.StateValue)
-    func soloValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/)
+    func channelValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/)
 }
 
 public protocol ChannelControllerDelegate{
@@ -52,7 +52,7 @@ public protocol ChannelControllerDelegate{
     func contextBlock() -> AUHostMusicalContextBlock
     func connect(sourceNode: AVAudioNode, destinationNode: AVAudioNode, bus: Int?)
     func getAudioComponentList(type: PluginType) -> [AVAudioUnitComponent]
-    func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/)
+    func channelValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/)
 }
 
 public enum ConnectionType {
