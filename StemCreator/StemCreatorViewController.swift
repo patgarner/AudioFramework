@@ -236,11 +236,7 @@ extension StemCreatorViewController : StemRowViewDelegate{
     public func getIdFor(channel: Int) -> String? {
         let id = delegate.getIdFor(channel: channel)
         return id
-    }
-//    public func audioFormatSelectionChangedTo(selected: Bool, stemNumber: Int, audioFormatId: String) {
-//         stemCreatorModel.audioFormatSelectionChangedTo(selected: selected, stemNumber: stemNumber, channelId: audioFormatId)
-//     }
-    
+    } 
 }
 
 

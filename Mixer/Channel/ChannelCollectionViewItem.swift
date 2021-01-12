@@ -36,7 +36,6 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
     var channelViewDelegate : ChannelViewDelegate!
     var channelNumber = -1
     var type = ChannelType.midiInstrument
-    private var instrumentsByManufacturer: [(String, [AVAudioUnitComponent])] = []
     
     @IBOutlet weak var vuMeterView: VUMeterView!
     override public func viewDidLoad() {
