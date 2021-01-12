@@ -681,9 +681,9 @@ extension AudioController : ChannelControllerDelegate {
         let format = AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2)!
         return format
     }
-    public func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+    public func channelValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
         allChannelControllers.forEach { channelController in
-            channelController.didReceiveSoloValueChange(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
+            channelController.didReceiveChannelValueChange(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
         }
     }
 }
