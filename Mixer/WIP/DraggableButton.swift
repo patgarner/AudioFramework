@@ -42,7 +42,7 @@ class DraggableButton: NSButton {
         if newState == false, state == .off { return }
         
         var testFrame = frame
-        testFrame.origin.x = 30
+        testFrame.origin.x = testFrame.minX < 15 ? 0 : 30
         testFrame.size.width = 30
         testFrame = superview.convert(testFrame, to: nil)
         
