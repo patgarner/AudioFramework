@@ -140,8 +140,10 @@ public class StemCreatorViewController: NSViewController {
         if buttonTitle == "Cancel" { cancel() }
     }  
     private func export(){
-        let savePanel = NSSavePanel()
+        let savePanel = NSOpenPanel()
         savePanel.canCreateDirectories = true
+        savePanel.canChooseFiles = false
+        savePanel.canChooseDirectories = true
         savePanel.title = "Choose Destination Folder"
         guard let window = NSApp.keyWindow else { return }
         savePanel.beginSheetModal(for: window) { (result) in
@@ -152,7 +154,12 @@ public class StemCreatorViewController: NSViewController {
                 print("Problem exporting stems.")
             }
         }
+        
     }
+//    savePanel.canChooseFiles = false
+//    savePanel.canChooseDirectories = true
+//    savePanel.title = "Choose Destination Folder"
+//    savePanel.begin { (result) in 
     private func cancel(){
         stemCreator.cancelStemExport()
         delegate.cancelStemExport()
