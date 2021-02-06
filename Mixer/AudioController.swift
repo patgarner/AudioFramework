@@ -703,6 +703,10 @@ extension AudioController : StemViewDelegate {
         let id = channelController.id
         return id
     }
+    public func getTempo() -> Double{
+        let tempo = beatGenerator.getTempo()
+        return tempo
+    }
     public var numChannels: Int {
         return instrumentControllers.count
     }
@@ -726,6 +730,7 @@ extension AudioController : StemViewDelegate {
         for channelController in self.allChannelControllers{
             channelController.mute = false
         }
+        
     }
     public func muteAllExcept(channelIds: [String]) {
         for channelController in instrumentControllers{

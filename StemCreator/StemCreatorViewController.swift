@@ -217,6 +217,7 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     }
     func exportStems(destinationFolder: URL){ 
         exportCancelButton.title = "Cancel"
+        createReadme(destinationFolder: destinationFolder)
         delegate.prepareForStemExport(destinationFolder: destinationFolder)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else {
@@ -227,6 +228,16 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
             DispatchQueue.main.async {
                 self.view.window?.close()
             }
+        }
+    }
+    func createReadme(destinationFolder: URL){ 
+        let fileURL = destinationFolder.appendingPathComponent("README.txt")
+        let fileManager = FileManager()
+        let tempo = delegate.getTempo()
+        let readmeString = "Tempo: \(tempo)"
+        let data = readmeString.data(using: .utf8)
+        if !fileManager.createFile(atPath: fileURL.path, contents: data, attributes: [:]) {
+            MessageHandler.log("Failed to create README.txt", displayFormat: [.notification])
         }
     }
     @objc func stemExportComplete(notification: NSNotification){

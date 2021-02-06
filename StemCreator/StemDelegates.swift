@@ -23,6 +23,7 @@ public protocol StemViewDelegate{
     func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double)
     func stemExportComplete()
     func cancelStemExport()
+    func getTempo() -> Double
 }
 
 public protocol StemRowViewDelegate{

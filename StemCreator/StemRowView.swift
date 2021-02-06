@@ -165,12 +165,6 @@ public class StemRowView: NSView, NSTextFieldDelegate {
         let selected = (state == .on)
         delegate.stemIncludedDidChangeTo(include: selected, stemNumber: number)
     }
-//    public func controlTextDidEndEditing(_ obj: Notification) {
-//        let object = obj.object
-//        if let sender = object as? NSTextField, sender === rowTitle{
-//            rowTitleChanged(sender: self)
-//        }
-//    }
     public func controlTextDidChange(_ obj: Notification) {
         let object = obj.object
         guard let sender = object as? NSTextField else { return }
