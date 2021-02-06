@@ -10,7 +10,7 @@ import Foundation
 
 public class StemCreator{
     var delegate: StemCreatorDelegate!
-    private let letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".components(separatedBy: ",")
+    //private let letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z".components(separatedBy: ",")
     private var shouldCancel = false
     init(delegate: StemCreatorDelegate){
         self.delegate = delegate
@@ -23,13 +23,16 @@ public class StemCreator{
             if shouldCancel { return }
             let stem = model.stems[i]
             if !stem.include { continue }
-            if stem.audioFormatIds.count == 0 { continue }
+            if stem.audioFormatIds.count == 0 { 
+                MessageHandler.log("Error: Stem \(stem.stemShortName) has no audio formats selected.", displayFormat: [.notification])                
+                continue 
+            }
             createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats, tailLength: model.tailLength)
         }
     }
     private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, audioFormats: [AudioFormat], tailLength: Double){
         delegate.muteAllExcept(channelIds: stemModel.channelIds)
-        let letter = letters[number]
+        let letter = stemModel.letter//letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
         let stemPath = folder.appendingPathComponent(filename)
         var selectedAudioFormats : [AudioFormat] = []

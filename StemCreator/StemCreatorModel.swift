@@ -15,6 +15,7 @@ public class StemCreatorModel : Codable, Equatable {
     var tailLength = 4.0
     public init(){
         audioFormats.append(AudioFormatFactory.wav48_16)
+        audioFormats.append(AudioFormatFactory.wav44_16)
         audioFormats.append(AudioFormatFactory.mp3_320)
     }
     enum StemCreatorModelCodingKeys: CodingKey {
@@ -32,7 +33,7 @@ public class StemCreatorModel : Codable, Equatable {
         } catch {}
         do {
             tailLength = try container.decode(Double.self, forKey:  .tailLength)
-        }
+        } catch {}
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: StemCreatorModelCodingKeys.self)
@@ -144,5 +145,19 @@ public class StemCreatorModel : Codable, Equatable {
                 existingFormat.updateValuesWith(audioFormat: newAudioFormat)
             }
         }
+    }
+    func getLetterFor(stem: Int) -> String? {
+        if stem < 0 || stem >= stems.count {
+            return nil
+        }
+        let letter = stems[stem].letter
+        return letter
+    }
+    func set(letter: String, stemNumber: Int){
+        if stemNumber < 0 || stemNumber >= stems.count {
+            return
+        }
+        let stem = stems[stemNumber]
+        stem.letter = letter
     }
 }

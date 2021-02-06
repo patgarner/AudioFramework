@@ -10,11 +10,13 @@ import Foundation
 
 public class StemModel : Codable, Equatable{
     var stemShortName = ""
+    var letter = ""
     var channelIds : [String] = []
     var include = true
     var audioFormatIds : [String] = []
     public static func == (lhs: StemModel, rhs: StemModel) -> Bool {
         if lhs.stemShortName != rhs.stemShortName { return false }
+        if lhs.letter != rhs.letter { return false }
         if lhs.channelIds.count != rhs.channelIds.count { return false}
         for i in 0..<lhs.channelIds.count {
             if lhs.channelIds[i] != rhs.channelIds[i] { return false}

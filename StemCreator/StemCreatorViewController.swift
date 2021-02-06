@@ -8,7 +8,7 @@
 
 import Cocoa
 
-public class StemCreatorViewController: NSViewController {
+public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     public var delegate : StemViewDelegate!
     @IBOutlet weak var collectionView: NSCollectionView!
     private let rowTitleWidth : CGFloat = 100
@@ -39,7 +39,11 @@ public class StemCreatorViewController: NSViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
     }
-    func initialize(){
+
+    public func initialize(){
+        guard let delegate = delegate else { 
+            return
+        }
         self.title = "Export Stems"
         stemCreator.delegate = self
         let numStems = stemCreatorModel.numStems
@@ -96,6 +100,7 @@ public class StemCreatorViewController: NSViewController {
         namePrefixField.stringValue = stemCreatorModel.namePrefix
         namePrefixField.target = self
         namePrefixField.action = #selector(namePrefixChanged)
+        namePrefixField.delegate = self
            
         //Name Prefix View
         let namePrefixViewFrame = CGRect(x: 0, y: 0, width: prefixLabelWidth + prefixFieldWidth + buttonSeparator, height: buttonHeight)
@@ -125,6 +130,7 @@ public class StemCreatorViewController: NSViewController {
         self.tailField = tailField
         tailField.target = self
         tailField.action = #selector(tailLengthChanged)
+        tailField.delegate = self
         let tailNumberFormatter = NumberFormatter()
         tailNumberFormatter.allowsFloats = true
         tailNumberFormatter.generatesDecimalNumbers = true
@@ -133,14 +139,14 @@ public class StemCreatorViewController: NSViewController {
         tailField.formatter = tailNumberFormatter
         
         //Tail View
-        let tailViewFrame = CGRect(x: 250, y: 0, width: tailLabelWidth + buttonSeparator + tailFieldWidth, height: buttonHeight)
+        let tailViewFrame = CGRect(x: 225, y: 0, width: tailLabelWidth + buttonSeparator + tailFieldWidth, height: buttonHeight)
         let tailView = NSView(frame: tailViewFrame)
         tailView.addSubview(tailLabel)
         tailView.addSubview(tailField)
         view.addSubview(tailView)
         
         //Export Button
-        let exportButtonFrame = CGRect(x: 450, y: 0, width: 100, height: buttonHeight)
+        let exportButtonFrame = CGRect(x: 390, y: 0, width: 100, height: buttonHeight)
         let exportButton = NSButton(title: "Export", target: self, action: #selector(didClickExportCancelButton))
         exportButton.frame = exportButtonFrame
         self.exportCancelButton = exportButton
@@ -233,9 +239,23 @@ public class StemCreatorViewController: NSViewController {
         let selected = stemCreatorModel.isSelected(stemNumber: stemNumber, id: id, type: type)
         return selected
     }
+    public func controlTextDidChange(_ obj: Notification) {
+        let object = obj.object
+        guard let sender = object as? NSTextField else { return }
+        if sender === namePrefixField{
+            namePrefixChanged()
+        } 
+    }
 }
 
 extension StemCreatorViewController : StemRowViewDelegate{
+    public func set(letter: String, stemNumber: Int) {
+        stemCreatorModel.set(letter: letter, stemNumber: stemNumber)
+    }
+    public func getLetterFor(stemNumber: Int) -> String? {
+        let letter = stemCreatorModel.getLetterFor(stem: stemNumber)
+        return letter
+    }
     public func getNameFor(stemNumber: Int) -> String? {
         let name = stemCreatorModel.getNameFor(stem: stemNumber)
         return name
@@ -300,9 +320,6 @@ extension StemCreatorViewController : StemRowViewDelegate{
 extension StemCreatorViewController : StemCreatorDelegate{
     public func muteAllExcept(channelIds: [String]) {
         delegate.muteAllExcept(channelIds: channelIds)
-    }
-    public func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int) {
-        delegate.exportStem(to: url, includeMP3: includeMP3, number: number, sampleRate: sampleRate)
     }
     public func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double){
         delegate.exportStem(to: url, number: number, formats: formats, tailLength: tailLength)
