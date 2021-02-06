@@ -12,6 +12,7 @@ public class StemCreatorModel : Codable, Equatable {
     public var namePrefix = ""
     public var stems : [StemModel] = []
     var audioFormats : [AudioFormat] = []
+    var tailLength = 4.0
     public init(){
         audioFormats.append(AudioFormatFactory.wav48_16)
         audioFormats.append(AudioFormatFactory.mp3_320)
@@ -20,6 +21,7 @@ public class StemCreatorModel : Codable, Equatable {
         case namePrefix
         case stems
         case audioFormats
+        case tailLength
     }
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: StemCreatorModelCodingKeys.self)
@@ -28,12 +30,16 @@ public class StemCreatorModel : Codable, Equatable {
         do {
             audioFormats = try container.decode([AudioFormat].self, forKey: .audioFormats)
         } catch {}
+        do {
+            tailLength = try container.decode(Double.self, forKey:  .tailLength)
+        }
     }
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: StemCreatorModelCodingKeys.self)
         try container.encode(namePrefix, forKey: .namePrefix)
         try container.encode(stems, forKey: .stems)
         try container.encode(audioFormats, forKey: .audioFormats)
+        try container.encode(tailLength, forKey: .tailLength)
     }
     public static func == (lhs: StemCreatorModel, rhs: StemCreatorModel) -> Bool {
         if lhs.namePrefix != rhs.namePrefix { return false }
@@ -47,6 +53,7 @@ public class StemCreatorModel : Codable, Equatable {
         for i in 0..<lhs.audioFormats.count {
             if lhs.audioFormats[i] != rhs.audioFormats[i] { return false }
         }
+        if lhs.tailLength != rhs.tailLength { return false }
         return true
     }
     var numStems : Int {

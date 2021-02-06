@@ -24,10 +24,10 @@ public class StemCreator{
             let stem = model.stems[i]
             if !stem.include { continue }
             if stem.audioFormatIds.count == 0 { continue }
-            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats)
+            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats, tailLength: model.tailLength)
         }
     }
-    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, audioFormats: [AudioFormat]){
+    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, audioFormats: [AudioFormat], tailLength: Double){
         delegate.muteAllExcept(channelIds: stemModel.channelIds)
         let letter = letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
@@ -40,7 +40,7 @@ public class StemCreator{
                 }
             }
         }
-        delegate.exportStem(to: stemPath, number: number, formats: selectedAudioFormats)
+        delegate.exportStem(to: stemPath, number: number, formats: selectedAudioFormats, tailLength: tailLength)
     }
     func cancelStemExport(){
         shouldCancel = true

@@ -19,6 +19,7 @@ public class StemCreatorViewController: NSViewController {
     private weak var stemCreatorModel : StemCreatorModel! = AudioController.shared.stemCreatorModel
     private let stemCreator = StemCreator()
     private weak var exportCancelButton : NSButton!
+    private weak var tailField : NSTextField!
 
     public init(delegate: StemViewDelegate){
         self.delegate = delegate
@@ -59,13 +60,25 @@ public class StemCreatorViewController: NSViewController {
             self.view.addSubview(stemRowView)
         }
         let buttonHeight : CGFloat = 25
-        let yBuffer : CGFloat = 3
-        let addStemButtonFrame = CGRect(x: 0, y: yBuffer, width: 100, height: buttonHeight)
+
+        //Add Stem Buttons
+        let y = view.frame.size.height - columnTitleHeight - CGFloat(numStems+1) * rowHeight
+        let addStemButtonWidth : CGFloat = 100
+        let addStemButtonFrame = CGRect(x: 25, y: y, width: addStemButtonWidth, height: buttonHeight)
         let addStemButton = NSButton(title: "Add Stem", target: self, action: #selector(addStem))
         addStemButton.frame = addStemButtonFrame
         self.view.addSubview(addStemButton)
+
         
-        let prefixLabelFrame = CGRect(x: 110, y: 0, width: 100, height: buttonHeight)
+        let yBuffer : CGFloat = 3
+        let buttonSeparator : CGFloat = 10
+        let font = NSFont(name: "Helvetica", size: 15)
+        
+        ////////////////////////////////////////////////////////////////////////
+        //Prefix Label
+        ////////////////////////////////////////////////////////////////////////
+        let prefixLabelWidth : CGFloat = 100
+        let prefixLabelFrame = CGRect(x: 0, y: 0, width: prefixLabelWidth, height: buttonHeight)
         let prefixLabel = NSTextField(frame: prefixLabelFrame)
         prefixLabel.stringValue = "Name Prefix"
         prefixLabel.isEditable = false
@@ -73,38 +86,71 @@ public class StemCreatorViewController: NSViewController {
         prefixLabel.isEditable = false
         prefixLabel.isBordered = false
         prefixLabel.alignment = NSTextAlignment.right
-        prefixLabel.font = NSFont(name: "Helvetica", size: 16)
-        self.view.addSubview(prefixLabel)
+        prefixLabel.font = font
         
-        let namePrefixFrame = CGRect(x: 220, y: yBuffer, width: 200, height: buttonHeight)
+        //Prefix Field
+        let prefixFieldWidth : CGFloat = 100
+        let namePrefixFrame = CGRect(x: prefixLabelWidth + buttonSeparator, y: yBuffer, width: 100, height: buttonHeight)
         let namePrefixField = NSTextField(frame: namePrefixFrame)
         self.namePrefixField = namePrefixField
-        namePrefixField.stringValue = stemCreatorModel.namePrefix//delegate.namePrefix
+        namePrefixField.stringValue = stemCreatorModel.namePrefix
         namePrefixField.target = self
         namePrefixField.action = #selector(namePrefixChanged)
-        self.view.addSubview(namePrefixField)
+           
+        //Name Prefix View
+        let namePrefixViewFrame = CGRect(x: 0, y: 0, width: prefixLabelWidth + prefixFieldWidth + buttonSeparator, height: buttonHeight)
+        let prefixView = NSView(frame: namePrefixViewFrame)
+        prefixView.addSubview(prefixLabel)
+        prefixView.addSubview(namePrefixField)
+        self.view.addSubview(prefixView)
         
-        let addFormatButtonFrame = CGRect(x: 540, y: yBuffer, width: 100, height: buttonHeight)
-        let addFormatButton = NSButton(title: "Add Format", target: self, action: #selector(addFormat))
-        addFormatButton.frame = addFormatButtonFrame
-        self.view.addSubview(addFormatButton)
-
-        let exportButtonFrame = CGRect(x: 650, y: yBuffer, width: 100, height: buttonHeight)
+        //Tail Label
+        let tailLabel = NSTextField(labelWithString: "Tail")
+        let tailLabelWidth : CGFloat = 50
+        let tailLabelFrame = CGRect(x: 0, y: 0, width: tailLabelWidth, height: buttonHeight)
+        tailLabel.frame = tailLabelFrame
+        tailLabel.isEditable = false
+        tailLabel.backgroundColor = NSColor.clear
+        tailLabel.isEditable = false
+        tailLabel.isBordered = false
+        tailLabel.alignment = NSTextAlignment.right
+        tailLabel.font = font
+        
+        //Tail Field
+        let tailField = NSTextField()
+        tailField.doubleValue = stemCreatorModel.tailLength
+        let tailFieldWidth : CGFloat = 50
+        let tailFieldFrame = CGRect(x: tailLabelWidth + buttonSeparator, y: yBuffer, width: tailLabelWidth, height: buttonHeight)
+        tailField.frame = tailFieldFrame
+        self.tailField = tailField
+        tailField.target = self
+        tailField.action = #selector(tailLengthChanged)
+        let tailNumberFormatter = NumberFormatter()
+        tailNumberFormatter.allowsFloats = true
+        tailNumberFormatter.generatesDecimalNumbers = true
+        tailNumberFormatter.maximumFractionDigits = 2
+        tailNumberFormatter.minimumFractionDigits = 1
+        tailField.formatter = tailNumberFormatter
+        
+        //Tail View
+        let tailViewFrame = CGRect(x: 250, y: 0, width: tailLabelWidth + buttonSeparator + tailFieldWidth, height: buttonHeight)
+        let tailView = NSView(frame: tailViewFrame)
+        tailView.addSubview(tailLabel)
+        tailView.addSubview(tailField)
+        view.addSubview(tailView)
+        
+        //Export Button
+        let exportButtonFrame = CGRect(x: 450, y: 0, width: 100, height: buttonHeight)
         let exportButton = NSButton(title: "Export", target: self, action: #selector(didClickExportCancelButton))
         exportButton.frame = exportButtonFrame
-        self.view.addSubview(exportButton)
         self.exportCancelButton = exportButton
-        
+        view.addSubview(exportButton)
+                
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(setProgress),
             name: .StemProgress,
             object: nil)
-    }
-    @objc func addFormat(){
-        let format = AudioFormatFactory.wav44_16
-        stemCreatorModel.audioFormats.append(format)
-        refresh()
     }
     @objc func setProgress(notification: NSNotification){
         guard let stemProgress = notification.object as? (Int, Double) else { return }
@@ -134,6 +180,10 @@ public class StemCreatorViewController: NSViewController {
         let namePrefix = namePrefixField.stringValue
         stemCreatorModel.namePrefix = namePrefix
     }
+    @objc private func tailLengthChanged(){
+        let tailLength = tailField.doubleValue
+        stemCreatorModel.tailLength = tailLength
+    }
     @objc func didClickExportCancelButton(_ sender: Any){ 
         let buttonTitle = exportCancelButton.title
         if buttonTitle == "Export" { export() }
@@ -154,12 +204,7 @@ public class StemCreatorViewController: NSViewController {
                 print("Problem exporting stems.")
             }
         }
-        
     }
-//    savePanel.canChooseFiles = false
-//    savePanel.canChooseDirectories = true
-//    savePanel.title = "Choose Destination Folder"
-//    savePanel.begin { (result) in 
     private func cancel(){
         stemCreator.cancelStemExport()
         delegate.cancelStemExport()
@@ -231,6 +276,11 @@ extension StemCreatorViewController : StemRowViewDelegate{
         audioFormatVC.set(audioFormat: audioFormat)
         audioFormatVC.delegate = self
     }
+    @objc public func addFormat(){
+        let format = AudioFormatFactory.wav44_16
+        stemCreatorModel.audioFormats.append(format)
+        refresh()
+    }
     //Pass Through
     public var numChannels: Int {
         let channels = delegate.numChannels
@@ -254,8 +304,8 @@ extension StemCreatorViewController : StemCreatorDelegate{
     public func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int) {
         delegate.exportStem(to: url, includeMP3: includeMP3, number: number, sampleRate: sampleRate)
     }
-    public func exportStem(to url: URL, number: Int, formats: [AudioFormat]){
-        delegate.exportStem(to: url, number: number, formats: formats)
+    public func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double){
+        delegate.exportStem(to: url, number: number, formats: formats, tailLength: tailLength)
     }
 }
 

@@ -14,11 +14,12 @@ public class StemRowView: NSView, NSTextFieldDelegate {
     var delegate : StemRowViewDelegate!
     private weak var progressBar : NSProgressIndicator!
     private weak var includeCheckbox : NSButton!
+    private weak var addFormatButton : NSButton!
     //Dimensions
     private let includeCheckboxWidth : CGFloat = 25
     private var rowTitleWidth : CGFloat = 100
     private var columnWidth : CGFloat = 25
-    private let deleteButtonWidth : CGFloat = 40
+    private let buttonWidth : CGFloat = 40
     private let progressBarWidth : CGFloat = 100
     init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemRowViewDelegate, type: RowType, number: Int = -1) {
         super.init(frame: frameRect)
@@ -73,14 +74,28 @@ public class StemRowView: NSView, NSTextFieldDelegate {
             self.addSubview(filetypeCell)
             x += columnWidth
         }
+        //Add Format Button
+        if type == .header {
+            let addFormatHeight : CGFloat = 50
+            let addFormatY : CGFloat = (frame.size.height - addFormatHeight) / 2.0
+            let addFormatFrame = CGRect(x: x, y: addFormatY, width: buttonWidth, height: addFormatHeight)
+           // let addFormatButton = NSButton(frame: addFormatFrame)
+            let addFormatButton = NSButton(title: "+", target: self, action: #selector(addFormat))
+            addFormatButton.frame = addFormatFrame
+//            addFormatButton.title = "+"
+//            addFormatButton.target = self
+//            addFormatButton.action = #selector(addFormat)
+            addFormatButton.refusesFirstResponder = true
+            self.addSubview(addFormatButton) 
+        }
         if type == .row{
             //Delete Button
             let deleteButton = NSButton(title: "X", target: self, action: #selector(deleteStem))
-            let deleteFrame = CGRect(x: x, y: 0, width: deleteButtonWidth, height: rowHeight) 
+            let deleteFrame = CGRect(x: x, y: 0, width: buttonWidth, height: rowHeight) 
             deleteButton.frame = deleteFrame
             addSubview(deleteButton)
             //Progress Bar
-            x += deleteButtonWidth
+            x += buttonWidth
             let progressFrame = CGRect(x: x, y: 0, width: progressBarWidth, height: rowHeight) 
             let progressBar = NSProgressIndicator(frame: progressFrame)
             progressBar.minValue = 0
@@ -114,6 +129,10 @@ public class StemRowView: NSView, NSTextFieldDelegate {
     @objc func deleteStem(){
         delegate.delete(stemNumber: number)
         delegate?.refresh()
+    }
+    @objc func addFormat(){
+        print("Add format")
+        delegate?.addFormat()
     }
     public func set(progress: Double){
         progressBar.isHidden = false
