@@ -48,7 +48,7 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
         stemCreator.delegate = self
         let numStems = stemCreatorModel.numStems
         let numChannels = delegate.numChannels
-        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 200
+        let totalWidth = rowTitleWidth + CGFloat(numChannels + 2) * columnWidth + 300
         let currentFrame = self.view.frame
         let newSize = CGSize(width: totalWidth, height: currentFrame.height)
         self.view.setFrameSize(newSize)

@@ -292,28 +292,32 @@ public class AudioController: NSObject {
     //////////////////////////////////////////////////////////////////
     // MIDI
     //////////////////////////////////////////////////////////////////
-    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        if channel >= instrumentControllers.count { return }
+    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, midiDestination: MidiDestination) {
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
         startEngineIfNeeded()
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.noteOn(note, withVelocity: velocity, channel: channel)
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.noteOn(note, withVelocity: velocity, channel: UInt8(midiDestination.channel))
     }
     
-    public func noteOff(_ note: UInt8, channel: UInt8) {
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.noteOff(note, channel: channel)
+    public func noteOff(_ note: UInt8, midiDestination: MidiDestination) {
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.noteOff(note, channel: UInt8(midiDestination.channel))
     } 
     
-    public func set(pan: UInt8, channel: UInt8){ //TODO: MIDI Pan. Kill.
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.set(pan: pan, channel: channel)
+    public func set(pan: UInt8, midiDestination: MidiDestination){ //TODO: MIDI Pan. Kill.
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.set(pan: pan, channel: UInt8(midiDestination.channel))
     }
-    public func setController(number: UInt8, value: UInt8, channel: UInt8){
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.setController(number: number, value: value, channel: channel)
+    public func setController(number: UInt8, value: UInt8, midiDestination: MidiDestination){
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.setController(number: number, value: value, channel: UInt8(midiDestination.channel))
     }
     public func reset(){
         engine.reset()

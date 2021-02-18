@@ -58,6 +58,9 @@
 		843FD47525068E9200189936 /* ChannelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD47425068E9200189936 /* ChannelController.swift */; };
 		843FD4822506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
 		843FD4832506A3B500189936 /* AudioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843FD4812506A3B500189936 /* AudioModel.swift */; };
+		8448CBB525DC567F00757DC7 /* MidiDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8448CBB425DC567F00757DC7 /* MidiDestination.swift */; };
+		8448CBB625DC567F00757DC7 /* MidiDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8448CBB425DC567F00757DC7 /* MidiDestination.swift */; };
+		8448CBBF25DC56F600757DC7 /* MidiDestinationTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8448CBBE25DC56F600757DC7 /* MidiDestinationTest.swift */; };
 		84529AC5254782D2007BDA32 /* NotificationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849C6B8B251A66FF00164DE1 /* NotificationExtension.swift */; };
 		8454F46D25A66BF70027EF7B /* FakeAudioControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849216BA253A74DB005982C3 /* FakeAudioControllerDelegate.swift */; };
 		8454F46E25A66BF70027EF7B /* PluginDataTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 846D647F253E2E630097F345 /* PluginDataTest.swift */; };
@@ -261,6 +264,8 @@
 		8430293825856DB8005913A8 /* Mp3FormatTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mp3FormatTest.swift; sourceTree = "<group>"; };
 		843FD47425068E9200189936 /* ChannelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelController.swift; sourceTree = "<group>"; };
 		843FD4812506A3B500189936 /* AudioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioModel.swift; sourceTree = "<group>"; };
+		8448CBB425DC567F00757DC7 /* MidiDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MidiDestination.swift; sourceTree = "<group>"; };
+		8448CBBE25DC56F600757DC7 /* MidiDestinationTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MidiDestinationTest.swift; sourceTree = "<group>"; };
 		845900C82543BA6700410584 /* BeatGeneratorTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatGeneratorTest.swift; sourceTree = "<group>"; };
 		845900DF254510D600410584 /* TestTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTest.swift; sourceTree = "<group>"; };
 		8459589A251436F20091A43E /* SendData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendData.swift; sourceTree = "<group>"; };
@@ -358,7 +363,6 @@
 		84070C1724FF49BC00E572E7 /* Mixer */ = {
 			isa = PBXGroup;
 			children = (
-				840D4A78253763D900E841F0 /* Plugin */,
 				84A446292530B977002539E9 /* Channel */,
 				84951275252CC8D5008C5C47 /* Waves */,
 				842369D224FEC44C001266BE /* AudioController.swift */,
@@ -372,16 +376,10 @@
 				8496444E252B86AE00C9802E /* UltraMixerNode.swift */,
 				841BFE6C2526B8A000FA0276 /* VUMeterView.swift */,
 				84964448252B853500C9802E /* WIP */,
+				8448CBB425DC567F00757DC7 /* MidiDestination.swift */,
 			);
 			path = Mixer;
 			sourceTree = SOURCE_ROOT;
-		};
-		840D4A78253763D900E841F0 /* Plugin */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Plugin;
-			sourceTree = "<group>";
 		};
 		840D4B0D2537849F00E841F0 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -466,9 +464,9 @@
 		842369B524FEC2BC001266BE /* AudioFrameworkTests */ = {
 			isa = PBXGroup;
 			children = (
+				8448CBBD25DC56D500757DC7 /* Mixer */,
 				84F3D13E25420A61001E7ABD /* Beat */,
 				84302933258558B2005913A8 /* AudioUtilities */,
-				8480DAFA2530FFD000A40CEB /* Channel */,
 				84ED7F6F2585AB26005A124F /* StemCreator */,
 				845900DE2545106A00410584 /* Test */,
 				842369B624FEC2BC001266BE /* AudioFrameworkTests.swift */,
@@ -503,6 +501,15 @@
 				8430293825856DB8005913A8 /* Mp3FormatTest.swift */,
 			);
 			path = AudioUtilities;
+			sourceTree = "<group>";
+		};
+		8448CBBD25DC56D500757DC7 /* Mixer */ = {
+			isa = PBXGroup;
+			children = (
+				8480DAFA2530FFD000A40CEB /* Channel */,
+				8448CBBE25DC56F600757DC7 /* MidiDestinationTest.swift */,
+			);
+			path = Mixer;
 			sourceTree = "<group>";
 		};
 		845900DE2545106A00410584 /* Test */ = {
@@ -866,6 +873,7 @@
 				84D0AB5B251EB8DF0093A081 /* StemCreatorModel.swift in Sources */,
 				84070C5924FF5D5900E572E7 /* ChannelCollectionViewItem.swift in Sources */,
 				841D0A8624FED796008F6305 /* AudioControllerDelegate.swift in Sources */,
+				8448CBB525DC567F00757DC7 /* MidiDestination.swift in Sources */,
 				841E57FD251D9D11009B7E7C /* StemCreatorViewController.swift in Sources */,
 				84ACDFDE25166219003963FD /* PluginSelection.swift in Sources */,
 				8429DB90252011EA00ADE7B0 /* StemCreator.swift in Sources */,
@@ -911,6 +919,7 @@
 				84A9AFE525101ED500816F7F /* ChannelRouter.swift in Sources */,
 				846D648E253E404F0097F345 /* BeatDelegate.swift in Sources */,
 				8454F47025A66BF70027EF7B /* FakeMusicalContext.swift in Sources */,
+				8448CBB625DC567F00757DC7 /* MidiDestination.swift in Sources */,
 				8429DB6B251FB36600ADE7B0 /* StemCell.swift in Sources */,
 				8429DB66251FAA7600ADE7B0 /* StemRowView.swift in Sources */,
 				8454F46E25A66BF70027EF7B /* PluginDataTest.swift in Sources */,
@@ -941,6 +950,7 @@
 				841E57D4251C262F009B7E7C /* MidiAudioExporter.swift in Sources */,
 				846A2D0E258D461E00801C2F /* StemCreatorModelTest.swift in Sources */,
 				84D0AB5C251EB8DF0093A081 /* StemCreatorModel.swift in Sources */,
+				8448CBBF25DC56F600757DC7 /* MidiDestinationTest.swift in Sources */,
 				84A9AFE125101ED500816F7F /* ChannelController.swift in Sources */,
 				8480DB092532161E00A40CEB /* PluginDisplayDelegate.swift in Sources */,
 				8459589C251436F20091A43E /* SendData.swift in Sources */,
