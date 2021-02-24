@@ -54,6 +54,11 @@ class StemModelTest: XCTestCase {
         XCTAssert(stemModel1 != stemModel2)
         stemModel2.audioFormatIds[1] = "MP3"
         XCTAssert(stemModel1 == stemModel2)
+        
+        stemModel1.letter = "X"
+        XCTAssert(stemModel1 != stemModel2)
+        stemModel2.letter = "X"
+        XCTAssert(stemModel1 == stemModel2)
     }
 
 

@@ -11,6 +11,10 @@ import AudioFramework
 import AVFoundation
 
 class FakeChannelControllerDelegate : ChannelControllerDelegate{
+    func channelValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool) {
+        
+    }
+    
     func soloValueChanges(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
         
     }

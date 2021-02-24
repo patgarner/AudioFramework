@@ -7,16 +7,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A85BD000-4F1F-48BC-A7FB-C90FC068A9AC"
-            shouldBeEnabled = "Yes"
+            uuid = "98196269-6940-4946-B12B-D5C7233F942A"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Mixer/AudioController.swift"
+            filePath = "StemCreator/StemCreatorModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
-            landmarkName = "deinit"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "init(from:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0D398FDA-834F-4D83-8A9E-EB90C7B2FBE9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../Composer Bot Desktop/Composer Bot/Midi/VirtualTrack.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
+            landmarkName = "set(chord:inversion:scale:mode:beat:absoluteBeat:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

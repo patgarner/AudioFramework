@@ -292,28 +292,32 @@ public class AudioController: NSObject {
     //////////////////////////////////////////////////////////////////
     // MIDI
     //////////////////////////////////////////////////////////////////
-    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, channel: UInt8) {
-        if channel >= instrumentControllers.count { return }
+    public func noteOn(_ note: UInt8, withVelocity velocity: UInt8, midiDestination: MidiDestination) {
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
         startEngineIfNeeded()
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.noteOn(note, withVelocity: velocity, channel: channel)
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.noteOn(note, withVelocity: velocity, channel: UInt8(midiDestination.channel))
     }
     
-    public func noteOff(_ note: UInt8, channel: UInt8) {
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.noteOff(note, channel: channel)
+    public func noteOff(_ note: UInt8, midiDestination: MidiDestination) {
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.noteOff(note, channel: UInt8(midiDestination.channel))
     } 
     
-    public func set(pan: UInt8, channel: UInt8){ //TODO: MIDI Pan. Kill.
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.set(pan: pan, channel: channel)
+    public func set(pan: UInt8, midiDestination: MidiDestination){ //TODO: MIDI Pan. Kill.
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.set(pan: pan, channel: UInt8(midiDestination.channel))
     }
-    public func setController(number: UInt8, value: UInt8, channel: UInt8){
-        if channel >= instrumentControllers.count { return }
-        let channelController = instrumentControllers[Int(channel)]
-        channelController.setController(number: number, value: value, channel: channel)
+    public func setController(number: UInt8, value: UInt8, midiDestination: MidiDestination){
+        let trackNumber = UInt8(midiDestination.trackNumber)
+        if trackNumber >= instrumentControllers.count { return }
+        let channelController = instrumentControllers[Int(trackNumber)]
+        channelController.setController(number: number, value: value, channel: UInt8(midiDestination.channel))
     }
     public func reset(){
         engine.reset()
@@ -703,6 +707,10 @@ extension AudioController : StemViewDelegate {
         let id = channelController.id
         return id
     }
+    public func getTempo() -> Double{
+        let tempo = beatGenerator.getTempo()
+        return tempo
+    }
     public var numChannels: Int {
         return instrumentControllers.count
     }
@@ -718,17 +726,15 @@ extension AudioController : StemViewDelegate {
         isRendering = true
         setAllMusicalContextBlocks()
     }
-    public func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int){
-        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, includeMP3: includeMP3, delegate: self, number: number, sampleRate: sampleRate)
-    }
-    public func exportStem(to url: URL, number: Int, formats: [AudioFormat]) {
-        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, delegate: self, number: number, formats: formats)
+    public func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double) {
+        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, delegate: self, number: number, formats: formats, tailLength: tailLength)
     }
     public func stemExportComplete() {
         self.isRendering = false
         for channelController in self.allChannelControllers{
             channelController.mute = false
         }
+        
     }
     public func muteAllExcept(channelIds: [String]) {
         for channelController in instrumentControllers{

@@ -14,14 +14,18 @@ public class StemRowView: NSView, NSTextFieldDelegate {
     var delegate : StemRowViewDelegate!
     private weak var progressBar : NSProgressIndicator!
     private weak var includeCheckbox : DraggableButton!
+    private weak var addFormatButton : NSButton!
+    private weak var letterField : NSTextField!
     //Dimensions
     private let includeCheckboxWidth : CGFloat = 25
-    private var rowTitleWidth : CGFloat = 100
+    private var rowTitleWidth : CGFloat = 75
+    private let letterFieldWidth : CGFloat = 25
     private var columnWidth : CGFloat = 25
-    private let deleteButtonWidth : CGFloat = 40
+    private let buttonWidth : CGFloat = 40
     private let progressBarWidth : CGFloat = 100
     init(frame frameRect: NSRect, rowTitleWidth: CGFloat, rowHeight: CGFloat, columnWidth: CGFloat, delegate: StemRowViewDelegate, type: RowType, number: Int = -1) {
         super.init(frame: frameRect)
+        let font = NSFont(name: "Helvetica", size: 16)
         self.rowTitleWidth = rowTitleWidth
         self.columnWidth = columnWidth
         self.delegate = delegate
@@ -39,11 +43,26 @@ public class StemRowView: NSView, NSTextFieldDelegate {
             if delegate.isIncluded(stemNumber: number){
                 includeCheckbox.state = .on
             }
+            x += includeCheckboxWidth
+            //Letter Field
+            let letterFrame = CGRect(x: x, y: 0, width: letterFieldWidth, height: rowHeight)
+            let letterField = NSTextField(frame: letterFrame)
+            self.letterField = letterField
+            letterField.font = font
+            letterField.target = self
+            letterField.action = #selector(letterChanged)
+            letterField.delegate = self
+            addSubview(letterField)
+            if let letter = delegate.getLetterFor(stemNumber: number){
+                letterField.stringValue = letter
+            }
+            x += letterFieldWidth
             //Row Title
-            let rowTitleFrame = CGRect(x: includeCheckboxWidth, y: 0, width: rowTitleWidth, height: rowHeight)
+            let rowTitleFrame = CGRect(x: x, y: 0, width: rowTitleWidth, height: rowHeight)
             let rowTitle = NSTextField(frame: rowTitleFrame)
+            rowTitle.font = font
             self.rowTitle = rowTitle
-            self.addSubview(rowTitle)
+            addSubview(rowTitle)
             if let stemName = delegate.getNameFor(stemNumber: number) {
                 rowTitle.stringValue = stemName
             }
@@ -51,9 +70,12 @@ public class StemRowView: NSView, NSTextFieldDelegate {
             rowTitle.target = self
             rowTitle.action = #selector(rowTitleChanged)
             rowTitle.delegate = self
+            x += rowTitleWidth
+            //Tab functionality
+            letterField.nextKeyView = rowTitle
         }
         //Channels
-        x = rowTitleWidth + includeCheckboxWidth
+        x = includeCheckboxWidth + rowTitleWidth + letterFieldWidth
         let numChannels = delegate.numChannels
         for i in 0..<numChannels{
             let checkboxFrame = CGRect(x: x, y: 0, width: columnWidth, height: rowHeight)
@@ -76,14 +98,24 @@ public class StemRowView: NSView, NSTextFieldDelegate {
             self.addSubview(filetypeCell)
             x += columnWidth
         }
+        //Add Format Button
+        if type == .header {
+            let addFormatHeight : CGFloat = 30
+            let addFormatY : CGFloat = (frame.size.height - addFormatHeight) // 2.0
+            let addFormatFrame = CGRect(x: x, y: addFormatY, width: buttonWidth, height: addFormatHeight)
+            let addFormatButton = NSButton(title: "+", target: self, action: #selector(addFormat))
+            addFormatButton.frame = addFormatFrame
+            addFormatButton.refusesFirstResponder = true
+            self.addSubview(addFormatButton) 
+        }
         if type == .row{
             //Delete Button
             let deleteButton = NSButton(title: "X", target: self, action: #selector(deleteStem))
-            let deleteFrame = CGRect(x: x, y: 0, width: deleteButtonWidth, height: rowHeight) 
+            let deleteFrame = CGRect(x: x, y: 0, width: buttonWidth, height: rowHeight) 
             deleteButton.frame = deleteFrame
             addSubview(deleteButton)
             //Progress Bar
-            x += deleteButtonWidth
+            x += buttonWidth
             let progressFrame = CGRect(x: x, y: 0, width: progressBarWidth, height: rowHeight) 
             let progressBar = NSProgressIndicator(frame: progressFrame)
             progressBar.minValue = 0
@@ -102,6 +134,10 @@ public class StemRowView: NSView, NSTextFieldDelegate {
     override public func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
     }
+    @objc func letterChanged(){
+        let letter = letterField.stringValue
+        delegate.set(letter: letter, stemNumber: number)
+    }
     @objc func rowTitleChanged(sender: Any){
         let newTitle = rowTitle.stringValue
         delegate.setName(stemNumber: number, name: newTitle)
@@ -118,6 +154,10 @@ public class StemRowView: NSView, NSTextFieldDelegate {
         delegate.delete(stemNumber: number)
         delegate?.refresh()
     }
+    @objc func addFormat(){
+        print("Add format")
+        delegate?.addFormat()
+    }
     public func set(progress: Double){
         progressBar.isHidden = false
         progressBar.doubleValue = progress
@@ -128,10 +168,13 @@ public class StemRowView: NSView, NSTextFieldDelegate {
         let selected = (state == .on)
         delegate.stemIncludedDidChangeTo(include: selected, stemNumber: number)
     }
-    public func controlTextDidEndEditing(_ obj: Notification) {
+    public func controlTextDidChange(_ obj: Notification) {
         let object = obj.object
-        if let sender = object as? NSTextField, sender === rowTitle{
+        guard let sender = object as? NSTextField else { return }
+        if sender === rowTitle{
             rowTitleChanged(sender: self)
+        } else if sender === letterField{
+            letterChanged()
         }
     }
 }

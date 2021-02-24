@@ -11,8 +11,7 @@ import AVFoundation
 
 public protocol StemCreatorDelegate { //These absolutely need to call back to AudioController
     func muteAllExcept(channelIds: [String]) 
-    func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int)
-    func exportStem(to url: URL, number: Int, formats: [AudioFormat])
+    func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double)
 }
 
 public protocol StemViewDelegate{
@@ -21,10 +20,10 @@ public protocol StemViewDelegate{
     func getIdFor(channel: Int) -> String?
     func prepareForStemExport(destinationFolder: URL)
     func muteAllExcept(channelIds: [String]) 
-    func exportStem(to url: URL, includeMP3: Bool, number: Int, sampleRate: Int)
-    func exportStem(to url: URL, number: Int, formats: [AudioFormat])
+    func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double)
     func stemExportComplete()
     func cancelStemExport()
+    func getTempo() -> Double
 }
 
 public protocol StemRowViewDelegate{
@@ -38,6 +37,9 @@ public protocol StemRowViewDelegate{
     func stemIncludedDidChangeTo(include: Bool, stemNumber: Int)
     func isIncluded(stemNumber: Int) -> Bool
     var audioFormats : [AudioFormat] { get }
+    func addFormat()
+    func getLetterFor(stemNumber : Int) -> String?
+    func set(letter: String, stemNumber: Int)
     //Pass Through
     var numChannels : Int { get } //YES
     func getNameFor(channelId : String) -> String?
