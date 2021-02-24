@@ -76,7 +76,7 @@ public class StemCreatorViewController: NSViewController {
         prefixLabel.font = NSFont(name: "Helvetica", size: 16)
         self.view.addSubview(prefixLabel)
         
-        let namePrefixFrame = CGRect(x: 220, y: yBuffer, width: 200, height: buttonHeight)
+        let namePrefixFrame = CGRect(x: 220, y: yBuffer, width: 220, height: buttonHeight)
         let namePrefixField = NSTextField(frame: namePrefixFrame)
         self.namePrefixField = namePrefixField
         namePrefixField.stringValue = stemCreatorModel.namePrefix//delegate.namePrefix
