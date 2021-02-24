@@ -59,5 +59,6 @@ protocol DraggableButtonDelegate {
 public enum DraggableButtonType: Int {
     case mute = 101
     case solo
+    case include
     case none
 }
