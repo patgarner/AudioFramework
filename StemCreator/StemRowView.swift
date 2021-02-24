@@ -13,7 +13,7 @@ public class StemRowView: NSView, NSTextFieldDelegate {
     var number = -1
     var delegate : StemRowViewDelegate!
     private weak var progressBar : NSProgressIndicator!
-    private weak var includeCheckbox : NSButton!
+    private weak var includeCheckbox : DraggableButton!
     //Dimensions
     private let includeCheckboxWidth : CGFloat = 25
     private var rowTitleWidth : CGFloat = 100
@@ -29,7 +29,10 @@ public class StemRowView: NSView, NSTextFieldDelegate {
         if type == .row {
             //Include Checkbox
             let includeCheckboxFrame = CGRect(x: 0, y: 0, width: includeCheckboxWidth, height: rowHeight)
-            let includeCheckbox = NSButton(checkboxWithTitle: "", target: self, action: #selector(includeDidChange))
+            let includeCheckbox = DraggableButton(checkboxWithTitle: "", target: self, action: #selector(includeDidChange))
+            let gestureRecognizer = AFPanGestureRecognizer(target: self, action: #selector(panGestureReceived(sender:)))
+            includeCheckbox.addGestureRecognizer(gestureRecognizer)
+            includeCheckbox.type = .include
             includeCheckbox.frame = includeCheckboxFrame
             self.addSubview(includeCheckbox)
             self.includeCheckbox = includeCheckbox
@@ -129,6 +132,46 @@ public class StemRowView: NSView, NSTextFieldDelegate {
         let object = obj.object
         if let sender = object as? NSTextField, sender === rowTitle{
             rowTitleChanged(sender: self)
+        }
+    }
+}
+
+extension StemRowView { // drag to select
+    @objc func panGestureReceived(sender: AFPanGestureRecognizer){
+        guard let mainButton = sender.view as? DraggableButton else { return }
+        guard let view = mainButton.superview else { return }
+        guard let window = mainButton.window else { return }
+
+        let translation = sender.translation(in: view)
+        let locationInWin = window.convertPoint(fromScreen: NSEvent.mouseLocation)
+        let locationInView = view.convert(locationInWin, from: nil)
+        let startingPointX = locationInView.x - translation.x
+        let startingPointY = locationInView.y - translation.y
+
+        let startX = min(startingPointX, startingPointX + translation.x)
+        let startY = min(startingPointY, startingPointY + translation.y)
+        let endX = max(startingPointX, startingPointX + translation.x)
+        let endY = max(startingPointY, startingPointY + translation.y)
+        var gestureRect = CGRect(x: startX, y: startY, width: endX - startX, height: endY - startY)
+        gestureRect = view.convert(gestureRect, to: nil)
+
+        //let state = mainButton.state
+        var state = false
+        if mainButton.state == .on { state = true }
+        
+        delegate.stemRowValueChanged(gestureRect: gestureRect, buttonType: mainButton.type, newState: state)
+    }
+    func didReceiveStemRowValueChange(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+        switch buttonType {
+        case .mute:
+            break
+        case .solo:
+            break
+        case .include:
+            includeCheckbox?.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
+            break
+        case .none:
+            break
         }
     }
 }
