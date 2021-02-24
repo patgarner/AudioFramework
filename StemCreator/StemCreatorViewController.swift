@@ -236,7 +236,13 @@ extension StemCreatorViewController : StemRowViewDelegate{
     public func getIdFor(channel: Int) -> String? {
         let id = delegate.getIdFor(channel: channel)
         return id
-    } 
+    }
+    public func stemRowValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
+        view.subviews.forEach { subview in
+            guard let stemRowView = subview as? StemRowView else { return }
+            stemRowView.didReceiveStemRowValueChange(gestureRect: gestureRect, buttonType: buttonType, newState: newState)
+        }
+    }
 }
 
 
