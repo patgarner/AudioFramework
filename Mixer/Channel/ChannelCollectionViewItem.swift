@@ -85,6 +85,8 @@ public class ChannelCollectionViewItem: NSCollectionViewItem {
             muteButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
         case .solo:
             soloButton.setNewState(newState: newState, for: gestureRect, buttonType: buttonType)
+        case .include:
+            break
         case .none:
             break
         }
