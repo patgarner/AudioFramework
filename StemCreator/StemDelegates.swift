@@ -43,6 +43,7 @@ public protocol StemRowViewDelegate{
     func getNameFor(channelId : String) -> String?
     func getIdFor(channel: Int) -> String?
     func didSelect(audioFormatId: String)
+    func stemRowValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/)
 }
 
 public protocol StemCheckboxDelegate{
