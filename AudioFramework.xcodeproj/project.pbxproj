@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		10B8DCF325E6600200E71BCE /* StemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB64251FAA7600ADE7B0 /* StemRowView.swift */; };
+		10B8DCF725E6600B00E71BCE /* DraggableButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84789A342527B8AA0012B8FD /* DraggableButton.swift */; };
+		10B8DCFB25E6601800E71BCE /* AFPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */; };
 		4324730E259D430D00A6DD86 /* AFPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */; };
 		4324730F259D430D00A6DD86 /* AFPanGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4324730D259D430C00A6DD86 /* AFPanGestureRecognizer.swift */; };
 		84070C5924FF5D5900E572E7 /* ChannelCollectionViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84070C5124FF5D5900E572E7 /* ChannelCollectionViewItem.swift */; };
@@ -174,7 +177,6 @@
 		84E7A24C258319C10089D527 /* AudioFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84E7A24A258319C10089D527 /* AudioFormat.swift */; };
 		84F3D119253F7122001E7ABD /* BeatInfoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F3D118253F7122001E7ABD /* BeatInfoSource.swift */; };
 		84F3D11A253F7122001E7ABD /* BeatInfoSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F3D118253F7122001E7ABD /* BeatInfoSource.swift */; };
-		84F91DE7259250BE0039E4F6 /* StemRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB64251FAA7600ADE7B0 /* StemRowView.swift */; };
 		84F91DE8259250CF0039E4F6 /* StemDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D83D3A2548974E00CC1D51 /* StemDelegates.swift */; };
 		84F91DE9259250DC0039E4F6 /* StemCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8429DB69251FB36600ADE7B0 /* StemCell.swift */; };
 /* End PBXBuildFile section */
@@ -956,6 +958,7 @@
 			files = (
 				849C6B8C251A66FF00164DE1 /* NotificationExtension.swift in Sources */,
 				849216B6253A72AA005982C3 /* AudioNodeFactory.swift in Sources */,
+				10B8DCF325E6600200E71BCE /* StemRowView.swift in Sources */,
 				84ACE02D25191008003963FD /* AudioFrameworkDemo.xcdatamodeld in Sources */,
 				846A2D05258BE5DD00801C2F /* AudioFormatViewControllerDelegate.swift in Sources */,
 				84F91DE9259250DC0039E4F6 /* StemCell.swift in Sources */,
@@ -963,12 +966,13 @@
 				84D0AB6A251EDAD50093A081 /* AudioFileConverter.swift in Sources */,
 				84ACE02A25191008003963FD /* ViewController.swift in Sources */,
 				84B6315B2589CA4A00F06123 /* AudioFormatFactory.swift in Sources */,
-				84F91DE7259250BE0039E4F6 /* StemRowView.swift in Sources */,
 				841E57D5251C262F009B7E7C /* MidiAudioExporter.swift in Sources */,
+				10B8DCF725E6600B00E71BCE /* DraggableButton.swift in Sources */,
 				8413ADA6258BBE6500816089 /* AudioFormatViewController.swift in Sources */,
 				84B63165258AA58000F06123 /* AudioFormatView.swift in Sources */,
 				84B6315425896CC800F06123 /* StemModel.swift in Sources */,
 				849C6B89251A653300164DE1 /* Demo.swift in Sources */,
+				10B8DCFB25E6601800E71BCE /* AFPanGestureRecognizer.swift in Sources */,
 				84ACE02825191008003963FD /* AppDelegate.swift in Sources */,
 				84F91DE8259250CF0039E4F6 /* StemDelegates.swift in Sources */,
 				84B63157258975AB00F06123 /* AudioFormat.swift in Sources */,
