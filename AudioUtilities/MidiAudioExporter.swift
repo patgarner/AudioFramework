@@ -17,7 +17,7 @@ class MidiAudioExporter{
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
         }
-        lengthInSeconds += headLength
+        // lengthInSeconds += headLength
         lengthInSeconds += tailLength
         engine.stop()
         let format: AVAudioFormat = engine.mainMixerNode.outputFormat(forBus: 0)
