@@ -43,11 +43,15 @@ class StemCreatorModelTest: XCTestCase {
         stemCreatorModel2.audioFormats.append(audioFormat)
         XCTAssert(stemCreatorModel1 == stemCreatorModel2)
         
+        stemCreatorModel1.headLength = 3.5
+        XCTAssert(stemCreatorModel1 != stemCreatorModel2)
+        stemCreatorModel2.headLength = 3.5
+        XCTAssert(stemCreatorModel1 == stemCreatorModel2)
+
         stemCreatorModel1.tailLength = 3.5
         XCTAssert(stemCreatorModel1 != stemCreatorModel2)
         stemCreatorModel2.tailLength = 3.5
         XCTAssert(stemCreatorModel1 == stemCreatorModel2)
-
     }
     func testSerialization(){
         let encoder = JSONEncoder()
@@ -58,6 +62,7 @@ class StemCreatorModelTest: XCTestCase {
         stemCreatorModel1.addStem()
         stemCreatorModel1.selectionChangedTo(selected: true, stemNumber: 0, id: "DAVE", type: .channel)
         stemCreatorModel1.audioFormats.removeAll()
+        stemCreatorModel1.headLength = 7.1
         stemCreatorModel1.tailLength = 7.1
         //TODO: Add Audio Formats
         do {

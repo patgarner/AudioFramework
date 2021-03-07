@@ -20,6 +20,7 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     private weak var stemCreatorModel : StemCreatorModel! = AudioController.shared.stemCreatorModel
     private let stemCreator = StemCreator()
     private weak var exportCancelButton : NSButton!
+    private weak var headField : NSTextField!
     private weak var tailField : NSTextField!
 
     public init(){
@@ -112,6 +113,42 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
         prefixView.addSubview(namePrefixField)
         self.view.addSubview(prefixView)
         
+        //Head Label
+        let headLabel = NSTextField(labelWithString: "Head")
+        let headLabelWidth : CGFloat = 50
+        let headLabelFrame = CGRect(x: 0, y: 0, width: headLabelWidth, height: buttonHeight)
+        headLabel.frame = headLabelFrame
+        headLabel.isEditable = false
+        headLabel.backgroundColor = NSColor.clear
+        headLabel.isEditable = false
+        headLabel.isBordered = false
+        headLabel.alignment = NSTextAlignment.right
+        headLabel.font = font
+        
+        //Head Field
+        let headField = NSTextField()
+        headField.doubleValue = stemCreatorModel.headLength
+        let headFieldWidth : CGFloat = 50
+        let headFieldFrame = CGRect(x: headLabelWidth + buttonSeparator, y: yBuffer, width: headLabelWidth, height: buttonHeight)
+        headField.frame = headFieldFrame
+        self.headField = headField
+        headField.target = self
+        headField.action = #selector(headLengthChanged)
+        headField.delegate = self
+        let headNumberFormatter = NumberFormatter()
+        headNumberFormatter.allowsFloats = true
+        headNumberFormatter.generatesDecimalNumbers = true
+        headNumberFormatter.maximumFractionDigits = 2
+        headNumberFormatter.minimumFractionDigits = 1
+        headField.formatter = headNumberFormatter
+        
+        //Head View
+        let headViewFrame = CGRect(x: 225, y: 0, width: headLabelWidth + buttonSeparator + headFieldWidth, height: buttonHeight)
+        let headView = NSView(frame: headViewFrame)
+        headView.addSubview(headLabel)
+        headView.addSubview(headField)
+        view.addSubview(headView)
+        
         //Tail Label
         let tailLabel = NSTextField(labelWithString: "Tail")
         let tailLabelWidth : CGFloat = 50
@@ -142,14 +179,16 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
         tailField.formatter = tailNumberFormatter
         
         //Tail View
-        let tailViewFrame = CGRect(x: 225, y: 0, width: tailLabelWidth + buttonSeparator + tailFieldWidth, height: buttonHeight)
+        let tailViewFrame = CGRect(x: headViewFrame.maxX, y: 0, width: tailLabelWidth + buttonSeparator + tailFieldWidth, height: buttonHeight)
         let tailView = NSView(frame: tailViewFrame)
         tailView.addSubview(tailLabel)
         tailView.addSubview(tailField)
         view.addSubview(tailView)
-        
+
+        let spacer: CGFloat = 25.0 // calculated based on space between tail field and export button before adding the head field
+
         //Export Button
-        let exportButtonFrame = CGRect(x: 390, y: 0, width: 100, height: buttonHeight)
+        let exportButtonFrame = CGRect(x: tailViewFrame.maxX + spacer, y: 0, width: 100, height: buttonHeight)
         let exportButton = NSButton(title: "Export", target: self, action: #selector(didClickExportCancelButton))
         exportButton.frame = exportButtonFrame
         self.exportCancelButton = exportButton
@@ -189,11 +228,15 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
         let namePrefix = namePrefixField.stringValue
         stemCreatorModel.namePrefix = namePrefix
     }
+    @objc private func headLengthChanged(){
+        let headLength = headField.doubleValue
+        stemCreatorModel.headLength = headLength
+    }
     @objc private func tailLengthChanged(){
         let tailLength = tailField.doubleValue
         stemCreatorModel.tailLength = tailLength
     }
-    @objc func didClickExportCancelButton(_ sender: Any){ 
+    @objc func didClickExportCancelButton(_ sender: Any){
         let buttonTitle = exportCancelButton.title
         if buttonTitle == "Export" { export() }
         if buttonTitle == "Cancel" { cancel() }

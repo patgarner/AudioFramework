@@ -27,10 +27,10 @@ public class StemCreator{
                 MessageHandler.log("Error: Stem \(stem.stemShortName) has no audio formats selected.", displayFormat: [.notification])                
                 continue 
             }
-            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats, tailLength: model.tailLength)
+            createStem(stemModel: stem, prefix: model.namePrefix, folder: folder, number: i, audioFormats: model.audioFormats, headLength: model.headLength, tailLength: model.tailLength)
         }
     }
-    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, audioFormats: [AudioFormat], tailLength: Double){
+    private func createStem(stemModel: StemModel, prefix: String, folder: URL, number: Int, audioFormats: [AudioFormat], headLength: Double, tailLength: Double){
         delegate.muteAllExcept(channelIds: stemModel.channelIds)
         let letter = stemModel.letter//letters[number]
         let filename = prefix + " " + letter + "(" + stemModel.stemShortName +  ")"
@@ -43,7 +43,7 @@ public class StemCreator{
                 }
             }
         }
-        delegate.exportStem(to: stemPath, number: number, formats: selectedAudioFormats, tailLength: tailLength)
+        delegate.exportStem(to: stemPath, number: number, formats: selectedAudioFormats, headLength: headLength, tailLength: tailLength)
     }
     func cancelStemExport(){
         shouldCancel = true

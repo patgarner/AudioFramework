@@ -726,8 +726,8 @@ extension AudioController : StemViewDelegate {
         isRendering = true
         setAllMusicalContextBlocks()
     }
-    public func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double) {
-        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, delegate: self, number: number, formats: formats, tailLength: tailLength)
+    public func exportStem(to url: URL, number: Int, formats: [AudioFormat], headLength: Double, tailLength: Double) {
+        MidiAudioExporter.renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: url, delegate: self, number: number, formats: formats, headLength: headLength, tailLength: tailLength)
     }
     public func stemExportComplete() {
         self.isRendering = false

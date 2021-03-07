@@ -11,12 +11,13 @@ import AVFoundation
 import Cocoa
 
 class MidiAudioExporter{
-    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, delegate: MidiAudioExporterDelegate?, number: Int?, formats: [AudioFormat], tailLength: Double){
+    class func renderMidiOffline(sequencer: AVAudioSequencer, engine: AVAudioEngine, audioDestinationURL: URL, delegate: MidiAudioExporterDelegate?, number: Int?, formats: [AudioFormat], headLength: Double, tailLength: Double){
         //TODO: put all code from renderMidiOffline here. have it call this func
         var lengthInSeconds = 0.0
         for track in sequencer.tracks{
             lengthInSeconds = max(track.lengthInSeconds, lengthInSeconds)
         }
+        lengthInSeconds += headLength
         lengthInSeconds += tailLength
         engine.stop()
         let format: AVAudioFormat = engine.mainMixerNode.outputFormat(forBus: 0)
@@ -97,7 +98,7 @@ class MidiAudioExporter{
             mp3Format.type = .mp3
             audioFormats.append(mp3Format)
         }
-        renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, delegate: delegate, number: number, formats: audioFormats, tailLength: 4.0)
+        renderMidiOffline(sequencer: sequencer, engine: engine, audioDestinationURL: audioDestinationURL, delegate: delegate, number: number, formats: audioFormats, headLength: 4.0, tailLength: 4.0)
     }
     class func cancelOfflineRender(engine: AVAudioEngine){
         engine.stop()

@@ -11,7 +11,7 @@ import AVFoundation
 
 public protocol StemCreatorDelegate { //These absolutely need to call back to AudioController
     func muteAllExcept(channelIds: [String]) 
-    func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double)
+    func exportStem(to url: URL, number: Int, formats: [AudioFormat], headLength: Double, tailLength: Double)
 }
 
 public protocol StemViewDelegate{
@@ -20,7 +20,7 @@ public protocol StemViewDelegate{
     func getIdFor(channel: Int) -> String?
     func prepareForStemExport(destinationFolder: URL)
     func muteAllExcept(channelIds: [String]) 
-    func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double)
+    func exportStem(to url: URL, number: Int, formats: [AudioFormat], headLength: Double, tailLength: Double)
     func stemExportComplete()
     func cancelStemExport()
     func getTempo() -> Double
