@@ -9,7 +9,8 @@
 import Cocoa
 
 public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
-    public var delegate : StemViewDelegate!
+    public static var shared = StemCreatorViewController()
+    public var delegate : StemViewDelegate? = nil
     @IBOutlet weak var collectionView: NSCollectionView!
     private let rowTitleWidth : CGFloat = 100
     private let columnTitleHeight  : CGFloat = 100
@@ -21,11 +22,9 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     private weak var exportCancelButton : NSButton!
     private weak var tailField : NSTextField!
 
-    public init(delegate: StemViewDelegate){
-        self.delegate = delegate
+    public init(){
         let bundle = Bundle(for: StemCreatorViewController.self)
         super.init(nibName: nil, bundle: bundle)
-        initialize()
     }
     public override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -39,7 +38,11 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     override public func viewDidLoad() {
         super.viewDidLoad()
     }
-
+    public func presentAsModalWindowWithDelegate(_ delegate: StemViewDelegate) {
+        self.delegate = delegate
+        initialize()
+        NSApp.mainWindow?.contentViewController?.presentAsModalWindow(self)
+    }
     public func initialize(){
         guard let delegate = delegate else { 
             return
@@ -213,18 +216,18 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     }
     private func cancel(){
         stemCreator.cancelStemExport()
-        delegate.cancelStemExport()
+        delegate?.cancelStemExport()
     }
     func exportStems(destinationFolder: URL){ 
         exportCancelButton.title = "Cancel"
         createReadme(destinationFolder: destinationFolder)
-        delegate.prepareForStemExport(destinationFolder: destinationFolder)
+        delegate?.prepareForStemExport(destinationFolder: destinationFolder)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else {
                 return
             }
             self.stemCreator.createStems(model: self.stemCreatorModel, folder: destinationFolder)
-            self.delegate.stemExportComplete()
+            self.delegate?.stemExportComplete()
             DispatchQueue.main.async {
                 self.view.window?.close()
             }
@@ -233,11 +236,12 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     func createReadme(destinationFolder: URL){ 
         let fileURL = destinationFolder.appendingPathComponent("README.txt")
         let fileManager = FileManager()
-        let tempo = delegate.getTempo()
-        let readmeString = "Tempo: \(tempo)"
-        let data = readmeString.data(using: .utf8)
-        if !fileManager.createFile(atPath: fileURL.path, contents: data, attributes: [:]) {
-            MessageHandler.log("Failed to create README.txt", displayFormat: [.notification])
+        if let tempo = delegate?.getTempo() {
+            let readmeString = "Tempo: \(tempo)"
+            let data = readmeString.data(using: .utf8)
+            if !fileManager.createFile(atPath: fileURL.path, contents: data, attributes: [:]) {
+                MessageHandler.log("Failed to create README.txt", displayFormat: [.notification])
+            }
         }
     }
     @objc func stemExportComplete(notification: NSNotification){
@@ -314,15 +318,15 @@ extension StemCreatorViewController : StemRowViewDelegate{
     }
     //Pass Through
     public var numChannels: Int {
-        let channels = delegate.numChannels
+        let channels = delegate?.numChannels ?? 0
         return channels
     }
     public func getNameFor(channelId: String) -> String? {
-        let name = delegate.getNameFor(channelId: channelId)
+        let name = delegate?.getNameFor(channelId: channelId)
         return name
     }
     public func getIdFor(channel: Int) -> String? {
-        let id = delegate.getIdFor(channel: channel)
+        let id = delegate?.getIdFor(channel: channel)
         return id
     }
     public func stemRowValueChanged(gestureRect: CGRect, buttonType: DraggableButtonType, newState: Bool/*NSControl.StateValue*/) {
@@ -336,10 +340,10 @@ extension StemCreatorViewController : StemRowViewDelegate{
 
 extension StemCreatorViewController : StemCreatorDelegate{
     public func muteAllExcept(channelIds: [String]) {
-        delegate.muteAllExcept(channelIds: channelIds)
+        delegate?.muteAllExcept(channelIds: channelIds)
     }
-    public func exportStem(to url: URL, number: Int, formats: [AudioFormat], tailLength: Double){
-        delegate.exportStem(to: url, number: number, formats: formats, tailLength: tailLength)
+    public func exportStem(to url: URL, number: Int, formats: [AudioFormat], headLength: Double, tailLength: Double){
+        delegate?.exportStem(to: url, number: number, formats: formats, headLength: headLength, tailLength: tailLength)
     }
 }
 
