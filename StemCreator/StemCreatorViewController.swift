@@ -8,8 +8,10 @@
 
 import Cocoa
 
-public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
-    public static var shared = StemCreatorViewController()
+public final class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
+    public static var shared = StemCreatorViewController.init(nibName: nil,
+                                                              bundle: Bundle(for: StemCreatorViewController.self))
+    
     public var delegate : StemViewDelegate? = nil
     @IBOutlet weak var collectionView: NSCollectionView!
     private let rowTitleWidth : CGFloat = 100
@@ -23,31 +25,41 @@ public class StemCreatorViewController: NSViewController, NSTextFieldDelegate {
     private weak var headField : NSTextField!
     private weak var tailField : NSTextField!
 
-    public init(){
-        let bundle = Bundle(for: StemCreatorViewController.self)
-        super.init(nibName: nil, bundle: bundle)
+    @available(*, unavailable, message: "Use StemCreatorViewController singleton via the shared static property")
+    internal init(){
+        fatalError("StemCreatorViewController: calls to init not allowed. Used shared static property to access singleton.")
     }
-    public override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
+    internal override init(nibName nibNameOrNil: NSNib.Name?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
         initialize()
     }
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
+    @available(*, unavailable, message: "Use StemCreatorViewController singleton via the shared static property")
+    internal required init?(coder: NSCoder) {
+        fatalError("StemCreatorViewController: calls to init not allowed. Used shared static property to access singleton.")
+    }
+    deinit {
+        print("deinit")
     }
     override public func viewWillLayout() {
     }
     override public func viewDidLoad() {
         super.viewDidLoad()
     }
-    public func presentAsModalWindowWithDelegate(_ delegate: StemViewDelegate) {
-        self.delegate = delegate
-        initialize()
-        NSApp.mainWindow?.contentViewController?.presentAsModalWindow(self)
+    public func presentWithDelegate(_ delegate: StemViewDelegate) {
+        if self.delegate !== delegate {
+            self.delegate = delegate
+            initialize()
+        }
+
+        (view.window ?? NSWindow(contentViewController: self)).makeKeyAndOrderFront(nil)
     }
     public func initialize(){
         guard let delegate = delegate else { 
             return
         }
+        
+        view.subviews.forEach { $0.removeFromSuperview() }
+        
         self.title = "Export Stems"
         stemCreator.delegate = self
         let numStems = stemCreatorModel.numStems
