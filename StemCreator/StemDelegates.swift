@@ -14,7 +14,7 @@ public protocol StemCreatorDelegate { //These absolutely need to call back to Au
     func exportStem(to url: URL, number: Int, formats: [AudioFormat], headLength: Double, tailLength: Double)
 }
 
-public protocol StemViewDelegate{
+public protocol StemViewDelegate: class{
     var numChannels : Int { get } //YES
     func getNameFor(channelId : String) -> String?
     func getIdFor(channel: Int) -> String?
