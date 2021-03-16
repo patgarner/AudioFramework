@@ -130,7 +130,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, AudioControllerDelegate {
     }
     @IBAction func showStemCreator(_ sender: Any) {
         let audioController = AudioController.shared
-        StemCreatorViewController.shared.presentAsModalWindowWithDelegate(audioController)
+        StemCreatorViewController.shared.presentWithDelegate(audioController)
     }
     /////////////////////////////////////////////////////////
     // AudioControllerDelegate
